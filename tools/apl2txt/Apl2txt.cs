@@ -145,14 +145,14 @@ namespace Apl2txt
 						if (rootOut != null)
 						{
 							Console.WriteLine("Only one output directory allowed");
-							return;
+							goto usage;
 						}
 						rootOut = args[i];
 					}
 					else
 					{
 						Console.WriteLine("Missing directory name");
-						return;
+						goto usage;
 					}
 				}
 				else if (fileName == null)
@@ -162,14 +162,23 @@ namespace Apl2txt
 				else
 				{
 					Console.WriteLine("Only one input file allowed");
-					return;
+					goto usage;
 				}
 			}
 			
 			if (fileName != null)
 				ConvertFile(fileName);
-			else
+			else if (rootOut != null)
 				ConvertDir(".");
+			else
+			{
+				Console.WriteLine("File name or -rootDir required");
+				goto usage;
+			}
+			return;
+			
+usage:		Console.WriteLine("apl2txt <filename>");
+			Console.WriteLine("apl2txt -rootOut <outdir>");
 		}
 	}
 }
