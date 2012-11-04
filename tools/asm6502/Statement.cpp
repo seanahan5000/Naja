@@ -775,7 +775,7 @@ ConditionalStatement::Parse(Parser* p,const char* label)
 			if (value != 0)
 			{
 				p->SetConditionalSatisfied(true);
-				p->SetConditionalEnabled(true);
+				p->EnableConditional();
 			}
 		}
 		else /*if (mTypeToken == TokenELIF)*/
@@ -789,10 +789,10 @@ ConditionalStatement::Parse(Parser* p,const char* label)
 			if (!p->ConditionalSatisfied() && value != 0)
 			{
 				p->SetConditionalSatisfied(true);
-				p->SetConditionalEnabled(true);
+				p->EnableConditional();
 			}
 			else
-				p->SetConditionalEnabled(false);
+				p->DisableConditional();
 		}
 	}
 	else if (mTypeToken == TokenELSE)
@@ -812,10 +812,10 @@ ConditionalStatement::Parse(Parser* p,const char* label)
 		if (!p->ConditionalSatisfied())
 		{
 			p->SetConditionalSatisfied(true);
-			p->SetConditionalEnabled(true);
+			p->EnableConditional();
 		}
 		else
-			p->SetConditionalEnabled(false);
+			p->DisableConditional();
 	}
 	else /* if (mTypeToken == TokenENDIF || mTypeToken == TokenFIN) */
 	{

@@ -11,7 +11,8 @@ class Statement;
 
 struct ConditionalState
 {
-	bool enabled;
+	bool IsEnabled() { return enableCount > 0; }
+	INT32 enableCount;
 	bool satisfied;
 };
 
@@ -77,7 +78,8 @@ public:
 	bool PushConditional();
 	bool PullConditional();
 	void SetConditionalSatisfied(bool sat) { mConditional.satisfied = sat; }
-	void SetConditionalEnabled(bool enab) { mConditional.enabled = enab; }
+	void EnableConditional() { ++mConditional.enableCount; }
+	void DisableConditional() { --mConditional.enableCount; }
 	bool ConditionalSatisfied() { return mConditional.satisfied; }
 	
 protected:

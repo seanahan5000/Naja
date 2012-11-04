@@ -12,7 +12,7 @@ Parser::Parser(Assembler* assembler)
 {
 	mAssembler = assembler;
 	mTokenizer = new Tokenizer(assembler->GetSyntax());
-	mConditional.enabled = true;
+	mConditional.enableCount = 1;
 	mConditional.satisfied = true;
 	mConditionalIndex = 0;
 }
@@ -63,7 +63,7 @@ Parser::ParseLine(const char* string)
 	bool doAddLabelSymbol = true;
 	bool hasLabel = *string != ' ' && *string != '\t';
 	
-	if (!mConditional.enabled)
+	if (!mConditional.IsEnabled())
 	{
 		t = Next();
 		if (t == TokenIF || t == TokenDO || t == TokenELIF ||
@@ -583,7 +583,7 @@ Parser::PushConditional()
 		return false;
 	
 	mConditionalStack[mConditionalIndex++] = mConditional;
-	mConditional.enabled = false;
+	--mConditional.enableCount;
 	mConditional.satisfied = false;
 	return true;
 }
