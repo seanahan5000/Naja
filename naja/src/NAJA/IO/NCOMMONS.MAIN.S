@@ -433,6 +433,8 @@ EXPANDR2		LDA	#$24			;BIT OPCODE
 				CPY	#4
 				BNE	:1
 				DEC	TOP
+				LDA	RIGHT
+				PHA
 				
 				LDA	#0
 				STA	RPCOUNT
@@ -478,6 +480,10 @@ EXPANDR2		LDA	#$24			;BIT OPCODE
 				DEC	RIGHT
 				CMP	LEFT
 				BNE	:NEXTCOL
+				
+				PLA					; Group assembly expects
+				STA	RIGHT			;	TOP,BOTTOM,LEFT,RIGHT to
+				INC	TOP				;	be valid after decompress
 				
 				LDA	#$F0			;BEQ OPCODE
 				STA	:SIMPOSE		; (restore $00 transparency)
