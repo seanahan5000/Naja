@@ -138,9 +138,14 @@ LOAD_FILES		LDA	#side_MS
 				LDX	#$05			; Title.Page
 				JMP	FLOAD_FILE
 				
-			do NO_TITLE
+			;do NO_TITLE
+				; NOTE: BOOT_TABLE is needed for both title and no_title
+				; builds, but FINISH_BOOT and INIT_GAME are only needed
+				; for no_title.  Space could be saved by eliminating them
+				; for title build.
+
 				PUT	NDOS.BOOT2
-			fin
+			;fin
 				
 				DS	\,$00
 				ERR	*-LOAD_BASE-$0200
