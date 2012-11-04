@@ -1,6 +1,5 @@
 
-// paste of hex data
-// copy/paste of compressed data
+// clear selection
 
 // scrolling?
 // pixel editing

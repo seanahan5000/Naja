@@ -3,7 +3,6 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
 
 namespace ScreenEditor
 {
@@ -23,6 +22,11 @@ namespace ScreenEditor
 		public Bitmap Bitmap
 		{
 			get { return _colorBuffer; }
+		}
+		
+		public byte[] RawBuffer
+		{
+			get { return _rawBuffer; }
 		}
 		
 		public bool Interpolate
@@ -100,38 +104,13 @@ namespace ScreenEditor
 			UpdateColorBuffer();
 		}
 		
-		public string CaptureHex(Rectangle bounds)
-		{
-			int left = bounds.Left / 7;
-			int right = (bounds.Right + 6) / 7;
-			int columns = right - left;
-			int sindex = bounds.Top * 40 + left;
-			StringBuilder builder = new StringBuilder();
-			
-			builder.Append(String.Format("\t\t\t\tDB\t{0},{1},{2},{3}\n",
-				left,bounds.Top,right,bounds.Bottom));
-			for (int y = bounds.Top; y < bounds.Bottom; ++y)
-			{
-				builder.Append("\t\t\t\tHEX\t");
-				for (int x = 0; x < columns; ++x)
-				{
-					byte b = _rawBuffer[sindex + x];
-					builder.Append(b.ToString("X2",null));
-				}
-				builder.Append("\n");
-				sindex += 40;
-			}
-			
-			return builder.ToString();
-		}
-		
-		private void UpdateColorBuffer()
+		public void UpdateColorBuffer()
 		{
 			UpdateColorBuffer(0,192);
 		}
 		
 		// update color buffer with contents of raw buffer
-		private unsafe void UpdateColorBuffer(int startLine,int endLine)
+		public unsafe void UpdateColorBuffer(int startLine,int endLine)
 		{
 			BitmapData lockData;
 			lockRect.X = 0;

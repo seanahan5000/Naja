@@ -48,6 +48,7 @@ namespace ScreenEditor
 		private System.ComponentModel.Container components = null;
 
 		private Point _selStart;
+		private System.Windows.Forms.MenuItem _editMenuCompress;
 		private bool _selDragging = false;
 		
 		public Form1()
@@ -90,6 +91,7 @@ namespace ScreenEditor
 			this.menuItem2 = new System.Windows.Forms.MenuItem();
 			this._editMenuCut = new System.Windows.Forms.MenuItem();
 			this._editMenuCopy = new System.Windows.Forms.MenuItem();
+			this._editMenuCompress = new System.Windows.Forms.MenuItem();
 			this._editMenuPaste = new System.Windows.Forms.MenuItem();
 			this._editMenuDelete = new System.Windows.Forms.MenuItem();
 			this.menuItem3 = new System.Windows.Forms.MenuItem();
@@ -108,12 +110,10 @@ namespace ScreenEditor
 			// 
 			// _screenControl
 			// 
-			this._screenControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-				| System.Windows.Forms.AnchorStyles.Left) 
-				| System.Windows.Forms.AnchorStyles.Right)));
+			this._screenControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this._screenControl.Location = new System.Drawing.Point(0, 0);
 			this._screenControl.Name = "_screenControl";
-			this._screenControl.Size = new System.Drawing.Size(560, 406);
+			this._screenControl.Size = new System.Drawing.Size(560, 384);
 			this._screenControl.TabIndex = 0;
 			this._screenControl.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this._screenControl_KeyPress);
 			this._screenControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this._screenControl_MouseUp);
@@ -186,6 +186,7 @@ namespace ScreenEditor
 																						  this.menuItem2,
 																						  this._editMenuCut,
 																						  this._editMenuCopy,
+																						  this._editMenuCompress,
 																						  this._editMenuPaste,
 																						  this._editMenuDelete,
 																						  this.menuItem3,
@@ -228,16 +229,23 @@ namespace ScreenEditor
 			this._editMenuCopy.Text = "Copy";
 			this._editMenuCopy.Click += new System.EventHandler(this._editMenuCopy_Click);
 			// 
+			// _editMenuCompress
+			// 
+			this._editMenuCompress.Index = 5;
+			this._editMenuCompress.Shortcut = System.Windows.Forms.Shortcut.CtrlShiftC;
+			this._editMenuCompress.Text = "Compress";
+			this._editMenuCompress.Click += new System.EventHandler(this._editMenuCompress_Click);
+			// 
 			// _editMenuPaste
 			// 
-			this._editMenuPaste.Enabled = false;
-			this._editMenuPaste.Index = 5;
+			this._editMenuPaste.Index = 6;
 			this._editMenuPaste.Shortcut = System.Windows.Forms.Shortcut.CtrlV;
 			this._editMenuPaste.Text = "Paste";
+			this._editMenuPaste.Click += new System.EventHandler(this._editMenuPaste_Click);
 			// 
 			// _editMenuDelete
 			// 
-			this._editMenuDelete.Index = 6;
+			this._editMenuDelete.Index = 7;
 			this._editMenuDelete.Shortcut = System.Windows.Forms.Shortcut.Del;
 			this._editMenuDelete.Text = "Delete";
 			this._editMenuDelete.Click += new System.EventHandler(this._editMenuDelete_Click);
@@ -245,25 +253,25 @@ namespace ScreenEditor
 			// menuItem3
 			// 
 			this.menuItem3.Enabled = false;
-			this.menuItem3.Index = 7;
+			this.menuItem3.Index = 8;
 			this.menuItem3.Text = "-";
 			// 
 			// _editMenuSelectAll
 			// 
-			this._editMenuSelectAll.Enabled = false;
-			this._editMenuSelectAll.Index = 8;
+			this._editMenuSelectAll.Index = 9;
 			this._editMenuSelectAll.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
 			this._editMenuSelectAll.Text = "Select All";
+			this._editMenuSelectAll.Click += new System.EventHandler(this._editMenuSelectAll_Click);
 			// 
 			// menuItem4
 			// 
 			this.menuItem4.Enabled = false;
-			this.menuItem4.Index = 9;
+			this.menuItem4.Index = 10;
 			this.menuItem4.Text = "-";
 			// 
 			// _editMenuReverse
 			// 
-			this._editMenuReverse.Index = 10;
+			this._editMenuReverse.Index = 11;
 			this._editMenuReverse.Shortcut = System.Windows.Forms.Shortcut.CtrlR;
 			this._editMenuReverse.Text = "Reverse";
 			this._editMenuReverse.Click += new System.EventHandler(this._editMenuReverse_Click);
@@ -317,8 +325,8 @@ namespace ScreenEditor
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
 			this.ClientSize = new System.Drawing.Size(560, 406);
-			this.Controls.Add(this._statusBar);
 			this.Controls.Add(this._screenControl);
+			this.Controls.Add(this._statusBar);
 			this.Menu = this._mainMenu;
 			this.Name = "Form1";
 			this.Text = "ScreenEditor";
@@ -350,21 +358,56 @@ namespace ScreenEditor
 			}
 		}
 
+		private void _fileMenuExit_Click(object sender, System.EventArgs e)
+		{
+			this.Close();
+		}
+		
+		private void _editMenuCopy_Click(object sender, System.EventArgs e)
+		{
+			Rectangle bounds = _screenControl.Selection;
+			if (!bounds.IsEmpty)
+			{
+				string text = Codec.CaptureToText(_screenControl.Screen,bounds);
+				Clipboard.SetDataObject(text);
+			}
+		}
+		
+		private void _editMenuCompress_Click(object sender, System.EventArgs e)
+		{
+			Rectangle bounds = _screenControl.Selection;
+			if (!bounds.IsEmpty)
+			{
+				string text = Codec.CompressToText(_screenControl.Screen,bounds);
+				Clipboard.SetDataObject(text);
+			}
+		}
+		
+		private void _editMenuPaste_Click(object sender, System.EventArgs e)
+		{
+			IDataObject data = Clipboard.GetDataObject();
+			if (data.GetDataPresent(DataFormats.Text))
+			{
+				string text = data.GetData(DataFormats.Text).ToString();
+				_screenControl.Paste(text);
+			}
+		}
+		
 		private void _editMenuDelete_Click(object sender, System.EventArgs e)
 		{
 			_screenControl.Screen.Clear();
 			_screenControl.Invalidate();
 		}
-
+		
+		private void _editMenuSelectAll_Click(object sender, System.EventArgs e)
+		{
+			_screenControl.SetSelection(new Point(0,0),new Point(279,191));
+		}
+		
 		private void _editMenuReverse_Click(object sender, System.EventArgs e)
 		{
 			_screenControl.Screen.Reverse();
 			_screenControl.Invalidate();
-		}
-
-		private void _fileMenuExit_Click(object sender, System.EventArgs e)
-		{
-			this.Close();
 		}
 
 		private void Zoom(char key)
@@ -396,16 +439,6 @@ namespace ScreenEditor
 		private void _screenControl_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
 		{
 			Zoom(e.KeyChar);
-		}
-
-		private void _editMenuCopy_Click(object sender, System.EventArgs e)
-		{
-			Rectangle bounds = _screenControl.Selection;
-			if (!bounds.IsEmpty)
-			{
-				string text = _screenControl.Screen.CaptureHex(bounds);
-				Clipboard.SetDataObject(text);
-			}
 		}
 		
 		private void _screenControl_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)

@@ -103,6 +103,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "Codec.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Screen.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

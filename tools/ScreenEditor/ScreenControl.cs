@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections;
 using System.ComponentModel;
@@ -126,6 +127,18 @@ namespace ScreenEditor
 			this.Invalidate();
 		}
 		
+		public bool Paste(string text)
+		{
+			Rectangle bounds;
+			if (Codec.TextToScreen(text,_screen,out bounds))
+			{
+				_selRect = bounds;
+				this.Invalidate();
+				return true;
+			}
+			return false;
+		}
+		
 		public ScreenControl()
 		{
 			// This call is required by the Windows.Forms Form Designer.
@@ -171,10 +184,10 @@ namespace ScreenEditor
 		{
 			if (!_selRect.IsEmpty)
 			{
-				int x1 = (_selRect.Left - _corner.X) * _scale;
-				int y1 = (_selRect.Top - _corner.Y) * _scale;
-				int x2 = (_selRect.Right - _corner.X) * _scale + 1;
-				int y2 = (_selRect.Bottom - _corner.Y) * _scale + 1;
+				int x1 = (_selRect.Left - _corner.X) * _scale + 1;
+				int y1 = (_selRect.Top - _corner.Y) * _scale + 1;
+				int x2 = (_selRect.Right - _corner.X) * _scale;
+				int y2 = (_selRect.Bottom - _corner.Y) * _scale;
 				
 				Pen selPen = new Pen(_selBrush,1);
 				g.DrawRectangle(selPen,x1,y1,x2 - x1,y2 - y1);
