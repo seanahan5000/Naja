@@ -7,6 +7,8 @@
 *==================================
 				LST	OFF
 
+NEW_DOS			=	1				;***
+
 STRACK			=	$B1
 SSTOREH			=	$B2
 DISK_SIDE		=	$B3
@@ -39,12 +41,18 @@ DRIVE1			=	$C08A
 READER			=	$C08C
 LATCHIN			=	$C08E
 
+			do NEW_DOS
+D_HEAD1			=	$D5
+D_HEAD2			=	$AA
+D_HEAD3			=	$AD
+			else
 A_SYNC			=	$AF
 A_HEAD1			=	$DC
 A_HEAD3			=	$CD
 D_HEAD1			=	$CD
 D_HEAD2			=	$FF
 D_HEAD3			=	$DC
+			fin
 RECALIBS		=	1
 RETRIES			=	20
 
@@ -53,7 +61,77 @@ DRIVE_ON		JMP	UP_TO_SPEED
 DRIVE_OFF		JMP	TURN_OFF
 READ_VECTOR		JMP	READ_SECTORS
 
+			do NEW_DOS
 
+* SIDE_FOUND:
+*    0 = BOOT, 1 = UNUSED
+*    2 = TRACC 17,15,  3 = TRACC 13,11,9
+*    4 = FIGHT 17,15,  5 = FIGHT 13,11,9
+				
+READ_ADDRESS	LDX	SLOT_X0
+				LDY	#$F0
+				STY	HOLDA
+:RETRY1			INY
+				BNE	:1
+				INC	HOLDA
+				BEQ	:ERROR
+				
+:1				LDA	READER,X
+				BPL	:1
+:RETRY2			CMP	#$D5
+				BNE	:RETRY1
+				NOP
+				
+:2				LDA	READER,X
+				BPL	:2
+				CMP	#$AA
+				BNE	:RETRY2
+				LDY	#3
+				
+:3				LDA	READER,X
+				BPL	:3
+				CMP	#$96
+				BNE	:RETRY2
+				
+				LDA	#$00
+:4				STA	HOLDB			; clear checksum
+:5				LDA	READER,X
+				BPL	:5
+				ROL					; carry set
+				STA	HOLDA
+:6				LDA	READER,X
+				BPL	:6
+				AND	HOLDA
+				STA	CHECKSUM_FOUND,Y
+				EOR	HOLDB			; update checksum
+				DEY
+				BPL	:4
+				TAY
+				BNE	:ERROR			; bad checksum
+				
+:7				LDA	READER,X
+				BPL	:7
+				CMP	#$DE
+				BNE	:ERROR
+				NOP
+				
+:8				LDA	READER,X
+				BPL	:8
+				CMP	#$AA
+				BNE	:ERROR
+				
+				LDA	SECTOR_FOUND
+				EOR	SECTOR
+				BMI	:SUCCESS		; don't care which sector
+				BNE	READ_ADDRESS
+:SUCCESS		CLC
+				RTS
+				
+:ERROR			SEC
+				RTS
+				
+			else	; NEW_DOS = 0
+			
 *** D_HEAD1,SIDE CODE,D_HEAD2,TRACK (5+5),SECTOR (5+5)
 *** SIDE CODE = 11111AAA where AAA = SIDE+1
 *    0 = BOOT, 1 = UNUSED
@@ -97,12 +175,22 @@ LOOPC			LDA	READER,X
 				BNE	CHECKA
 :LOOP1			LDA	READER,X
 				BPL	:LOOP1
+			do NEW_DOS
+				ROL					;Carry set
+				STA	HOLDA
+			else
 				STA	HOLDA
 				NOP
+			fin
 :LOOP2			LDA	READER,X
 				BPL	:LOOP2
+			do NEW_DOS
+				AND	HOLDA
+				NOP
+			else
 				ROL					;Carry set
 				AND	HOLDA
+			fin
 				STA	TRACK_FOUND
 LOOPD			LDA	READER,X
 				BPL	LOOPD
@@ -118,6 +206,7 @@ LOOPE			LDA	READER,X
 				RTS
 ERROR			SEC
 				RTS
+			fin
 
 
 READ_DATA		LDX	SLOT_X0
@@ -350,9 +439,12 @@ FIND_SIDE		LDA	#RECALIBS
 :ERROR			LDA	#$FF
 				RTS
 :SKIPA			LDA	SIDE_FOUND
+			do NEW_DOS
+			else
 				AND	#$07
 				SEC
 				SBC	#$01
+			fin
 				RTS
 
 
@@ -386,6 +478,44 @@ AT_SPEED		RTS
 HOLDC			DB	$00
 
 CODETAB			=	*-$96
+			do NEW_DOS
+				DB	$00,$01,$98
+				DB	$99,$02,$03
+				DB	$9C,$04,$05
+				DB	$06,$A0,$A1
+				DB	$A2,$A3,$A4
+				DB	$A5,$07,$08
+				DB	$A8,$A9,$AA
+				DB	$09,$0A,$0B
+				DB	$0C,$0D,$B0
+				DB	$B1,$0E,$0F
+				DB	$10,$11,$12
+				DB	$13,$B8,$14
+				DB	$15,$16,$17
+				DB	$18,$19,$1A
+				DB	$C0,$C1,$C2
+				DB	$C3,$C4,$C5
+				DB	$C6,$C7,$C8
+				DB	$C9,$CA,$1B
+				DB	$CC,$1C,$1D
+				DB	$1E,$D0,$D1
+				DB	$D2,$1F,$D4
+				DB	$D5,$20,$21
+				DB	$D8,$22,$23
+				DB	$24,$25,$26
+				DB	$27,$28,$E0
+				DB	$E1,$E2,$E3
+				DB	$E4,$29,$2A
+				DB	$2B,$E8,$2C
+				DB	$2D,$2E,$2F
+				DB	$30,$31,$32
+				DB	$F0,$F1,$33
+				DB	$34,$35,$36
+				DB	$37,$38,$F8
+				DB	$39,$3A,$3B
+				DB	$3C,$3D,$3E
+				DB	$3F
+			else
 				DB	$3F,$3E,$98
 				DB	$99,$3D,$3C
 				DB	$9C,$3B,$3A
@@ -422,6 +552,12 @@ CODETAB			=	*-$96
 				DB	$06,$05,$04
 				DB	$03,$02,$01
 				DB	$00
+			fin
+
+			do NEW_DOS
+				; make sure NOTDONE doesn't cross pages
+				DS	$6F5-*
+			fin
 
 ARMOVE			LDX	SLOT_X0
 				STA	HOLDD
@@ -498,8 +634,15 @@ SECTOR			DS	1
 SECHOLD			DS	1
 SECOUNT			DS	1
 DRIVENUM		DS	1
+			do NEW_DOS
+CHECKSUM_FOUND	DS	1				; order dependent
+SECTOR_FOUND	DS	1				;
+TRACK_FOUND		DS	1				;
+SIDE_FOUND		DS	1				;
+			else
 SIDE_FOUND		DS	1
 TRACK_FOUND		DS	1
+			fin
 ECOUNT1			DS	1
 ECOUNT2			DS	1
 

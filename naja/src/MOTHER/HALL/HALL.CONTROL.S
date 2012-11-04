@@ -1,3 +1,6 @@
+
+NEW_DOS			=	1		;***
+
 LINENUM			=	$00
 ROW				=	$00
 SECTOR			=	$00
@@ -389,6 +392,10 @@ PRE_WRITE		JSR	DRIVE_ON
 				JSR	CHECK_WRITPRO
 				LDX	#mWriter
 				JSR	FLOADER_FILE
+			do NEW_DOS
+CODE_DECODE		RTS
+				DS	23
+			else
 CODE_DECODE		LDX	#0
 :LOOP1			LDA	$9E00,X
 				EOR	$6100,X
@@ -399,6 +406,7 @@ CODE_DECODE		LDX	#0
 				INX
 				BNE	:LOOP1
 				RTS
+			fin
 
 *-------------------------------
 
