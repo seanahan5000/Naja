@@ -1,0 +1,62 @@
+
+- option to get next token, without skipping whitespace
+	- use for : after label
+
+- finish deleting objects on assembler delete
+
+- echo PUT/USE file during assemble to follow progress?
+
+- rationalize case sensitivity (simplify hash table, etc.)
+
+- on missing local, demangle name for error message
+
+### respect TR option and show all hex for easier validation
+- add line numbers to .lst file
+- implement TR, LST, and EXP options in .lst file
+
+* problem if expression->GetSize() returns 2 during first pass
+	but then turns into 1 byte during second pass due to zpage
+	symbol being defined later
+
+- error in macro should report file/line where macro included
+	not where macro was defined
+
+- test error cases
+
+- parenthesis in expressions
+- '|', '&', and '~' operators
+- operator precedence in expressions (/,* before +,-)
+
+- "DASM" syntax support
+	- reorg
+	- ".byte" or ".word" instead of "DS 1" or "DS 2"
+
+? support forward references in EQU and '=' ?
+
+? switches to enabled/disable support for particular assemblers
+
+
+### OPEN PROBLEMS ###
+
+ALIENS\ALIEN.PICS.12
+ALIENS\ALIEN.PICS.345
+
+Start of data doesn't match because output of XXX macro
+(from ALIENS\EQUATES\ALIEN.MACROS.S) differs.
+I think I'm generating the right bytes but the reference files
+have the byte pairs swapped.
+
+FIGHT\FIGHT.LOADER
+
+Output doesn't match reference file.  The equates for S_DATA12,
+S_DATA17,S_DATA15,S_DATA13,S_DATA11, and S_DATA9 are used to build
+the tables DATA_SECTL and DATA_SECTH.  Some of the values in that
+table don't match the equates.  The reference file has values that
+don't make any sense -- unless it was not the latest assemble of
+the sources or the file was somehow corrupted (which seems unlikely).
+
+TRACC\ASM.CAMP.S
+
+Lines 244-246 generate (FF FF FF FF) but reference file contains 
+(A4 00 01 0C).  This is very likely caused by a change that was
+made without reassembling.
