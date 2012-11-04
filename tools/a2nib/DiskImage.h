@@ -97,7 +97,7 @@ public:
 	Naja2Image() {}
 	
 protected:
-	const UINT8* GetPhysicalInterleave(VTS vts);
+	const UINT8* GetLogicalInterleave(VTS vts);
 };
 
 //------------------------------------------------------------------------------

@@ -455,16 +455,15 @@ NajaImage::WriteDataFieldEpilog(UINT8* p,VTS vts)
 //------------------------------------------------------------------------------
 
 const UINT8*
-Naja2Image::GetPhysicalInterleave(VTS vts)
+Naja2Image::GetLogicalInterleave(VTS vts)
 {
 	static const UINT8
-	sNaja2PhysicalInterleave[16] =
+	sNaja2LogicalInterleave[16] =
 	{
 		0x0,0x2,0x4,0x6,0x8,0xA,0xC,0xE,
 		0x1,0x3,0x5,0x7,0x9,0xB,0xD,0xF
 	};
-	
-	return sNaja2PhysicalInterleave;
+	return sNaja2LogicalInterleave;
 }
 
 //------------------------------------------------------------------------------
