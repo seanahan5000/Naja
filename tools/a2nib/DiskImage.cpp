@@ -50,16 +50,17 @@ DiskImage::Open(const char* fileName,bool create)
 	if (!mFile)
 		return false;
 	
+	mImage = new UINT8[kBytesPerDisk];
 	if (!create)
 	{
-		if (fread(mImage,1,kBytesPerDisk,mFile) != kBytesPerDisk)
+		size_t fileSize = fread(mImage,1,kBytesPerDisk,mFile);
+		if (fileSize != kBytesPerDisk)
 		{
-			printf("Invalid file size\n");
+			printf("Invalid file size (%d != %d)\n",fileSize,kBytesPerDisk);
 			return false;
 		}
 	}
 	
-	mImage = new UINT8[kBytesPerDisk];
 	return true;
 }
 
@@ -69,8 +70,12 @@ DiskImage::Close()
 {
 	if (mFile)
 	{
+		fseek(mFile,0,SEEK_SET);
 		if (fwrite(mImage,1,kBytesPerDisk,mFile) != kBytesPerDisk)
+		{
+			printf("File write failed\n");
 			return false;
+		}
 		
 		fclose(mFile);
 		mFile = NULL;
@@ -87,7 +92,7 @@ DiskImage::Initialize(INT32 v)
 	
 	for (INT32 t = 0; t < 35; ++t)
 	{
-		WriteSyncBytes(mImage + t * kBytesPerTrack,kSyncLeadIn);
+		WriteSyncBytes(mImage + t * kBytesPerTrack,vts,kSyncLeadIn);
 		
 		vts.track = t;
 		for (INT32 s = 0; s < 16; ++s)
@@ -96,7 +101,7 @@ DiskImage::Initialize(INT32 v)
 			InitializePhysicalSector(vts);
 		}
 		
-		WriteSyncBytes(mImage + (t + 1) * kBytesPerTrack - kSyncLeadOut,kSyncLeadOut);
+		WriteSyncBytes(mImage + (t + 1) * kBytesPerTrack - kSyncLeadOut,vts,kSyncLeadOut);
 	}
 }
 
@@ -205,7 +210,7 @@ UINT8*
 DiskImage::WriteSectorProlog(UINT8* p,VTS vts)
 {
 	p = WriteAddressField(p,vts);
-	p = WriteSyncBytes(p,kPreDataSyncCount);
+	p = WriteSyncBytes(p,vts,kPreDataSyncCount);
 	p = WriteDataFieldProlog(p,vts);
 	return p;
 }
@@ -215,14 +220,15 @@ UINT8*
 DiskImage::WriteSectorEpilog(UINT8* p,VTS vts)
 {
 	p = WriteDataFieldEpilog(p,vts);
-	p = WriteSyncBytes(p,kEndSyncCount);
+	p = WriteSyncBytes(p,vts,kEndSyncCount);
 	return p;
 }
 
 
 UINT8*
-DiskImage::WriteSyncBytes(UINT8* p,INT32 count,UINT8 value)
+DiskImage::WriteSyncBytes(UINT8* p,VTS vts,INT32 count)
 {
+	UINT8 value = GetSyncValue(vts);
 	memset(p,value,count);
 	p += count;
 	return p;
@@ -352,15 +358,23 @@ DiskImage::WriteDataFieldEpilog(UINT8* p,VTS vts)
 
 //------------------------------------------------------------------------------
 
+UINT8
+NajaImage::GetSyncValue(VTS vts)
+{
+	return 0xAF;
+}
+
+
 const UINT8*
 NajaImage::GetPhysicalInterleave(VTS vts)
 {
 	static const UINT8
 	sNajaPhysicalInterleave[16] =
 	{
-		0x0,0x8,0x1,0x9,0x2,0xA,0x3,0xB,
-		0x4,0xC,0x5,0xD,0x6,0xE,0x7,0xF
+		0x0,0x2,0x4,0x6,0x8,0xA,0xC,0xE,
+		0x1,0x3,0x5,0x7,0x9,0xB,0xD,0xF
 	};
+	
 	//*** same physical interleave on all sides, tracks? ***
 	return sNajaPhysicalInterleave;
 }
@@ -405,24 +419,21 @@ NajaImage::WriteAddressField(UINT8* p,VTS vts)
 			return DiskImage::WriteAddressField(p,vts);
 	}
 	
+	// SIDE CODE = 11111AAA where AAA = SIDE+1
+	//	0 = BOOT, 1 = UNUSED
+	//	2 = TRACC 17,15,  3 = TRACC 13,11,9
+	//	4 = FIGHT 17,15,  5 = FIGHT 13,11,9
+	
 	*p++ = 0xDC;
-	*p++ = 0xFF;	//*** disk side??? ***
+	*p++ = 0xF8 + ((vts.volume + 1) & 7);
 	*p++ = 0xCD;
 	
+	p = WriteEvenOdd(p,vts.track);
 	p = WriteEvenOdd(p,vts.sector);
 	
 	// the address field is shorter than the standard
 	//	format, so pad it out with sync bytes
-	return WriteSyncBytes(p,4 + 3);
-	
-//	p = WriteEvenOdd(p,vts.volume);
-//	p = WriteEvenOdd(p,vts.track);
-//	p = WriteEvenOdd(p,vts.volume ^ vts.track ^ vts.sector);
-	
-//	*p++ = 0xDE;
-//	*p++ = 0xAA;
-//	*p++ = 0xEB;
-	return p;
+	return WriteSyncBytes(p,vts,4 + 3);
 }
 
 
@@ -456,7 +467,7 @@ NajaImage::WriteDataFieldEpilog(UINT8* p,VTS vts)
 	}
 	
 	// there is no data epilog so just write sync bytes
-	return WriteSyncBytes(p,3);
+	return WriteSyncBytes(p,vts,3);
 }
 
 //------------------------------------------------------------------------------

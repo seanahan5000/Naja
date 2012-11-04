@@ -32,7 +32,7 @@ protected:
 	void WriteLogicalSector(VTS vts,UINT8* src);
 	UINT8* WriteSectorProlog(UINT8* p,VTS vts);
 	UINT8* WriteSectorEpilog(UINT8* p,VTS vts);
-	UINT8* WriteSyncBytes(UINT8* p,INT32 count,UINT8 value = 0xFF);
+	UINT8* WriteSyncBytes(UINT8* p,VTS vts,INT32 count);
 	UINT8* WriteEvenOdd(UINT8* p,INT32 n);
 	
 	INT32 SectorLogicalToPhysical(VTS vts);
@@ -40,6 +40,7 @@ protected:
 	virtual const UINT8* GetPhysicalInterleave(VTS vts);
 	virtual const UINT8* GetLogicalInterleave(VTS vts);
 	virtual const UINT8* GetWriteTranslateTable(VTS vts);
+	virtual UINT8 GetSyncValue(VTS vts) { return 0xFF; }
 	
 	virtual UINT8* WriteAddressField(UINT8* p,VTS vts);
 	virtual UINT8* WriteDataFieldProlog(UINT8* p,VTS vts);
@@ -81,6 +82,7 @@ public:
 protected:
 	const UINT8* GetPhysicalInterleave(VTS vts);
 	const UINT8* GetWriteTranslateTable(VTS vts);
+	UINT8 GetSyncValue(VTS vts);
 	
 	UINT8* WriteAddressField(UINT8* p,VTS vts);
 	UINT8* WriteDataFieldProlog(UINT8* p,VTS vts);

@@ -93,7 +93,7 @@ int main(int argc,char* argv[])
 		}
 		else if (str[0] == '-')
 		{
-			printf("Unknown option\n\n");
+			printf("Unknown option \"%s\"\n\n",str);
 			goto usage;
 		}
 		else if (!fileName)
@@ -162,9 +162,9 @@ int main(int argc,char* argv[])
 			return -1;
 		}
 		
-		fseek(file,SEEK_END,0);
+		fseek(file,0,SEEK_END);
 		INT32 size = ftell(file);
-		fseek(file,SEEK_SET,0);
+		fseek(file,0,SEEK_SET);
 		fileDataSize = (size + 255) & ~255;
 		fileData = (UINT8*)malloc(fileDataSize);
 		memset(fileData,0,fileDataSize);
@@ -185,6 +185,7 @@ int main(int argc,char* argv[])
 	
 	if (create)
 	{
+		printf("Initializing %s\n",diskName);
 		diskImage->Initialize(volume);
 	}
 	else
@@ -193,6 +194,7 @@ int main(int argc,char* argv[])
 		vts.volume = volume;
 		vts.track = track;
 		vts.sector = sector;
+		printf("Writing %s\n",fileName);
 		if (!diskImage->Write(vts,fileData,fileDataSize))
 		{
 			printf("Write to disk image failed\n");
@@ -216,7 +218,7 @@ error:
 	return -1;
 
 usage:
-	printf("a2nib -c[reate] -v[olume] -d[isk] <disk-name>\n");
+	printf("a2nib -c[reate] -v[olume] <value> -d[isk] <disk-name>\n");
 	printf("a2nib <file-name> -t[rack] <hex> -s[ector] <hex> -d[isk] <disk-name>\n");
 	return -1;
 }
