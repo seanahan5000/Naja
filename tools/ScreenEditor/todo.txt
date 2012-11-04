@@ -1,0 +1,15 @@
+
+// load file with or without binary header
+
+// select part of screen
+	// copy/paste of hex data
+
+// screen position read out (pixels and bytes)
+
+// pixel editing
+	// zoom
+
+// packing and unpacking
+
+// general graphic editing
+
