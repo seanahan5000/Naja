@@ -150,7 +150,9 @@ Dos33::Catalog()
 void
 Dos33::DeleteFileEntry(UINT8* fileEntry)
 {
-	UINT8* tslist = GetTrackSector(fileEntry[0],fileEntry[1]);
+	INT32 tsTrack = fileEntry[0];
+	INT32 tsSector = fileEntry[1];
+	UINT8* tslist = GetTrackSector(tsTrack,tsSector);
 	while (true)
 	{
 		INT32 tsoffset = 0x0C;
@@ -163,10 +165,18 @@ Dos33::DeleteFileEntry(UINT8* fileEntry)
 			tsoffset += 2;
 		}
 		
-		if (tslist[1] == 0 && tslist[2] == 0)
+		INT32 tsNextTrack = tslist[1];
+		INT32 tsNextSector = tslist[2];
+		
+		FreeTrackSector(tsTrack,tsSector);
+		
+		tsTrack = tsNextTrack;
+		tsSector = tsNextSector;
+		
+		if (tsTrack == 0 && tsSector == 0)
 			break;
 		
-		tslist = GetTrackSector(tslist[1],tslist[2]);
+		tslist = GetTrackSector(tsTrack,tsSector);
 	}
 	
 	fileEntry[0x20] = fileEntry[0x00];
