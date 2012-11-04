@@ -13,7 +13,6 @@ namespace ScreenEditor
 	/// </summary>
 	public class Form1 : System.Windows.Forms.Form
 	{
-		private ScreenControl screenControl;
 		private System.Windows.Forms.MainMenu _mainMenu;
 		private System.Windows.Forms.MenuItem _fileMenuItem;
 		private System.Windows.Forms.MenuItem _editMenuItem;
@@ -41,26 +40,22 @@ namespace ScreenEditor
 		private System.Windows.Forms.MenuItem _viewMenuScale2x;
 		private System.Windows.Forms.MenuItem _viewMenuScale4x;
 		private System.Windows.Forms.MenuItem _viewMenuScale8x;
+		private System.Windows.Forms.StatusBar _statusBar;
+		private ScreenEditor.ScreenControl _screenControl;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
+		private Point _selStart;
+		private bool _selDragging = false;
+		
 		public Form1()
 		{
-			//
 			// Required for Windows Form Designer support
-			//
 			InitializeComponent();
-
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
 		}
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
 		protected override void Dispose( bool disposing )
 		{
 			if( disposing )
@@ -80,7 +75,7 @@ namespace ScreenEditor
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.screenControl = new ScreenEditor.ScreenControl();
+			this._screenControl = new ScreenEditor.ScreenControl();
 			this._mainMenu = new System.Windows.Forms.MainMenu();
 			this._fileMenuItem = new System.Windows.Forms.MenuItem();
 			this._fileMenuOpen = new System.Windows.Forms.MenuItem();
@@ -108,19 +103,22 @@ namespace ScreenEditor
 			this._viewMenuScale8x = new System.Windows.Forms.MenuItem();
 			this._openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this._saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+			this._statusBar = new System.Windows.Forms.StatusBar();
 			this.SuspendLayout();
 			// 
-			// screenControl
+			// _screenControl
 			// 
-			this.screenControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this._screenControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 				| System.Windows.Forms.AnchorStyles.Left) 
 				| System.Windows.Forms.AnchorStyles.Right)));
-			this.screenControl.Location = new System.Drawing.Point(0, 0);
-			this.screenControl.Name = "screenControl";
-			this.screenControl.Scale = 1;
-			this.screenControl.Size = new System.Drawing.Size(560, 384);
-			this.screenControl.TabIndex = 0;
-			this.screenControl.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.screenControl_KeyPress);
+			this._screenControl.Location = new System.Drawing.Point(0, 0);
+			this._screenControl.Name = "_screenControl";
+			this._screenControl.Size = new System.Drawing.Size(560, 406);
+			this._screenControl.TabIndex = 0;
+			this._screenControl.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this._screenControl_KeyPress);
+			this._screenControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this._screenControl_MouseUp);
+			this._screenControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this._screenControl_MouseMove);
+			this._screenControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this._screenControl_MouseDown);
 			// 
 			// _mainMenu
 			// 
@@ -225,10 +223,10 @@ namespace ScreenEditor
 			// 
 			// _editMenuCopy
 			// 
-			this._editMenuCopy.Enabled = false;
 			this._editMenuCopy.Index = 4;
 			this._editMenuCopy.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
 			this._editMenuCopy.Text = "Copy";
+			this._editMenuCopy.Click += new System.EventHandler(this._editMenuCopy_Click);
 			// 
 			// _editMenuPaste
 			// 
@@ -283,32 +281,44 @@ namespace ScreenEditor
 			// _viewMenuScale1x
 			// 
 			this._viewMenuScale1x.Index = 0;
+			this._viewMenuScale1x.Shortcut = System.Windows.Forms.Shortcut.Ctrl1;
 			this._viewMenuScale1x.Text = "Scale 1x";
 			this._viewMenuScale1x.Click += new System.EventHandler(this._viewMenuScale1x_Click);
 			// 
 			// _viewMenuScale2x
 			// 
 			this._viewMenuScale2x.Index = 1;
+			this._viewMenuScale2x.Shortcut = System.Windows.Forms.Shortcut.Ctrl2;
 			this._viewMenuScale2x.Text = "Scale 2x";
 			this._viewMenuScale2x.Click += new System.EventHandler(this._viewMenuScale2x_Click);
 			// 
 			// _viewMenuScale4x
 			// 
 			this._viewMenuScale4x.Index = 2;
+			this._viewMenuScale4x.Shortcut = System.Windows.Forms.Shortcut.Ctrl3;
 			this._viewMenuScale4x.Text = "Scale 4x";
 			this._viewMenuScale4x.Click += new System.EventHandler(this._viewMenuScale4x_Click);
 			// 
 			// _viewMenuScale8x
 			// 
 			this._viewMenuScale8x.Index = 3;
+			this._viewMenuScale8x.Shortcut = System.Windows.Forms.Shortcut.Ctrl4;
 			this._viewMenuScale8x.Text = "Scale 8x";
 			this._viewMenuScale8x.Click += new System.EventHandler(this._viewMenuScale8x_Click);
+			// 
+			// _statusBar
+			// 
+			this._statusBar.Location = new System.Drawing.Point(0, 384);
+			this._statusBar.Name = "_statusBar";
+			this._statusBar.Size = new System.Drawing.Size(560, 22);
+			this._statusBar.TabIndex = 1;
 			// 
 			// Form1
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
-			this.ClientSize = new System.Drawing.Size(560, 384);
-			this.Controls.Add(this.screenControl);
+			this.ClientSize = new System.Drawing.Size(560, 406);
+			this.Controls.Add(this._statusBar);
+			this.Controls.Add(this._screenControl);
 			this.Menu = this._mainMenu;
 			this.Name = "Form1";
 			this.Text = "ScreenEditor";
@@ -333,8 +343,8 @@ namespace ScreenEditor
 				Stream stream = _openFileDialog.OpenFile();
 				if (stream != null)
 				{
-					screenControl.Screen.Load(stream);
-					screenControl.Invalidate();
+					_screenControl.Screen.Load(stream);
+					_screenControl.Invalidate();
 					stream.Close();
 				}
 			}
@@ -342,14 +352,14 @@ namespace ScreenEditor
 
 		private void _editMenuDelete_Click(object sender, System.EventArgs e)
 		{
-			screenControl.Screen.Clear();
-			screenControl.Invalidate();
+			_screenControl.Screen.Clear();
+			_screenControl.Invalidate();
 		}
 
 		private void _editMenuReverse_Click(object sender, System.EventArgs e)
 		{
-			screenControl.Screen.Reverse();
-			screenControl.Invalidate();
+			_screenControl.Screen.Reverse();
+			_screenControl.Invalidate();
 		}
 
 		private void _fileMenuExit_Click(object sender, System.EventArgs e)
@@ -357,30 +367,81 @@ namespace ScreenEditor
 			this.Close();
 		}
 
+		private void Zoom(char key)
+		{
+			Point point = _screenControl.PointToClient(Control.MousePosition);
+			_screenControl.Zoom(key,point);
+		}
+
 		private void _viewMenuScale1x_Click(object sender, System.EventArgs e)
 		{
-			screenControl.Scale = 1;
+			Zoom('1');
 		}
 
 		private void _viewMenuScale2x_Click(object sender, System.EventArgs e)
 		{
-			screenControl.Scale = 2;
+			Zoom('2');
 		}
 
 		private void _viewMenuScale4x_Click(object sender, System.EventArgs e)
 		{
-			screenControl.Scale = 4;
+			Zoom('3');
 		}
 
 		private void _viewMenuScale8x_Click(object sender, System.EventArgs e)
 		{
-			screenControl.Scale = 8;
+			Zoom('4');
 		}
 
-		private void screenControl_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+		private void _screenControl_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
 		{
-			Point point = screenControl.PointToClient(Control.MousePosition);
-			screenControl.Zoom(e.KeyChar,point);
+			Zoom(e.KeyChar);
+		}
+
+		private void _editMenuCopy_Click(object sender, System.EventArgs e)
+		{
+			Rectangle bounds = _screenControl.Selection;
+			if (!bounds.IsEmpty)
+			{
+				string text = _screenControl.Screen.CaptureHex(bounds);
+				Clipboard.SetDataObject(text);
+			}
+		}
+		
+		private void _screenControl_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			_selDragging = true;
+			_selStart = _screenControl.MouseToScreen();
+		}
+		
+		private void _screenControl_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			Point p = _screenControl.MouseToScreen();
+			
+			if (!_screenControl.Selection.IsEmpty)
+			{
+				Rectangle r = _screenControl.Selection;
+				_statusBar.Text = String.Format(
+					"X: {0} ({1}), Y: {2}, W: {3} ({4}), H: {5}",
+					r.X, r.X / 7, r.Y,
+					r.Width, r.Width / 7, r.Height);
+			}
+			else
+			{
+				_statusBar.Text = String.Format("X: {0} ({1}), Y: {2}",
+					p.X,p.X / 7,p.Y);
+			}
+			
+			if (_selDragging)
+				_screenControl.SetSelection(_selStart,p);
+		}
+		
+		private void _screenControl_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+		{
+			Point p = _screenControl.MouseToScreen();
+			_screenControl.SetSelection(_selStart,p);
+			_selDragging = false;
 		}
 	}
 }
+

@@ -17,11 +17,25 @@ namespace ScreenEditor
 		private const byte kGREEN = 3;
 		private const byte kBLUE = 4;
 		private const byte kORANGE = 5;
-		Rectangle lockRect = Rectangle.Empty;
+		private Rectangle lockRect = Rectangle.Empty;
+		private bool _interpolate;
 		
 		public Bitmap Bitmap
 		{
 			get { return _colorBuffer; }
+		}
+		
+		public bool Interpolate
+		{
+			get { return _interpolate; }
+			set
+			{
+				if (value != _interpolate)
+				{
+					_interpolate = value;
+					UpdateColorBuffer();
+				}
+			}
 		}
 		
 		public Screen()
@@ -37,6 +51,7 @@ namespace ScreenEditor
 			palette.Entries[kBLUE]   = Color.FromArgb(0x00,0x80,0xFF);
 			palette.Entries[kORANGE] = Color.FromArgb(0xF0,0x50,0x00);
 			_colorBuffer.Palette = palette;
+			_interpolate = true;
 		}
 		
 		// load scrambled Apple II format screen file
@@ -49,10 +64,20 @@ namespace ScreenEditor
 		
 		public void Load(Stream stream)
 		{
+			// check for bin file header
+			uint headerSize = 0;
+			byte [] header = new byte[4];
+			stream.Read(header,0,4);
+			if (header[0] == 0x00 && header[1] == 0x20 &&
+				header[2] == 0x00 && header[3] == 0x20)
+			{
+				headerSize = 4;
+			}
+			
 			for (int y = 0; y < 192; ++y)
 			{
 				uint offset = LineToOffset(y);
-				stream.Position = offset;
+				stream.Position = headerSize + offset;
 				stream.Read(_rawBuffer,y * 40,40);
 			}
 			UpdateColorBuffer();
@@ -91,7 +116,7 @@ namespace ScreenEditor
 				for (int x = 0; x < columns; ++x)
 				{
 					byte b = _rawBuffer[sindex + x];
-					builder.Append(b.ToString("X",null));
+					builder.Append(b.ToString("X2",null));
 				}
 				builder.Append("\n");
 				sindex += 40;
@@ -160,7 +185,7 @@ namespace ScreenEditor
 					
 					if (curr == kBLACK)
 					{
-						if (prev == next)
+						if (prev == next && _interpolate)
 							*(dp - 2) = prev;
 					}
 					else if (prev != kBLACK || next != kBLACK)
@@ -170,7 +195,10 @@ namespace ScreenEditor
 				prev = curr;
 				curr = next;
 				if (curr == kBLACK)
-					*(dp - 1) = prev;
+				{
+					if (_interpolate)
+						*(dp - 1) = prev;
+				}
 				else if (prev != kBLACK)
 					*(dp - 1) = kWHITE;
 				

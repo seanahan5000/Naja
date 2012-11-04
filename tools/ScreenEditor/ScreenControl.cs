@@ -15,23 +15,75 @@ namespace ScreenEditor
 		private Screen _screen;
 		private Point _corner = new Point(0,0);	// in 280x192 coords
 		private int _scale = 2;
+		private Rectangle _selRect = Rectangle.Empty;
+		private HatchBrush _selBrush = new HatchBrush(
+											HatchStyle.LargeCheckerBoard,
+											Color.Black,
+											Color.White);
 		
 		public Screen Screen
 		{
 			get { return _screen; }
 		}
 		
-		public new int Scale
+		public Rectangle Selection
 		{
-			// public scale of 1,2,4,8 maps to 2,4,8,16
-			get { return _scale / 2; }
-			set 
+			get { return _selRect; }
+		}
+		
+		public void SetSelection(Point p1,Point p2)
+		{
+			int x1 = p1.X;
+			int y1 = p1.Y;
+			int x2 = p2.X;
+			int y2 = p2.Y;
+			
+			if (x1 > x2)
 			{
-				_scale = value * 2;
-				_corner.X = 0;
-				_corner.Y = 0;
-				this.Invalidate();
+				int t = x1;
+				x1 = x2;
+				x2 = t;
 			}
+			x2 += 1;
+			if (x1 < 0)
+				x1 = 0;
+			if (x2 > 280)
+				x2 = 280;
+			
+			if (y1 > y2)
+			{
+				int t = y1;
+				y1 = y2;
+				y2 = t;
+			}
+			y2 += 1;
+			if (y1 < 0)
+				y1 = 0;
+			if (y2 > 192)
+				y2 = 192;
+			
+			Rectangle oldSel = _selRect;
+			_selRect = Rectangle.Empty;
+			
+			if (x1 + 1 != x2 || y1 + 1 != y2)
+			{
+				x1 -= (x1 % 7);
+				x2 -= (x2 % 7);
+				_selRect.X = x1;
+				_selRect.Y = y1;
+				_selRect.Width = x2 - x1;
+				_selRect.Height = y2 - y1;
+			}
+			
+			if (_selRect != oldSel)
+				this.Invalidate();
+		}
+		
+		public Point MouseToScreen()
+		{
+			Point p = PointToClient(Control.MousePosition);
+			return new Point(p.X / _scale + _corner.X,
+							 p.Y / _scale + _corner.Y);
 		}
 		
 		public void Zoom(char key,Point at)
@@ -58,18 +110,19 @@ namespace ScreenEditor
 			x -= w / 2;
 			y -= h / 2;
 			
-			if (x + w > 280)
+			if (x + w >= 280)
 				x = 280 - w;
 			if (x < 0)
 				x = 0;
 			
-			if (y + h > 192)
+			if (y + h >= 192)
 				y = 192 - h;
 			if (y < 0)
 				y = 0;
 			
 			_corner.X = x;
 			_corner.Y = y;
+			_screen.Interpolate = (_scale == 2);
 			this.Invalidate();
 		}
 		
@@ -80,7 +133,7 @@ namespace ScreenEditor
 			
 			_screen = new Screen();
 		}
-
+		
 		protected override void Dispose( bool disposing )
 		{
 			if( disposing )
@@ -97,16 +150,36 @@ namespace ScreenEditor
 			components = new System.ComponentModel.Container();
 		}
 		#endregion
-
+		
 		protected override void OnPaint(PaintEventArgs pe)
 		{
 			Graphics g = pe.Graphics;
 			g.InterpolationMode = InterpolationMode.NearestNeighbor;
+			g.PixelOffsetMode = PixelOffsetMode.Half;
 			
 			Rectangle dr = new Rectangle(0,0,280 * _scale,192 * _scale);
 			g.DrawImage(_screen.Bitmap,dr,
-						_corner.X,_corner.Y,280,192,
+						_corner.X,
+						_corner.Y,
+						280,192,
 						GraphicsUnit.Pixel);
+			
+			DrawSelection(g);
+		}
+		
+		private void DrawSelection(Graphics g)
+		{
+			if (!_selRect.IsEmpty)
+			{
+				int x1 = (_selRect.Left - _corner.X) * _scale;
+				int y1 = (_selRect.Top - _corner.Y) * _scale;
+				int x2 = (_selRect.Right - _corner.X) * _scale + 1;
+				int y2 = (_selRect.Bottom - _corner.Y) * _scale + 1;
+				
+				Pen selPen = new Pen(_selBrush,1);
+				g.DrawRectangle(selPen,x1,y1,x2 - x1,y2 - y1);
+			}
 		}
 	}
 }
+

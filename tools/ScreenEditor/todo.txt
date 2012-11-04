@@ -1,16 +1,7 @@
 
-// load file with or without binary header
+// paste of hex data
+// copy/paste of compressed data
 
-// select part of screen
-	// copy/paste of hex data
-
-// scroll and zoom
-
-// screen position read out (pixels and bytes)
-
+// scrolling?
 // pixel editing
-
-// packing and unpacking
-
 // general graphic editing
-
