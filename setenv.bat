@@ -1,7 +1,7 @@
 
 @echo off
 
-SET _ROOT=d:\misc\dev
+SET _ROOT=%~dp0
 SET PATH=%_ROOT%\tools\bin;%PATH%
 
 alias ls	"dir $*"
