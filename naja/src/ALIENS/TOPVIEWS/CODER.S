@@ -1,0 +1,405 @@
+				LST	OFF
+COUNT			EQU	$00	
+POINTER			EQU	$00	
+XSPOT			EQU	$01	
+XCOUNT			EQU	$01	
+YSPOT			EQU	$02	
+YCOUNT			EQU	$02	
+OFFSET			EQU	$03	
+XMAX			EQU	$04	
+YMAX			EQU	$05	
+CH				EQU	$24	
+CV				EQU	$25	
+SCREENL			EQU	$26	
+SCREENH			EQU	$27	
+ICURSOR			EQU	$33	
+TEXTBUF			EQU	$0200	
+BUFFER			EQU	$1F00	
+THEBUFF			EQU	$6000
+KEYBRD			EQU	$C000	
+UNSTROB			EQU	$C010	
+TEXT			EQU	$C051	
+FULL			EQU	$C052	
+MIXED			EQU	$C053	
+HGR				EQU	$F3E2	
+VTAB			EQU	$FC22	
+HOME			EQU	$FC58	
+GETLN			EQU	$FD6A	
+
+				ORG	$1000
+
+MOD				CLC
+				BCS	SKIPA
+CLR				JSR	HGR
+				STA	FULL
+				JSR	CLRBUFF
+				LDA	#$38
+				STA	MOD
+SKIPA			LDA	#$00
+				STA	XSPOT
+				STA	YSPOT
+				STA	$C050
+				STA	$C057
+				STA	$C054
+				STA	FULL
+				JSR	CURSIT
+KEYLOOP			LDA	KEYBRD
+				BPL	KEYLOOP
+				BIT	UNSTROB
+				CMP	#"C"
+				BEQ	CLR
+				CMP	#$88			;Left arrow
+				BEQ	LEFT1
+				CMP	#"J"
+				BEQ	LEFT1
+				CMP	#$95			;Right arrow
+				BEQ	RIGHT1
+				CMP	#"K"
+				BEQ	RIGHT1
+				CMP	#"A"
+				BEQ	UP1
+				CMP	#"I"
+				BEQ	UP1
+				CMP	#"Z"
+				BEQ	DOWN1
+				CMP	#"M"
+				BEQ	DOWN1
+				CMP	#" "
+				BEQ	ENTER1
+				CMP	#"X"
+				BEQ	EXIT
+				CMP	#$9B			;Escape
+				BNE	KEYLOOP
+				JMP	CODEIT
+EXIT			STA	TEXT
+				RTS
+LEFT1			JSR	CURSIT
+				DEC	XSPOT
+				BPL	LEFT2
+				LDA	#$27
+				STA	XSPOT
+LEFT2			JSR	CURSIT
+				JMP	KEYLOOP
+RIGHT1			JSR	CURSIT
+				INC	XSPOT
+				LDA	XSPOT
+				CMP	#$28
+				BNE	RIGHT2
+				LDA	#$00
+				STA	XSPOT
+RIGHT2			JSR	CURSIT
+				JMP	KEYLOOP
+UP1				JSR	CURSIT
+				DEC	YSPOT
+				BPL	UP2
+				LDA	#$14
+				STA	YSPOT
+UP2				JSR	CURSIT
+				JMP	KEYLOOP
+DOWN1			JSR	CURSIT
+				INC	YSPOT
+				LDA	YSPOT
+				CMP	#$15
+				BNE	DOWN2
+				LDA	#$00
+				STA	YSPOT
+DOWN2			JSR	CURSIT
+				JMP	KEYLOOP
+ENTER1			JSR	CURSIT
+				JSR	BLOCK
+				JSR	CURSIT
+GOREKEY			JMP	KEYLOOP
+
+CODEIT			LDA	KEYBRD
+				BPL	CODEIT
+				BIT	UNSTROB
+				CMP	#$9B
+				BNE	GOREKEY	
+				JSR	CURSIT
+				JSR	HOME
+				LDA	#$01
+				STA	CH
+				LDA	#$16
+				STA	CV
+				JSR	VTAB
+				STA	MIXED
+				LDA	#$BE
+				STA	ICURSOR
+				JSR	GETLN
+				STA	FULL
+				LDX	#$00
+				LDA	#$EE
+EELOOP			STA	THEBUFF,X
+				DEX
+				BNE	EELOOP
+				LDA	#$00
+				STA	POINTER
+				LDA	TEXTBUF
+				AND	#$0F
+				STA	XMAX
+				LDA	TEXTBUF+1
+				AND	#$0F
+				STA	YMAX
+				LDA	#$00
+				STA	XCOUNT
+				STA	YCOUNT
+				PHA
+LOOP2			LDX	#$00
+				LDY	XCOUNT
+LOOP1			LDA	BUFFER,Y
+				STA	BUFFER7,X
+				TYA
+				CLC
+				ADC	#$06
+				TAY
+				INX
+				CPX	#$07
+				BNE	LOOP1
+				LDX	#$05
+TRLOOP1			LDA	BUFFER7+6
+				CMP	BUFFER7,X
+				BNE	TRSKIP
+				DEX
+				BPL	TRLOOP1
+TRSKIP			CPX	#$05
+				BEQ	NOCHANG
+				ORA	#$80
+				INX
+				STA	BUFFER7,X
+NOCHANG			LDX	#$00
+TRLOOP2			LDY	POINTER
+				LDA	BUFFER7,X
+				STA	THEBUFF,Y
+				INC	POINTER
+				TAY	
+				TYA	
+				BMI	TOUT
+				INX
+				CPX	#$07
+				BNE	TRLOOP2
+TOUT			INC	XCOUNT
+				LDA	XCOUNT
+				CMP	XMAX
+				BNE	LOOP2
+				PLA
+				CLC
+				ADC	#$2A	
+				STA	XCOUNT
+				PHA
+				LDA	XMAX
+				CLC
+				ADC	#$2A
+				STA	XMAX
+				INC	YCOUNT
+				LDA	YCOUNT
+				CMP	YMAX
+				BNE	LOOP2
+				PLA
+				STA	TEXT
+				RTS
+BUFFER7			DFB	$00,$00,$00
+				DFB	$00,$00,$00
+				DFB	$00
+BLOCK			LDA	#$00	
+				STA	OFFSET
+				JSR	DRAW
+				LDA	YSPOT
+				ASL	A
+				STA	COUNT
+				ASL	A
+				CLC
+				ADC	COUNT
+				STA	COUNT
+				LDA	XSPOT
+				LDX	#$00
+SUBLOOP			SEC
+				SBC	#$07
+				BCC	MOD7
+				INX
+				BNE	SUBLOOP
+MOD7			ADC	#$07
+				TAY
+				TXA
+				CLC
+				ADC	COUNT
+				TAX
+				LDA	BUFFER,X
+				EOR	MASKS,Y
+				STA	BUFFER,X
+				RTS					;TEMP
+MASKS			DFB	$01,$02,$04
+				DFB	$08,$10,$20	
+				DFB	$40
+CURSIT			LDA	#$06	
+				STA	OFFSET
+DRAW			LDY	YSPOT
+				LDA	YTABLE,Y
+				TAX
+				LDA	#$06
+				STA	COUNT
+DRLOOP			LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	SCREENH
+				LDA	COUNT
+				CLC
+				ADC	OFFSET
+				TAY
+				LDA	CURSDAT-1,Y
+				LDY	XSPOT
+				EOR	(SCREENL),Y
+				STA	(SCREENL),Y
+				INX
+				DEC	COUNT
+				BNE	DRLOOP
+				RTS
+CURSDAT			DFB	$3F,$3F,$3F
+				DFB	$3F,$3F,$3F
+				DFB	$00,$1E,$1E
+				DFB	$1E,$1E,$00
+CLRBUFF			LDX	#$7D
+				LDA	#$00
+CLRLOOP			STA	BUFFER,X
+				DEX
+				BPL	CLRLOOP
+				RTS
+YTABLE			DFB	$00,$07,$0E
+				DFB	$15,$1C,$23
+				DFB	$2A,$31,$38
+				DFB	$3F,$46,$4D
+				DFB	$54,$5B,$62
+				DFB	$69,$70,$77
+				DFB	$7E,$85,$8C
+
+LOBYTES			DFB	$00,$00,$00
+				DFB	$00,$00,$00
+				DFB	$00,$00,$80
+				DFB	$80,$80,$80
+				DFB	$80,$80,$80
+				DFB	$80,$00,$00
+				DFB	$00,$00,$00
+				DFB	$00,$00,$00
+				DFB	$80,$80,$80
+				DFB	$80,$80,$80
+				DFB	$80,$80,$00
+				DFB	$00,$00,$00
+				DFB	$00,$00,$00
+				DFB	$00,$80,$80
+				DFB	$80,$80,$80
+				DFB	$80,$80,$80
+				DFB	$00,$00,$00
+				DFB	$00,$00,$00
+				DFB	$00,$00,$80
+				DFB	$80,$80,$80
+				DFB	$80,$80,$80
+				DFB	$80,$28,$28
+				DFB	$28,$28,$28
+				DFB	$28,$28,$28
+				DFB	$A8,$A8,$A8
+				DFB	$A8,$A8,$A8
+				DFB	$A8,$A8,$28
+				DFB	$28,$28,$28
+				DFB	$28,$28,$28
+				DFB	$28,$A8,$A8
+				DFB	$A8,$A8,$A8
+				DFB	$A8,$A8,$A8
+				DFB	$28,$28,$28
+				DFB	$28,$28,$28
+				DFB	$28,$28,$A8
+				DFB	$A8,$A8,$A8
+				DFB	$A8,$A8,$A8
+				DFB	$A8,$28,$28
+				DFB	$28,$28,$28
+				DFB	$28,$28,$28
+				DFB	$A8,$A8,$A8
+				DFB	$A8,$A8,$A8
+				DFB	$A8,$A8,$50
+				DFB	$50,$50,$50
+				DFB	$50,$50,$50
+				DFB	$50,$D0,$D0
+				DFB	$D0,$D0,$D0
+				DFB	$D0,$D0,$D0
+				DFB	$50,$50,$50
+				DFB	$50,$50,$50
+				DFB	$50,$50,$D0
+				DFB	$D0,$D0,$D0
+				DFB	$D0,$D0,$D0
+				DFB	$D0,$50,$50
+				DFB	$50,$50,$50
+				DFB	$50,$50,$50
+				DFB	$D0,$D0,$D0
+				DFB	$D0,$D0,$D0
+				DFB	$D0,$D0,$50
+				DFB	$50,$50,$50
+				DFB	$50,$50,$50
+				DFB	$50,$D0,$D0
+				DFB	$D0,$D0,$D0
+				DFB	$D0,$D0,$D0
+
+HIBYTES			DFB	$00,$04,$08
+				DFB	$0C,$10,$14
+				DFB	$18,$1C,$00
+				DFB	$04,$08,$0C
+				DFB	$10,$14,$18
+				DFB	$1C,$01,$05
+				DFB	$09,$0D,$11
+				DFB	$15,$19,$1D
+				DFB	$01,$05,$09
+				DFB	$0D,$11,$15
+				DFB	$19,$1D,$02
+				DFB	$06,$0A,$0E
+				DFB	$12,$16,$1A
+				DFB	$1E,$02,$06
+				DFB	$0A,$0E,$12
+				DFB	$16,$1A,$1E
+				DFB	$03,$07,$0B
+				DFB	$0F,$13,$17
+				DFB	$1B,$1F,$03
+				DFB	$07,$0B,$0F
+				DFB	$13,$17,$1B
+				DFB	$1F,$00,$04
+				DFB	$08,$0C,$10
+				DFB	$14,$18,$1C
+				DFB	$00,$04,$08
+				DFB	$0C,$10,$14
+				DFB	$18,$1C,$01
+				DFB	$05,$09,$0D
+				DFB	$11,$15,$19
+				DFB	$1D,$01,$05
+				DFB	$09,$0D,$11
+				DFB	$15,$19,$1D
+				DFB	$02,$06,$0A
+				DFB	$0E,$12,$16
+				DFB	$1A,$1E,$02
+				DFB	$06,$0A,$0E
+				DFB	$12,$16,$1A
+				DFB	$1E,$03,$07
+				DFB	$0B,$0F,$13
+				DFB	$17,$1B,$1F
+				DFB	$03,$07,$0B
+				DFB	$0F,$13,$17
+				DFB	$1B,$1F,$00
+				DFB	$04,$08,$0C
+				DFB	$10,$14,$18
+				DFB	$1C,$00,$04
+				DFB	$08,$0C,$10
+				DFB	$14,$18,$1C
+				DFB	$01,$05,$09
+				DFB	$0D,$11,$15
+				DFB	$19,$1D,$01
+				DFB	$05,$09,$0D
+				DFB	$11,$15,$19
+				DFB	$1D,$02,$06
+				DFB	$0A,$0E,$12
+				DFB	$16,$1A,$1E
+				DFB	$02,$06,$0A
+				DFB	$0E,$12,$16
+				DFB	$1A,$1E,$03
+				DFB	$07,$0B,$0F
+				DFB	$13,$17,$1B
+				DFB	$1F,$03,$07
+				DFB	$0B,$0F,$13
+				DFB	$17,$1B,$1F
+
+				SAV	CODER

@@ -1,0 +1,472 @@
+GREEN_NET		BIT	OPEN1
+				BVS	:1
+				JMP	NO_SPECIAL
+:1				LDA	SRANGE
+				PHA
+				LDA	#$40
+				STA	PAGE
+				LDA	PICHERE
+				CMP	#$01
+				BEQ	NETHERE
+				LDA	#$01
+				STA	PICHERE
+				JSR	CLEAR2
+				LDA	#$01
+				STA	SRANGE
+				JSR	NOSCAN
+				STA	SCNDARY
+				JSR	CLOSE_NET
+NETHERE			STA	SCNDARY
+				BIT	UNSTROB
+				JSR	BOXIN
+				LDA	#$05
+				STA	MAXTEXT
+				LDA	#$8F
+				LDY	#$A9
+				JSR	INPUT
+				LDY	#$05	
+CHCKMOR			LDA	TEXTBUF,Y
+				JSR	CONVERT
+				TXA
+				CMP	GDASH28,Y
+				BNE	FAILER
+				DEY
+				BPL	CHCKMOR
+				LDA	#$00
+				PHA
+				JMP	GOBOX
+FAILER			LDA	#$FF
+				PHA
+GOBOX			JSR	SCROLLD
+				PLA
+				BEQ	PASSER
+DOKEY			LDA	KEYBRD
+				BPL	DOKEY
+				PHA
+				JSR	CLEAR1
+				PLA
+				JSR	CPARER2
+				BEQ	GORDKEY
+				BIT	UNSTROB
+				JMP	DOKEY
+PASSER			PLA
+				PHA
+				STA	SRANGE
+				JSR	OPEN_NET
+GORDKEY			PLA
+				STA	SRANGE
+				PLA
+				PLA
+				JMP	RDKEY
+
+GDASH28			USR	(GN-28)-
+				DB	$FF
+
+CLOSE_NET		LDA	#WHITE1
+				STA	COLOR
+				LDY	#6				;Net edges
+				JSR	LINER
+				LDY	#0
+				JSR	LINER	
+				LDA	#GREEN
+				STA	COLOR
+				LDA	#$36
+				STA	ALINE	
+				LDA	#$A2
+				STA	BLINE
+				LDA	#0
+				STA	A_COUNT
+				LDA	#27
+				STA	B_COUNT
+DONET			LDY	ALINE
+				LDX	A_COUNT
+				JSR	NET_LINE
+				LDA	YPNT
+				STA	PITCH
+				LDA	#$30
+				STA	LENGTH
+				JSR	SOUND
+				LDY	BLINE
+				LDX	B_COUNT
+				JSR	NET_LINE
+				LDA	#$FF	
+				STA	PITCH
+				LDA	#$10
+				STA	LENGTH
+				JSR	SOUND
+				LDA	ALINE
+				CLC
+				ADC	#8
+				STA	ALINE
+				LDA	BLINE
+				SEC
+				SBC	#8
+				STA	BLINE
+				DEC	B_COUNT
+				DEC	B_COUNT
+				LDA	A_COUNT
+				INC	A_COUNT
+				INC	A_COUNT
+				CMP	#$1A
+				BNE	DONET
+				RTS
+
+NET_LINE		STX	COUNT
+				STY	YPNT
+				LDA	EXES,X
+				STA	XPNT
+				TAX
+				TYA
+				LDY	#0
+				JSR	HPOSN
+				LDA	#$16
+				SEC
+				SBC	XPNT
+				LDX	#0
+				LDY	YPNT
+				JSR	HLIN
+
+				LDX	COUNT
+				LDA	NUMBER,X	
+				BEQ	OUTN
+				PHA
+				LDA	#WHITE1
+				STA	COLOR
+				LDY	#0
+				LDX	#$6F
+				LDA	YPNT
+				JSR	HPOSN
+				PLA
+				PHA
+				CMP	#$01
+				BEQ	ONLY1
+				LDX	#0
+				LDA	#$7B	
+				STA	SCRATCH
+				LDY	YPNT
+				JSR	HLIN
+				LDA	COUNT
+				SEC
+				SBC	#$0B	
+				ASL
+				CLC
+				ADC	#$7D	
+				TAX
+				LDA	YPNT
+				LDY	#0
+				JSR	HPOSN
+ONLY1			LDA	COUNT
+				CMP	#$14	
+				BCC	ALLREST
+				LDA	#$A7	
+				JMP	USE169
+ALLREST			SEC
+				SBC	#$05
+				ASL
+				ADC	#$7D	
+USE169			STA	SCRATCH	
+				LDY	YPNT
+				LDX	#0
+				JSR	HLIN
+				PLA
+				CMP	#$03
+				BCC	OUTN
+				LDX	#$9B	
+				LDA	YPNT
+				LDY	#0
+				JSR	HPOSN
+				LDA	COUNT
+				CMP	#$10	
+				BCS	ONE69
+				SEC
+				SBC	#$0D	
+				ASL
+				ASL
+				CLC
+				ADC	#$B3	
+				JMP	USEIT2
+ONE69			LDA	#$A7	
+USEIT2			STA	SCRATCH
+				LDY	YPNT
+				LDX	#0
+				JSR	HLIN
+OUTN			LDA	#GREEN
+				STA	COLOR
+				RTS
+
+NUMBER			DB	$00,$00,$00
+				DB	$00,$00,$01
+				DB	$01,$01,$01
+				DB	$01,$01,$02
+				DB	$02,$03,$03
+				DB	$03,$03,$03
+				DB	$03,$03,$02
+				DB	$02,$02,$00
+				DB	$00,$00,$00
+				DB	$00
+
+NET_EDGES		DB	$00,$50,$36
+				DB	$00,$2F,$6C
+				DB	$00,$50,$A2
+				DB	$FE
+				DB	$00,$C6,$36
+				DB	$00,$E7,$6C
+				DB	$00,$C6,$A2
+				DB	$FF
+
+EXES			DB	$51,$4D,$4B
+				DB	$49,$47,$45
+				DB	$41,$3F,$3D
+				DB	$3B,$39,$35
+				DB	$33,$31,$31
+				DB	$33,$35,$39
+				DB	$3B,$3D,$3F
+				DB	$41,$45,$47
+				DB	$49,$4B,$4D
+				DB	$51
+
+SOUND			LDY	#$00
+BYTE			LDA	PCHECK,Y
+				LDX	#$08
+SHIFTS			LSR
+				BNE	NEXTBIT
+				STA	CLICK
+				STA	CLICK
+NEXTBIT			DEX
+				BNE	SHIFTS	
+				LDX	PITCH
+DELAY			DEX
+				BNE	DELAY
+				INY
+				DEC	LENGTH
+				BNE	BYTE	
+				RTS
+
+BOXIN			LDA	#$20
+				STA	PAGE
+				JSR	CLEAR1
+				LDA	#WHITE1
+BOXIN2			STA	COLOR
+				LDY	#$01	
+				JSR	LINER	
+				LDY	#$04
+MORCODE			LDA	CODEWRD,Y
+				STA	TEXTBUF,Y
+				DEY
+				BPL	MORCODE
+				LDA	#$65
+				LDY	#$A9
+				JSR	LINE
+				LDA	#$12
+				STA	XCOORD
+				LDA	#$03
+				STA	SHIFT
+				LDY	#$06
+MORSIGN			LDA	NUMSIGN,Y
+				STA	CHARTAB,Y
+				DEY
+				BPL	MORSIGN
+				JSR	CHAROUT
+				INC	XCOORD
+				LDY	#$06
+MORSGN2			LDA	NUMSIGN+7,Y
+				STA	CHARTAB,Y
+				DEY
+				BPL	MORSGN2
+				JSR	CHAROUT
+BISTOP			JSR	SCROLLU
+				LDA	#$40
+				STA	PAGE
+				RTS
+
+CODEWRD			USR	(CODE)
+
+NUMSIGN			DB	%01101100
+				DB	%01101100
+				DB	%01111111
+				DB	%01101100
+				DB	%01111111
+				DB	%01101100
+				DB	%01101100
+
+				DB	%00000000
+				DB	%00000000
+				DB	%00000011
+				DB	%00000000
+				DB	%00000011
+				DB	%00000000
+				DB	%00000000
+
+SCROLLU			LDA	#$B0
+				STA	BEGLINE
+MORUP1			LDA	#$A7
+				STA	LINENUM
+				LDX	BEGLINE
+MORUP2			LDY	LINENUM
+				LDA	LOBYTES,Y
+				STA	SCREENL
+				LDA	HIBYTES,Y
+				ORA	#$20
+				STA	SCREENH
+				LDA	LOBYTES,X
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$40
+				STA	DESTINH
+				LDY	#$0E
+MORUP3			LDA	(SCREENL),Y
+				STA	(DESTINL),Y
+				INY
+				CPY	#$1A	
+				BNE	MORUP3
+				INX
+				INC	LINENUM
+				CPX	#$B1
+				BNE	MORUP2
+				LDA	#$60	
+				JSR	WAIT
+				LDA	BEGLINE
+				DEC	BEGLINE
+				CMP	#$A7
+				BNE	MORUP1
+				RTS
+
+SCROLLD			LDA	#$A7
+				STA	ENDLINE
+MORDWN1			LDX	#$AF
+MORDWN2			LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$40
+				STA	SCREENH
+				INX
+				LDA	LOBYTES,X
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$40
+				STA	DESTINH
+				DEX
+				LDY	#$0E
+MORDWN3			LDA	(SCREENL),Y
+				STA	(DESTINL),Y
+				INY
+				CPY	#$1A	
+				BNE	MORDWN3
+				CPX	ENDLINE
+				BEQ	NOMORDW
+				DEX
+				JMP	MORDWN2
+NOMORDW			LDA	#$60
+				JSR	WAIT
+				LDA	ENDLINE
+				INC	ENDLINE
+				CMP	#$AF
+				BEQ	LASTDWN
+				JSR	CLRLINE
+				JMP	MORDWN1
+LASTDWN			LDA	DESTINL
+				STA	SCREENL
+				LDA	DESTINH
+				STA	SCREENH
+				JSR	CLRLINE
+				RTS
+
+CLRLINE			LDA	#$00
+				LDY	#$0E
+CLRLIN2			STA	(SCREENL),Y
+				INY
+				CPY	#$1A	
+				BNE	CLRLIN2	
+				RTS
+
+OPEN_NET		LDA	SRANGE
+				PHA
+				LDA	#$20	
+				STA	PAGE
+				LDA	#$60
+				STA	BISTOP
+				LDA	#$00
+				JSR	BOXIN2
+				LDA	#$20
+				STA	BISTOP
+				LDA	#WHITE1
+				STA	COLOR
+				LDA	#$01
+				STA	SRANGE
+				JSR	NOSCAN
+				LDY	#6				;Net edges
+				JSR	LINER
+				LDA	#$9E
+				STA	ALINE
+				LDA	#$3A
+				STA	BLINE
+DONET2			LDX	ALINE
+				JSR	UN_NETLINE
+				LDA	ALINE
+				STA	PITCH
+				LDA	#$30
+				STA	LENGTH
+				JSR	SOUND
+				LDX	BLINE
+				JSR	UN_NETLINE
+				LDA	#$FF
+				STA	PITCH
+				LDA	#$10
+				STA	LENGTH
+				JSR	SOUND
+				LDA	ALINE
+				SEC
+				SBC	#8
+				STA	ALINE
+				LDA	BLINE
+				CLC
+				ADC	#8
+				STA	BLINE
+				CMP	#$AA
+				BNE	DONET2
+				LDA	#BLACK1
+				STA	COLOR
+				LDY	#6				;Net edges
+				JSR	LINER
+				PLA
+				STA	SRANGE
+				LDA	#WHITE1
+				STA	COLOR
+				JSR	NOSCAN
+				LDA	PRIMARY
+				LDA	#$00
+				STA	OPEN1
+				RTS
+
+UN_NETLINE		LDA	LOBYTES,X
+				STA	SCREENL
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	SCREENH
+				EOR	#$60
+				STA	DESTINH
+				LDY	#39
+:1				LDA	(SCREENL),Y
+				STA	(DESTINL),Y
+				DEY
+				BPL	:1
+				RTS
+
+HOLEDAT			DB	$00,$5F,$AF
+				DB	$00,$B8,$AF
+				DB	$00,$BD,$B2
+				DB	$00,$5A,$B2
+				DB	$00,$5F,$AF
+				DB	$FF
+BOXDATA			DB	$00,$62,$A7
+				DB	$00,$62,$B0
+				DB	$00,$63,$B0
+				DB	$00,$63,$A7
+				DB	$00,$B4,$A7
+				DB	$00,$B4,$B0
+				DB	$00,$B5,$B0
+				DB	$00,$B5,$A7
+				DB	$FF
+
+OPEN1			DB	$FF

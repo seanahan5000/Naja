@@ -1,0 +1,64 @@
+TEMP			=	$00				;$01
+
+				LDX	#63
+:LOOP0			LDA	PRE_LOAD,X
+				STA	$200,X
+				DEX
+				BPL	:LOOP0
+				JSR	$BE03
+				BCC	:OKAY1
+				BRK
+:OKAY1
+
+				LDA	#$00
+				STA	COUNT
+:LOOP1			LDA	COUNT
+				ASL
+				TAX
+				LDA	OFFSETS,X
+				PHA
+				STA	TEMP
+				LDA	OFFSETS+1,X
+				PHA
+				STA	TEMP+1
+
+				LDY	#2
+:LOOP2			INY
+				LDA	(TEMP),Y
+				STA	$200-3,Y
+				CPY	#66
+				BNE	:LOOP2
+				JSR	$BE03
+				BCC	:OKAY2
+				BRK
+:OKAY2
+
+				PLA
+				STA	TEMP+1
+				PLA
+				STA	TEMP
+				LDY	#0
+				LDA	(TEMP),Y
+				STA	$7A
+				INY
+				LDA	(TEMP),Y
+				STA	$7B
+				INY
+				LDA	(TEMP),Y
+				STA	$7C
+				LDA	#$00
+				STA	$12
+				STA	$14
+				LDA	#$20
+				STA	$13
+				LDA	DEST_SIDE
+				STA	$15
+				JSR	$8400
+				INC	COUNT
+				LDA	COUNT
+				CMP	TOTAL_FILES
+				BNE	:LOOP1
+				RTS
+
+COUNT			DB	0
+PRE_LOAD		ASC	"BLOAD /NAJA/IO/NDOS.RW",8D

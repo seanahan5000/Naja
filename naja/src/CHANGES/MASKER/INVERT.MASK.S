@@ -1,0 +1,16 @@
+INVERT_MASK		LDX	#0
+:1				LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$40
+				STA	SCREENH
+				LDY	#39
+:2				LDA	(SCREENL),Y
+				EOR	#$FF
+				STA	(SCREENL),Y
+				DEY
+				BPL	:2
+				INX
+				CPX	#192
+				BNE	:1
+				RTS

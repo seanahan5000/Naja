@@ -1,0 +1,336 @@
+WHICH			=	ZBLOCK_A0+0
+DATPNTL			=	ZBLOCK_A0+1
+DATPNTH			=	ZBLOCK_A0+2
+PICPNT			=	ZBLOCK_A0+3
+MINPNT			=	ZBLOCK_A0+4
+YLEVEL			=	ZBLOCK_A0+5
+BCHECKD			=	ZBLOCK_A0+6
+COUNTR4			=	ZBLOCK_A0+7
+DATCNT			=	ZBLOCK_A8+0
+STATNUM			=	ZBLOCK_A8+1
+BOXNUM			=	ZBLOCK_A8+2
+PROFSNT			=	ZBLOCK_A8+3		;+4
+
+TEMPBUF			=	$7F00			;Must be on page boundary
+
+ENROLL			LDA	FSFLAG
+				AND	#$80
+				STA	FSFLAG
+				LDA	#$F0
+				LDX	FSFLAG
+				BEQ	AFIRST
+				LDA	#$0F
+AFIRST			LDY	HOLDSEC
+				ORA	OPENBUF,Y
+				STA	HOLD_MOD+1
+REDONAM			JSR	CLRBOX
+				LDY	#$03
+				JSR	TEXTER
+				LDA	#$0A
+				STA	MAXTEXT
+				JSR	INPUT2
+				LDA	TEXTBUF
+				CMP	#$8D
+				BNE	DIDANAM
+				JSR	CLRBOX	
+				JMP	ANYONE
+
+DIDANAM			JSR	SPACHCK
+				JSR	NAMOVE1
+				JSR	ISNAJA
+				JSR	NAME_CHECK
+				BCS	MOVEIT
+				LDY	#$01
+				JSR	TEXTER
+				LDY	#$04
+				JSR	TEXTER
+				JSR	SPWAIT
+				LDY	#$01
+				JSR	TEXTER
+				JMP	REDONAM
+
+MOVEIT			JSR	CLRBOX
+				LDY	#$08
+				JSR	TEXTER
+				JSR	SETTOFF
+				LDY	#$04
+RALOOP			LDA	#$00
+				STA	LEGALS,Y
+				LDA	RALINES,Y
+				STA	LINTABL,Y
+				DEY
+				BPL	RALOOP
+				LDA	#$04
+				JSR	GEN_RACE_SUB
+				BEQ	:SKIPA
+				JMP	ANYONE
+
+:SKIPA			LDA	CURSOR
+				STA	RACE
+				JSR	CLRBOX
+				LDY	#$07
+				JSR	TEXTER
+				LDA	#$FF
+				STA	LEGALS+0
+				STA	LEGALS+4
+				LDA	#$03
+				JSR	GEN_RACE_SUB
+				BEQ	:SKIPB
+				JMP	ANYONE
+
+:SKIPB			LDA	CURSOR
+				STA	GENDER
+				JSR	ARRCALC
+				LDY	#$09	
+				JSR	TEXTER	
+				LDY	#$01
+				JSR	TEXTER
+				JSR	SPWAIT	
+				LDY	#$01
+				JSR	TEXTER
+				JSR	CLRBOX
+				JSR	DEFINE_CHAR
+				LDY	HOLDSEC	
+HOLD_MOD		LDA	#$FF			;Modified
+				STA	OPENBUF,Y	
+				LDY	#$0A	
+				JSR	TEXTER	
+				LDA	#$12	
+				STA	MAXTEXT
+				JSR	INPUT2
+OATHIN			STX	HOLDIT
+				LDY	#$00
+MOROATH			LDA	TEXTBUF,Y	
+				JSR	CONVERT	
+				TXA
+				CMP	OATH,Y	
+				BNE	OFAIL
+				INY	
+				CPY	#$12
+				BNE	MOROATH
+				BEQ	OPASS
+OFAIL			JSR	CHAROUT	
+				JSR	RECALL	
+				JMP	OATHIN
+
+OPASS			JSR	SAVE_CHAR
+				JSR	CLRBOX
+				LDY	#$01
+				JSR	TEXTER
+				LDY	#$0B	
+				JSR	TEXTER	
+				JSR	SPWAIT
+				JSR	CLRBOX
+				LDY	#$0C
+				JSR	TEXTER
+				JSR	SPWAIT
+				LDY	#$01
+				JSR	TEXTER
+				JSR	CLRBOX
+				JMP	ANYONE
+
+GEN_RACE_SUB	STA	CURSOR
+				LDY	#$0D
+				JSR	TEXTER
+				JSR	DOT
+				LDA	#$BE
+				STA	XHOLD
+				LDA	#$C3
+				STA	CANCER+1
+				JSR	KDOWN2
+				TXA
+				PHA
+				LDY	#$0D
+				JSR	TEXTER
+				LDA	#$00
+				STA	CANCER+1
+				JSR	DOT
+				JSR	CLRBOX
+				PLA
+				RTS
+
+*-------------------------------
+
+NAMOVE1			LDY	#$00
+NAMOVE2			LDA	TEXTBUF,Y
+				CMP	#$8D
+				BEQ	SPACEIN
+				JSR	CONVERT
+				TXA
+				STA	NAME,Y
+				INY
+				CPY	#$0A
+				BNE	NAMOVE2	
+				BEQ	NAMEOUT	
+SPACEIN			LDA	#$0A
+SPACE2			STA	NAME,Y	
+				INY	
+				CPY	#$0A	
+				BNE	SPACE2
+NAMEOUT			RTS
+
+*-------------------------------
+
+NAME_CHECK		JSR	DRIVE_ON
+				LDA	#>TEMPBUF
+				STA	SSTOREH
+				LDY	#0
+				STY	SECOUNT
+MORCHCK			LDA	OPENBUF,Y
+				BNE	POSSIBL
+NEXT1			INC	SECOUNT
+				LDY	SECOUNT
+				CPY	#$0B
+				BNE	MORCHCK
+				JSR	DRIVE_OFF
+				SEC					;Name is okay
+				RTS
+
+POSSIBL			PHA
+				LDY	#>charTrack
+				LDA	#<charTrack
+				ORA	SECOUNT
+				TAX
+				LDA	#1
+				JSR	FLOADER
+				PLA
+				TAX
+				AND	#$F0
+				BEQ	FAILNAM
+				LDY	#$09
+MORCOMP			LDA	NAME,Y
+				CMP	CHARBUF,Y
+				BNE	FAILNAM
+				DEY
+				BPL	MORCOMP
+				JSR	DRIVE_OFF
+				CLC					;Duplicate name found
+				RTS
+
+FAILNAM			TXA
+				AND	#$0F
+				BEQ	NEXT1
+				LDY	#$09
+MORCOM2			LDA	NAME,Y
+				CMP	CHARBUF+$80,Y
+				BNE	NEXT1
+				DEY
+				BPL	MORCOM2
+				JSR	DRIVE_OFF
+				CLC					;Duplicate name found
+				RTS
+
+*-------------------------------
+
+SPACHCK			LDA	TEXTBUF
+				JSR	CHECK_ENTER
+				BEQ	BAD1
+				CMP	#$8D
+				BNE	NOSPACE
+BAD1			STX	HOLDIT
+				JSR	CHAROUT
+				JSR	RECALL
+				JMP	SPACHCK
+NOSPACE			RTS
+
+*-------------------------------
+
+ISNAJA			LDX	#$09
+COMPARE			LDA	NAJANAM,X
+				CMP	NAME,X
+				BNE	NOTNAJA
+				DEX	
+				BPL	COMPARE
+				LDY	#$01
+				JSR	TEXTER
+				LDY	#$05	
+				JSR	TEXTER	
+				JSR	SPWAIT
+				LDY	#$01
+				JSR	TEXTER
+				PLA
+				PLA
+				JMP	REDONAM
+NOTNAJA			RTS
+
+NAJANAM			USR	(NAJA______)-
+OATH			USR	(UPHOLD_AND_SUPPORT)-
+
+RALINES			DB	$8F,$99,$A3
+				DB	$AD,$B7
+
+*-------------------------------
+
+ARRCALC			LDA	#$07	
+				PHA
+ARLOOP1			JSR	SPECKS
+				LDA	#$05
+				STA	COUNT
+ARRLOOP			JSR	RNDMIZE
+				LDA	RANDOM1
+				AND	#$01
+				BNE	NOTUORD
+				LDX	COUNT
+				JSR	PICARRO
+				LDA	RANDOM1
+				AND	#$02
+				BNE	UPONLY
+DWNONLY			LDX	COUNT
+				LDA	SITIONS,X
+				CLC
+				ADC	#$02
+				CMP	#$26	
+				BCS	UPONLY
+				STA	SITIONS,X
+				BNE	AORS
+UPONLY			LDX	COUNT
+				LDA	SITIONS,X
+				SEC
+				SBC	#$02
+				CMP	#$16	
+				BCC	DWNONLY
+				STA	SITIONS,X
+AORS			LDX	COUNT
+				JSR	PICARRO
+NOTUORD			DEC	COUNT
+				BPL	ARRLOOP
+				PLA
+				SEC
+				SBC	#$01
+				BEQ	ARROUT
+				BIT	KEYBRD
+				BMI	ARROUT
+				PHA
+				LDA	#$D0	
+				JSR	WAIT2
+				JMP	ARLOOP1
+ARROUT			RTS
+
+EXES			DB	$22,$00,$22
+				DB	$06,$23,$05
+				DB	$24,$04,$25
+				DB	$03,$26,$02
+
+*-------------------------------
+
+PICARRO			LDA	SITIONS,X
+				STA	YCOORD
+				TXA
+				ASL
+				TAX
+				LDA	EXES,X
+				STA	XCOORD
+				LDA	EXES+1,X
+				STA	SHIFT
+				LDA	#$60
+				STA	STOPIT
+				LDA	#$02
+				JSR	EN_SPCHARS
+				LDA	#$A5
+				STA	STOPIT
+				JSR	TABLER
+				JMP	CHAROUT
+
+*-------------------------------
+SITIONS			DB	$20,$1E,$18
+				DB	$1A,$21,$19

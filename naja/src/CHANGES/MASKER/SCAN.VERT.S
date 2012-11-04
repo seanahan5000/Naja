@@ -1,0 +1,47 @@
+SCAN_DOWN
+				LDY	#0
+:0				LDA	#%00000011
+				STA	TEMP
+				LDA	#%00000000
+				STA	TEMP+1
+:1				LDX	#0
+:2				LDA	LOBYTES,X
+				STA	SCREENL
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	SCREENH
+				EOR	#$60
+				STA	DESTINH
+				LDA	(SCREENL),Y
+				AND	TEMP
+				BNE	:3
+				INY
+				LDA	(SCREENL),Y
+				DEY
+				AND	TEMP+1
+				BNE	:3
+				LDA	(DESTINL),Y
+				ORA	TEMP
+				STA	(DESTINL),Y
+				INY
+				LDA	(DESTINL),Y
+				ORA	TEMP+1
+				STA	(DESTINL),Y
+				DEY
+				INX
+				CPX	#192
+				BNE	:2
+:3				ASL	TEMP
+				ROL	TEMP
+				ROL	TEMP+1
+				ROL	TEMP
+				ROL	TEMP+1
+				LSR	TEMP
+				LDA	TEMP+1
+				BPL	:1
+				INY
+				INY
+				CPY	#40
+				BNE	:0
+				RTS

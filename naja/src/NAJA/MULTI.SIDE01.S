@@ -1,0 +1,25 @@
+				ORG	$1000
+				LST	OFF
+				PUT	MULTI.SAVE
+
+DEST_SIDE		DB	0
+TOTAL_FILES		DB	4
+
+OFFSETS			DW	FILE1
+				DW	FILE2
+				DW	FILE3
+				DW	FILE4
+
+FILE1			DB	$05,0,$0B		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/CAMP.B000,A$2000",8D
+
+FILE2			DB	$05,$0B,$20		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/CAMP.E000,A$2000",8D
+
+FILE3			DB	$07,$0B,$09		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/CAMP.D000.M1,A$2000",8D
+
+FILE4			DB	$08,$04,$0C		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/CAMP.D000.M2,A$2000",8D
+
+				SAV	MULTI.SIDE01

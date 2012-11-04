@@ -1,0 +1,340 @@
+FACER			JSR	RESET_CHLIST
+				LDA	#android*16
+				JSR	CSCAN_PROF
+				LDX	#<HAVTRACKER
+				LDY	#>HAVTRACKER
+				JSR	CSCAN_COMMON
+				TAY
+				BEQ	:EXIT
+				LDX	#<CANFTRACK
+				LDY	#>CANFTRACK
+				JSR	CSCAN_COMMON
+				TAY
+				BEQ	:EXIT
+				TXA
+				JSR	POINTIT
+
+				LDX	#<FACE_BOX
+				LDY	#>FACE_BOX
+				JSR	INIT_BOX
+				LDA	#$40
+				STA	PAGE
+				JSR	CLEAR_OUTSIDE
+				JSR	DRAW_BOX
+				LDY	FACE
+				LDX	SHELL
+				JSR	FACE_SUB1
+				LDY	#$08
+				JSR	TEXTER
+				LDA	#$20
+				STA	PAGE
+				JSR	SWAP_BOX
+				JSR	SPACE_KEY
+				JSR	SWAP_BOX
+				LDX	#<TRACKERUSE
+				LDY	#>TRACKERUSE
+				SEC
+				JSR	DRAINER_MAIN
+				BPL	:EXIT
+				JSR	OUT_OF_ENERGY
+:EXIT			JMP	RDKEY
+
+HAVTRACKER		JSR	RESET_EQLIST
+				LDX	#<FINDTRACKER
+				LDY	#>FINDTRACKER
+				JSR	ESCAN_COMMON
+				TXA
+				AND	#%10000000
+				RTS
+
+FINDTRACKER		LDA	(CHARDL),Y
+				CMP	#$42
+				BNE	:EXIT
+				INY
+				LDA	(CHARDL),Y
+				CMP	#$01
+:EXIT			RTS
+
+CANFTRACK		LDX	#<TRACKERUSE
+				LDY	#>TRACKERUSE
+				CLC
+				JSR	DRAINER_MAIN
+				LDX	#$00
+				BCS	:EXIT
+				INX
+:EXIT			RTS
+
+FACE_BOX		DDB	53
+				DB	34
+				DDB	227
+				DB	54
+				DFB	GREEN
+				DFB	wspace
+
+TRACKERUSE		DFB	$00,$00,$80
+
+
+KILLED_HIM		STA	RITHOLD			;Acc. contains COUNT
+				LDA	#$90			;Make dead sound
+				STA	PITCH
+:LOOP1			LDX	#$02
+:LOOP2			LDY	PITCH
+:LOOP3			LDA	#$01
+				JSR	WAIT
+				DEY
+				BNE	:LOOP3
+				STA	CLICK
+				DEX
+				BNE	:LOOP2
+				INC	PITCH
+				BNE	:LOOP1
+				LDX	#<TEXTBUF
+				LDY	#>TEXTBUF
+				JSR	FLUSH_NAME
+				LDA	#$8D
+				STA	TEXTBUF+10
+				LDA	#64
+				LDY	#37
+				JSR	LINE
+				LDX	XCOORD
+				LDY	SHIFT
+				JSR	DEAD_SUB1
+				LDA	#$00
+				LDY	#inflictnums
+				STA	(CHARDL),Y
+				LDY	#profrace
+				LDA	(CHARDL),Y
+				LDY	#$17
+				TAX
+				BMI	:SKIPA
+				JSR	RESET_CHLIST
+				LDA	#physician*16
+				JSR	CSCAN_PROF
+				JSR	CSCAN_NOTDEAD
+				LDX	#<HAVE_DIAGNOSR
+				LDY	#>HAVE_DIAGNOSR
+				JSR	CSCAN_COMMON
+				STX	LEFHOLD
+				STX	LEFT1
+				LDY	#$15
+				INX
+				BNE	:SKIPA
+				INY
+:SKIPA			TYA
+				PHA
+				JSR	TEXTER
+				JSR	SWAP_BOX
+				JSR	SPACE_KEY
+				JSR	SWAP_BOX
+				PLA
+				CMP	#$15
+				BEQ	:SKIPB
+				PHA
+				LDA	RITHOLD
+				JSR	POINTIT
+				PLA
+				LDX	#dead
+				CMP	#$16
+				BEQ	:SKIPC
+				LDX	#broken
+:SKIPC			LDY	#status
+				TXA
+				STA	(CHARDL),Y
+				JMP	DEAD_VECTOR
+:SKIPB			LDA	#$FF
+				JMP	DIAG_MERGE
+
+HAVE_DIAGNOSR	JSR	RESET_EQLIST
+				JSR	ESCAN_FULSLOT
+				LDX	#<FIND_DIAGNOSR
+				LDY	#>FIND_DIAGNOSR
+				JSR	ESCAN_COMMON
+				TXA
+				AND	#%10000000
+				RTS
+
+FIND_DIAGNOSR	LDA	(CHARDL),Y
+				CMP	#$41
+				BNE	:EXIT
+				INY
+				LDA	(CHARDL),Y		;Diagnoser = 0
+:EXIT			RTS
+
+PITCH			DB	$00
+
+
+HIDE_MEMBER		JSR	POINTIT
+				LDA	CHARDL
+				STA	DESTINL
+				LDA	CHARDH
+				STA	DESTINH
+				LDX	COUNT
+				INX
+				TXA
+				JSR	POINTIT
+				LDY	#$7F
+:LOOP3			LDA	(CHARDL),Y
+				TAX
+				LDA	(DESTINL),Y
+				STA	(CHARDL),Y
+				TXA
+				STA	(DESTINL),Y
+				DEY
+				BPL	:LOOP3
+				INC	COUNT
+				LDA	COUNT
+				CMP	GRPNUMB
+				BNE	HIDE_MEMBER
+				RTS
+
+
+BREAK_ROBOT		LDY	#profrace		;Enter pointing to
+				LDA	(CHARDL),Y		;   possible cybernate
+				AND	#$F0
+				CMP	#cybernate*16
+				BNE	:EXIT
+				LDY	#disklocation
+				LDA	(CHARDL),Y
+				STA	TEMP
+				LDA	#$00
+				STA	COUNT
+:LOOP1			JSR	POINTIT
+				LDY	#robotcyblink
+				LDA	(CHARDL),Y
+				CMP	TEMP
+				BEQ	:SKIPA
+				INC	COUNT
+				LDA	COUNT
+				CMP	GRPNUMB
+				BNE	:LOOP1
+:EXIT			CLC
+				RTS
+:SKIPA			LDY	#status
+				LDA	(CHARDL),Y
+				AND	#%11000000
+				ORA	#broken
+				STA	(CHARDL),Y
+				JSR	CALC_ALL
+				SEC
+				RTS
+
+
+USER			JSR	SETVTAB
+				JSR	RESET_EQLIST
+				JSR	ESCAN_HANDBCK
+				JSR	ESCAN_FULSLOT
+				JSR	ESCAN_RGTPROF
+				LDX	#<MEDEQUIP
+				LDY	#>MEDEQUIP
+				JSR	ESCAN_COMMON
+				LDX	#14
+:LOOP1			LDA	EQUIP_LIST,X
+				STA	USABLE,X
+				DEX
+				BPL	:LOOP1
+
+				JSR	LEGAL1
+				CMP	#$FF
+				BEQ	USE_CANCEL
+				TXA
+				PHA
+				LDX	#$1C
+				LDY	#$05
+				JSR	USE_SUB1
+				PLA
+				TAX
+				LDA	#$07
+				JSR	PRESUB
+				JSR	COMNKEY
+				PHA
+				JSR	CURSIT2
+				LDY	#$07
+				JSR	TEXTER2
+				JSR	POSTSUB
+				LDX	#$1D
+				LDY	#$01
+				JSR	USE_SUB1
+				PLA
+				CMP	#$C3
+				BNE	NOUSCNC	
+USE_CANCEL		LDY	#$02
+				JSR	IMARKER
+				LDA	#$01
+				JMP	RDOPTN
+NOUSCNC			LDX	MCURSOR
+				LDY	CORESPS,X
+				INY
+				LDA	(CHARDL),Y
+				BEQ	DIAGNOS
+				TAX
+				DEX
+				BEQ	CELLREG
+*DEX
+*BEQ CIRCREP
+*JSR LOAD_REFORM
+*JMP COMPRESS
+
+CIRCREP			LDA	#$01
+				BNE	CC_COM			;Always
+CELLREG			LDA	#$00
+CC_COM			PHA
+				JSR	LOAD_REFORM
+				PLA
+				JMP	REGENERATE
+
+DIAGNOS			JSR	BIGBOXR
+				LDY	#$0E	
+				JSR	TEXTER2
+				JSR	RESET_CHLIST
+				LDA	#$00
+				STA	CHAR_LIST+7
+				STA	GCURPOS
+*LDX LEFHOLD ;???
+*LDA #$FF ;???
+*STA CHAR_LIST,X ;???
+				JSR	PRE_ARROW
+				JSR	GETKEY
+				LDY	#$0E	
+				JSR	TEXTER2
+				LDA	#BLACK1
+				STA	COLOR
+				LDY	#$03	
+				JSR	LINER
+				JSR	SWITCHU
+				LDA	CURSOR
+				CMP	#$07
+				BNE	DNOCANC
+				LDA	LEFT1
+				JSR	POINTIT
+				LDA	#$02
+				STA	CURSOR
+				JSR	IMARKER
+				LDA	#$01
+				JMP	RDOPTN
+DNOCANC			LDA	CURSOR
+				STA	RITHOLD
+				LDA	LEFT1
+				STA	LEFHOLD
+				LDA	#$00
+DIAG_MERGE		PHA
+				LDA	#$00			;This is needed if being
+				STA	CRFLAG			;   forced by newly dead character
+				LDA	CAMP_HERE
+				AND	#bit_Diagnose
+				BNE	:SKIPA
+				LDX	#cDiagnose
+				JSR	SLOAD_FILE
+				LDA	CAMP_HERE
+				ORA	#bit_Diagnose
+				STA	CAMP_HERE
+:SKIPA			PLA
+				JMP	DIAGNOSER
+
+MEDEQUIP		LDA	(CHARDL),Y
+				AND	#%11011111
+				CMP	#$41
+				BNE	:EXIT
+				INY
+				LDA	(CHARDL),Y
+				AND	#%11111100
+:EXIT			RTS

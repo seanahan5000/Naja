@@ -1,0 +1,526 @@
+				LST	OFF
+				EXP	OFF
+				TR	ON
+
+Entry			MAC
+				DB	E1-*,]1,]2,]3
+				USR	(]4:)=
+E1
+				EOM
+
+Transfer		MAC
+				DB	T1-*
+				DB	tTransfer
+				DW	]1
+				USR	(]2_->)=
+T1
+				EOM
+
+				USE	/NAJA/VARS/MACROS
+				PUT	/NAJA/VARS/CONSTANTS
+				PUT	/NAJA/VARS/FIGHT.CONSTS
+				PUT	/NAJA/VARS/ZPAGE
+				PUT	/NAJA/VARS/NDOS.VARS
+				PUT	/NAJA/VARS/NCOM.VARS
+				PUT	/NAJA/VARS/THALL.VARS
+				PUT	/NAJA/VARS/CAMP.VARS
+				PUT	/NAJA/VARS/MISC.VARS
+
+tTransfer		=	0
+tName			=	1
+t0_99			=	2
+t0_255			=	3
+t0_9999			=	4
+*
+tYesNo			=	6
+tSomeVery		=	7
+tSize			=	8
+tBlastX			=	9
+tBlastY			=	10
+tIntensity		=	11
+tStatus			=	12
+tfAttack		=	13
+tfRushDelay		=	14
+tfPercentOf4	=	15
+tfAim			=	16
+tfShots			=	17
+tfRunAfter		=	18
+tfRunUntil		=	19
+
+gridY			=	123
+
+COUNTER			=	$00
+NUMBER			=	ZBLOCK_60+0
+PTR				=	ZBLOCK_60+1		;+2
+MAXNUMB			=	ZBLOCK_60+3
+COUNTX			=	ZBLOCK_60+4
+COUNTY			=	ZBLOCK_60+5
+DATPNTL			=	ZBLOCK_60+6
+DATPNTH			=	ZBLOCK_60+7
+
+MAIN_BUFFER		=	$6000
+
+				ORG	$8800
+
+				LDA	DISK_SIDE
+				STA	HOLD_SIDE
+				BIT	UNSTROB
+
+*-------------------------------
+
+GET_SHELL		JSR	CLEAR_PAGE
+				LDY	#0
+				JSR	TEXTER
+				JSR	SHOW_PAGE
+				LDX	#<GETSHELL_DEF
+				LDY	#>GETSHELL_DEF
+				JSR	INIT_CURSOR
+				JSR	GETKEY
+				LDX	CURSOR
+				CPX	#4
+				BNE	:SKIPA
+				JMP	EXIT_EDITOR
+
+:SKIPA			INX
+				STX	SHELL_NUMBER
+				LDY	#side_F1
+				CPX	#3
+				BCC	:SKIPB
+				INY
+:SKIPB			STY	DISK_SIDE
+				JSR	LOADSUB
+				JMP	GOT_SHELL
+
+*-------------------------------
+
+GETSHELL_DEF	DB	$04
+				DB	$80
+				DW	:SHELL_CURS
+
+:SHELL_CURS		LDX	CURSOR
+				LDY	:YPNTS,X
+				LDX	#86
+				JMP	ARROWER
+:YPNTS			DB	76,84,92
+				DB	100,108
+
+*-------------------------------
+
+GOT_SHELL		LDA	#$20
+				STA	PAGE
+				LDA	#0
+				STA	TREE_DEPTH
+				LDA	#1
+				STA	NUMBER
+				JSR	FROM_MAINBUFF
+				LDX	#<MAIN_LIST
+				LDY	#>MAIN_LIST
+				JSR	PRIMER
+
+BLINK			LDA	#$10
+				JSR	WAIT
+				LDA	#$F0
+				JSR	WAIT2
+				BMI	KEY_HIT
+				JSR	DRAW_CURSOR
+				LDA	#$00
+				JSR	WAIT2
+				JSR	DRAW_CURSOR
+KEY_LOOP		LDA	KEYBRD
+				BPL	BLINK
+KEY_HIT			BIT	UNSTROB
+				BIT	$C061			;open apple
+				BPL	:3
+				CMP	#"J"
+				BNE	:1
+				JMP	JUMP_IT
+:1				CMP	#"Q"
+				BNE	:2
+				JMP	QUIT_IT
+:2				CMP	#"S"
+				BNE	:3
+				JMP	SAVE_IT
+:3				JSR	CHECK_UP
+				BEQ	GO_UP
+				JSR	CHECK_DOWN
+				BEQ	GO_DOWN
+				JSR	CHECK_LEFT
+				BEQ	GO_LEFT
+				JSR	CHECK_RIGHT
+				BEQ	GO_RIGHT
+				CMP	#$9B			;escape
+				BEQ	GO_ESCAPE
+				JSR	CHECK_ENTER
+				BNE	KEY_LOOP
+				JSR	EDIT_EDATA
+				JMP	KEY_LOOP
+
+GO_RIGHT		JSR	SHOW_NUMBER
+				JSR	DRAW_CURSOR
+				JSR	DRAW_LDATA
+				JSR	TV_DRAW
+				JSR	TO_MAINBUFF
+				LDA	NUMBER
+				INC	NUMBER
+				CMP	MAXNUMB
+				BCC	:1
+				LDA	#1
+				STA	NUMBER
+:1				JMP	GO_LR
+
+GO_LEFT			JSR	SHOW_NUMBER
+				JSR	DRAW_CURSOR
+				JSR	DRAW_LDATA
+				JSR	TV_DRAW
+				JSR	TO_MAINBUFF
+				DEC	NUMBER
+				BNE	GO_LR
+				LDA	MAXNUMB
+				STA	NUMBER
+GO_LR			JSR	FROM_MAINBUFF
+				JSR	TV_DRAW
+				JSR	SHOW_NUMBER
+				JSR	DRAW_LDATA
+				JSR	DRAW_CURSOR
+				JMP	KEY_LOOP
+
+GO_UP			JSR	DRAW_CURSOR
+				DEC	CURSOR
+				BPL	:1
+				LDX	ENTRY_COUNT
+				DEX
+				STX	CURSOR
+:1				JSR	DRAW_CURSOR
+				JMP	KEY_LOOP
+
+GO_DOWN			JSR	DRAW_CURSOR
+				INC	CURSOR
+				LDA	CURSOR
+				CMP	ENTRY_COUNT
+				BNE	:1
+				LDA	#0
+				STA	CURSOR
+:1				JSR	DRAW_CURSOR
+				JMP	KEY_LOOP
+
+GO_ESCAPE		JSR	PULL_LIST
+				BCS	:1
+				LDX	LIST_PTR
+				LDY	LIST_PTR+1
+				JMP	RESTORER
+:1				JMP	KEY_LOOP
+
+*-------------------------------
+
+QUIT_IT			JSR	ARE_SURE
+				BCC	:1
+				JMP	GET_SHELL
+:1				JMP	KEY_LOOP
+
+SAVE_IT			JSR	ARE_SURE
+				BCC	:1
+				JSR	TO_MAINBUFF
+				JSR	SAVESUB
+:1				JMP	KEY_LOOP
+
+*-------------------------------
+
+JUMP_IT			JSR	DRAW_CURSOR
+				LDY	#2
+				JSR	TEXTER
+				LDA	#$02
+				STA	MAXTEXT
+				JSR	INPUT2
+				JSR	PRECON
+				LDA	#253
+				LDY	#136
+				JSR	LINE
+				JSR	CNVERT
+				CPX	#$FF
+				BEQ	BADJUMP
+				CMP	MAXNUMB
+				BEQ	OKJUMP
+				BCS	BADJUMP
+				CMP	#$00
+				BEQ	BADJUMP
+OKJUMP			PHA
+				LDY	#2
+				JSR	TEXTER
+				JSR	SHOW_NUMBER
+				JSR	TO_MAINBUFF
+				JSR	DRAW_LDATA
+				PLA
+				STA	NUMBER
+				JSR	SHOW_NUMBER
+				JSR	FROM_MAINBUFF
+				JSR	DRAW_LDATA
+				JSR	DRAW_CURSOR
+				JMP	KEY_LOOP
+BADJUMP			LDY	#2
+				JSR	TEXTER
+				JSR	DRAW_CURSOR
+				JMP	KEY_LOOP
+
+PRECON			LDY	MAXTEXT
+				DEY
+:1				LDA	TEXTBUF,Y
+				CMP	#$8D
+				BEQ	:2
+				JSR	CONVERT
+				TXA
+:2				STA	TEXTBUF,Y
+				DEY
+				BPL	:1
+				RTS
+
+CNVERT			LDA	TEXTBUF
+				JSR	DIGITS
+				ASL
+				ASL
+				ASL
+				ASL
+				STA	TEMP
+				LDA	TEXTBUF+1
+				JSR	DIGITS
+				ORA	TEMP
+				LDX	#0
+				RTS
+
+DIGITS			CMP	#$8D
+				BEQ	:BAD
+				CMP	#$0A
+				BEQ	:BAD
+				BCC	:1
+				SEC
+				SBC	#1
+:1				RTS
+:BAD			PLA
+				PLA
+				LDX	#$FF
+				RTS
+
+*-------------------------------
+
+TRANSFER		JSR	PUSH_LIST
+				LDX	CURSOR
+				JSR	FIND_ENTRY
+				LDX	ENTRY_OFFSET
+				LDY	SUB_OFFSET
+PRIMER			LDA	#0
+				STA	CURSOR
+				PLA
+				PLA
+RESTORER		JSR	INIT_LIST
+				LDA	PAGE
+				EOR	#$60
+				STA	PAGE
+				JSR	CLEAR_PAGE
+				JSR	DRAW_LTEXT
+				JSR	DRAW_LDATA
+				JSR	DRAW_CURSOR
+				LDA	#GREEN
+				STA	COLOR
+				LDY	#0
+				JSR	LINER
+				LDY	#1
+				JSR	TEXTER
+				JSR	SHOW_NUMBER
+				LDA	#VIOLET
+				STA	COLOR
+				LDY	#1
+				JSR	LINER
+				JSR	GRID_DRAW
+				JSR	TV_DRAW
+				JSR	SHOW_PAGE
+				JMP	KEY_LOOP
+
+*-------------------------------
+
+ARE_SURE		JSR	DRAW_CURSOR
+				LDY	#3
+				JSR	TEXTER
+				BIT	UNSTROB
+:1				LDA	KEYBRD
+				BPL	:1
+				BIT	UNSTROB
+				CMP	#"Y"
+				BEQ	:2
+				CMP	#"N"
+				BNE	:1
+				CLC
+:2				PHP
+				LDY	#3
+				JSR	TEXTER
+				JSR	DRAW_CURSOR
+				PLP
+				RTS
+
+*-------------------------------
+
+SHOW_NUMBER		LDX	#0
+				LDA	NUMBER
+				JSR	BYTE_SUB
+				LDA	#$8D
+				STA	TEXTBUF,X
+				LDA	#12
+				LDY	#8
+				JMP	LINE
+
+BYTE_SUB		PHA
+				LSR
+				LSR
+				LSR
+				LSR
+				JSR	:SUB1
+				PLA
+				AND	#%00001111
+:SUB1			CMP	#$0A
+				BCC	:1
+				ADC	#0
+:1				STA	TEXTBUF,X
+				INX
+				RTS
+
+*-------------------------------
+
+PUSH_LIST		LDX	TREE_DEPTH
+				LDA	LIST_PTR
+				STA	STACK1,X
+				LDA	LIST_PTR+1
+				STA	STACK2,X
+				LDA	CURSOR
+				STA	STACK3,X
+				INC	TREE_DEPTH
+				RTS
+
+PULL_LIST		LDX	TREE_DEPTH
+				SEC
+				BEQ	:1
+				DEX
+				STX	TREE_DEPTH
+				LDA	STACK1,X
+				STA	LIST_PTR
+				LDA	STACK2,X
+				STA	LIST_PTR+1
+				LDA	STACK3,X
+				STA	CURSOR
+				CLC
+:1				RTS
+
+STACK1			DS	5
+STACK2			DS	5
+STACK3			DS	5
+
+*-------------------------------
+
+DRAW_CURSOR		LDX	CURSOR
+				LDA	YCRD_TABLE,X
+				STA	YPNT
+				LDA	CURSOR_XCRD
+				STA	XPNT
+				LDA	#2
+				JMP	SPCHARS
+
+*-------------------------------
+
+CLEAR_PAGE		LDA	PAGE
+				CMP	#$40
+				BEQ	:1
+				JMP	CLEAR1
+:1				JMP	CLEAR2
+
+*-------------------------------
+
+SHOW_PAGE		LDA	PAGE
+				CMP	#$40
+				BEQ	:1
+				STA	PRIMARY
+				RTS
+:1				STA	SCNDARY
+				RTS
+
+*-------------------------------
+
+				PUT	NEW.LISTS
+				PUT	NEW.DRAW
+				PUT	NEW.EDIT
+				PUT	NEW.BUFFERS
+				PUT	NEW.TOPVIEWS
+				PUT	NEW.DATA
+
+*-------------------------------
+
+LINER			TYA
+				ASL
+				TAY
+				LDA	LINES,Y
+				STA	POINTL
+				LDA	LINES+1,Y
+				STA	POINTH
+				JMP	LINEOUT
+
+LINES			DW	LINE0
+				DW	LINE1
+
+LINE0			DB	$00,$01,$10
+				DB	$00,$27,$10
+				DB	$00,$27,$00
+				DB	$FF
+
+LINE1			DB	$00,$C4,gridY-3
+				DB	$01,$16,gridY-3
+				DB	$01,$16,gridY-3+61
+				DB	$00,$C4,gridY-3+61
+				DB	$00,$C4,gridY-3
+				DB	$FF
+
+TEXTER			TYA
+				ASL
+				TAY
+				LDA	TEXTS,Y
+				STA	POINTL
+				LDA	TEXTS+1,Y
+				STA	POINTH
+				JMP	TEXTOUT
+
+TEXTS			DW	TEXT0
+				DW	TEXT1
+				DW	TEXT2
+				DW	TEXT3
+
+TEXT0			PLOTAT	86;46;(>>_ALIEN_EDITOR_<<)
+				PLOTAT	86;66;(EDIT_WHICH_SHELL_?)
+				PLOTAT	101;76;(SHELL_15_<1>)
+				PLOTAT	101;84;(SHELL_13_<2>)
+				PLOTAT	101;92;(SHELL_11_<3>)
+				PLOTAT	101;100;(SHELL__9_<4>)
+				PLOTAT	101;108;(LEAVE)+
+TEXT1			PLOTAT	0;0;(NUMBER)+
+TEXT2			PLOTAT	199;185;(TO_WHERE:)+
+TEXT3			PLOTAT	199;185;(ARE_YOU_SURE?)+
+
+*-------------------------------
+
+EXIT_EDITOR		LDA	HOLD_SIDE
+				STA	DISK_SIDE
+				JSR	SET_CAMPFILES
+				LDX	#cTunnels
+				JSR	SLOAD_FILE
+				JSR	HGR
+				JSR	NOSCAN
+				JMP	RDKEY
+
+*-------------------------------
+
+TREE_DEPTH		DB	0
+ALIEN_BUFFER	DS	64
+RARE_BUFFER		DS	32				;more than enough
+GROUP_BUFFER	DS	32				;more than enough
+TV_DIMENS		DB	0
+TV_OFFSET		DB	0
+SHELL_NUMBER	DB	0
+HOLD_SIDE		DB	0
+
+				DS	\,$EE
+				PUT	NDOS.WRITE
+				SAV	ALIEN.EDITOR

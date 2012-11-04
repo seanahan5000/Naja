@@ -1,0 +1,210 @@
+				TR	ON
+********************************
+*
+*  BOOT STAGE3
+*
+********************************
+
+COUNTER			EQU	$10
+ERRORS			EQU	$11
+COUNTL			EQU	$12
+COUNTH			EQU	$13
+SECTOR			EQU	$20
+HOLDA			EQU	$36	
+TRACK			EQU	$0755	
+CODETAB			EQU	$0800	
+ARMOVE			EQU	$0E50
+BUFFER1			EQU	$BD00
+BUFFER2			EQU	$BE00
+READER			EQU	$C08C	
+REBOOT			EQU	$C600
+ADDHED1			EQU	$DC	
+ADDHED2			EQU	$FF	
+ADDHED3			EQU	$CD	
+DATHED1			EQU	$CD	
+DATHED2			EQU	$FF	
+DATHED3			EQU	$DC	
+SYNCA			EQU	$FF
+
+********************************
+				DUMMY	$800
+********************************
+
+				DS	99
+
+DENIBLR			LDY	#$00
+DNLOOP			LDX	#$56
+DNLOOP2			DEX
+				BMI	DNLOOP
+				LDA	BUFFER1,Y
+				LSR	BUFFER2,X
+				ROL	A
+				LSR	BUFFER2,X
+				ROL	A
+				STA	($21),Y
+				INY
+				BNE	DNLOOP2
+				RTS
+
+				DS	27
+
+				DFB	$3F,$3E,$98
+				DFB	$99,$3D,$3C	
+				DFB	$9C,$3B,$3A	
+				DFB	$39,$A0,$A1
+				DFB	$A2,$A3,$A4
+				DFB	$A5,$14,$13	
+				DFB	$A8,$A9,$12	
+				DFB	$11,$10,$0F	
+				DFB	$0E,$0D,$B0
+				DFB	$B1,$38,$37	
+				DFB	$36,$35,$34	
+				DFB	$33,$B8,$32	
+				DFB	$31,$30,$2F	
+				DFB	$2E,$2D,$2C	
+				DFB	$C0,$C1,$C2
+				DFB	$C3,$C4,$C5
+				DFB	$C6,$C7,$C8
+				DFB	$C9,$CA,$17	
+				DFB	$CC,$CD,$16	
+				DFB	$15,$D0,$D1
+				DFB	$D2,$2B,$D4
+				DFB	$2A,$29,$28	
+				DFB	$D8,$27,$26	
+				DFB	$25,$DC,$24	
+				DFB	$23,$22,$E0
+				DFB	$E1,$E2,$E3
+				DFB	$E4,$21,$20	
+				DFB	$1F,$E8,$1E	
+				DFB	$1D,$1C,$1B	
+				DFB	$1A,$19,$18	
+				DFB	$F0,$F1,$0C	
+				DFB	$0B,$0A,$09	
+				DFB	$08,$07,$F8
+				DFB	$06,$05,$04	
+				DFB	$03,$02,$01	
+				DFB	$00	
+
+********************************
+				DEND
+********************************
+
+				ORG	$900
+
+				DFB	$FF,$FF,$FF
+				DFB	$FF,$FF,$FF
+LOOPXA			LDA	#$00
+				STA	COUNTL
+				STA	COUNTH
+				LDX	#$60
+LOOPX0			LDA	READER,X
+				BPL	LOOPX0	
+				CMP	#SYNCA	
+				BNE	LOOPX0	
+LOOPX1			LDA	READER,X
+				BPL	LOOPX1
+				CMP	#SYNCA	
+				BNE	LOOPX0	
+LOOPX2			LDA	READER,X
+				BPL	LOOPX2
+				CMP	#SYNCA	
+				BEQ	LOOPX2	
+				BNE	CHECKA
+LOOPA			LDA	READER,X
+				BPL	LOOPA
+CHECKA			CMP	#ADDHED1	
+				BNE	LOOPX0	
+				NOP
+LOOPB			LDA	READER,X
+				BPL	LOOPB
+				CMP	#ADDHED2	
+				BNE	CHECKA
+				NOP	
+LOOPC			LDA	READER,X
+				BPL	LOOPC
+				CMP	#ADDHED3	
+				BNE	CHECKA
+				LDA	#00
+				STA	HOLDA	
+LOOPD			LDA	READER,X
+				BPL	LOOPD
+				ROL	A
+				STA	HOLDA
+LOOPE			LDA	READER,X
+				BPL	LOOPE
+				AND	HOLDA
+				CMP	SECTOR	
+				BNE	LOOPX0	
+				LDY	#$20
+ERRCNT			DEY
+				BEQ	LOOPX0	
+LOOP1			LDA	READER,X
+				BPL	LOOP1
+CHECK1			EOR	#DATHED1	
+				BNE	ERRCNT
+				NOP
+LOOP2			LDA	READER,X
+				BPL	LOOP2
+				CMP	#DATHED2	
+				BNE	CHECK1
+				LDY	#$56
+LOOP3			LDA	READER,X
+				BPL	LOOP3
+				CMP	#DATHED3	
+				BNE	CHECK1
+				LDA	#$00
+CHECK2			DEY
+				STY	HOLDA
+LOOP4			LDY	READER,X
+				BPL	LOOP4
+				EOR	CODETAB,Y
+				LDY	HOLDA
+				STA	BUFFER2,Y
+				BNE	CHECK2
+CHECK3			STY	HOLDA
+LOOP5			LDY	READER,X
+				BPL	LOOP5
+				EOR	CODETAB,Y
+				LDY	HOLDA
+				STA	BUFFER1,Y
+				INY
+				BNE	CHECK3
+LOOP6			LDY	READER,X
+				BPL	LOOP6
+				CMP	CODETAB,Y
+				BEQ	NOERR	
+				JMP	REBOOT
+NOERR			LDA	#$00
+				STA	$21
+MODPNT3			LDA	#$08	
+				STA	$22
+				JSR	DENIBLR
+				RTS	
+SCRNDAT			DFB	$8D,$54,$C0
+				DFB	$A9,$20,$85
+				DFB	$E6,$4C,$11
+				DFB	$03,$8D,$55
+				DFB	$C0,$A9,$40
+				DFB	$85,$E6,$8D
+				DFB	$5C,$C0
+LOADDR			LDA	#$04
+				STA	MODPNT3+1
+				LDA	#$0C
+				STA	SECTOR
+				LDA	#$08
+				JSR	ARMOVE
+NEXTDR			JSR	LOOPXA
+				JMP	SKIPBCK	
+
+* THIS ADDRESS MUST LINE UP WITH THE
+*   "JSR LOOPXA" IN BOOT.STAGE2
+
+				JMP	LOADDR
+SKIPBCK			INC	MODPNT3+1
+				INC	SECTOR
+				LDA	SECTOR
+				CMP	#$10
+				BNE	NEXTDR
+				JMP	$0206
+				DFB	$FF,$FF,$FF
+				DFB	$FF,$FF,$FF

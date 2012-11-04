@@ -1,0 +1,145 @@
+POINTER			EQU	$80	
+COUNT			EQU	$81	
+ETABLE			EQU	$169D			;*****
+EQUIP1			EQU	$16B4			;*****
+LINENUM			EQU	$82	
+LINE			EQU	$0B33	
+HGR				EQU	$0300	
+UNSTROB			EQU	$C010
+KEYBRD			EQU	$C000
+
+				ORG	$6000
+
+				LDA	#$00
+				STA	ETABLE+2
+				STA	POINTER
+LOOP			JSR	HGR
+				LDA	#$00
+				STA	LINENUM
+				JSR	GRPOUT
+				LDA	LINENUM
+				CLC
+				ADC	#$08
+				STA	LINENUM
+				LDY	POINTER
+				LDA	DATA,Y
+				CMP	#$FF
+				BEQ	LAST1
+				JSR	GRPOUT
+				BIT	UNSTROB
+WAIT			BIT	KEYBRD
+				BPL	WAIT
+				BIT	UNSTROB
+				JMP	LOOP
+GRPOUT			LDY	POINTER
+				LDA	DATA,Y
+				STA	ETABLE
+				INY
+				INC	POINTER
+				LDA	DATA,Y
+				STA	COUNT
+				INY
+				INC	POINTER
+NEXTGRP			LDY	POINTER
+				LDA	DATA,Y
+				STA	ETABLE+1
+				INC	POINTER
+				DEC	COUNT
+				JSR	EQUIP1
+				LDA	#$00
+				LDY	LINENUM
+				JSR	LINE
+				LDA	ETABLE
+				EOR	#$40
+				STA	ETABLE
+				JSR	EQUIP1
+				LDA	#$95
+				LDY	LINENUM
+				JSR	LINE
+				LDA	LINENUM
+				CLC
+				ADC	#$08
+				STA	LINENUM
+				LDA	ETABLE
+				EOR	#$40
+				STA	ETABLE
+				LDA	COUNT
+				BNE	NEXTGRP	
+LAST1			RTS
+
+DATA			DFB	$4C,$05
+				DFB	$00,$01,$02
+				DFB	$03,$05
+
+				DFB	$4D,$04
+				DFB	$00,$01,$03
+				DFB	$05
+
+				DFB	$45,$0C
+				DFB	$00,$01,$02
+				DFB	$04,$05,$06
+				DFB	$08,$09,$0A
+				DFB	$0C,$0D,$0E
+
+				DFB	$4E,$02
+				DFB	$00,$01
+
+				DFB	$48,$07
+				DFB	$00,$01,$04
+				DFB	$05,$06,$07
+				DFB	$0B
+
+				DFB	$4F,$06
+				DFB	$01,$04,$05
+				DFB	$06,$07,$08
+
+				DFB	$40,$05
+				DFB	$08,$14,$1C
+				DFB	$01,$02
+
+				DFB	$47,$04
+				DFB	$09,$15,$1D
+				DFB	$03
+
+				DFB	$41,$0E
+				DFB	$00,$01,$02
+				DFB	$03,$04,$06
+				DFB	$07,$08,$09
+				DFB	$19,$29,$39
+				DFB	$49,$59
+
+				DFB	$59,$01
+				DFB	$00
+
+				DFB	$42,$06
+				DFB	$00,$01,$02
+				DFB	$03,$04,$05
+
+				DFB	$43,$0B
+				DFB	$00,$01,$09
+				DFB	$02,$0A,$12
+				DFB	$1A,$22,$03
+				DFB	$04,$05
+
+				DFB	$46,$0C
+				DFB	$01,$02,$03
+				DFB	$04,$05,$06
+				DFB	$07,$08,$09
+				DFB	$0A,$0B,$0C
+
+				DFB	$58,$02
+				DFB	$00,$04
+
+				DFB	$5C,$03
+				DFB	$00,$01,$02
+
+				DFB	$44,$05
+				DFB	$00,$09,$12
+				DFB	$1B,$24
+
+				DFB	$5A,$05
+				DFB	$04,$20,75
+				DFB	$90,$D5
+				DFB	$FF
+
+				SAV	EQUIP.LISTER

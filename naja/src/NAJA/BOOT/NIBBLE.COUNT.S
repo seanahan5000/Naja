@@ -1,0 +1,79 @@
+********************************
+*
+*  NIBBLE COUNT
+*
+********************************
+
+COUNTER			=	$0A
+DESTINL			=	$0B
+DESTINH			=	$0C
+SSTOREL			=	$12
+SSTOREH			=	$13
+LAST1			=	$14
+STRACK			=	$7A
+SSECTOR			=	$7B
+READNUM			=	$7C
+EOVALUE			=	$B0
+FREAD			=	$71E
+
+				ORG	$200
+
+* SERIAL NUMBER DATA
+SERIAL_NUMB		DFB	$F0,$F0,$F0,$F0,$F0,$F0
+
+* DO A NIBBLE COUNT
+
+				LDX	#$05
+:LOOP1			LDA	SERIAL_NUMB,X
+				STA	$FA,X
+				DEX
+				BPL	:LOOP1
+
+				LDA	#$00
+				STA	COUNTER
+				LDA	#$FD
+				STA	DESTINL
+CORRECT			LDY	COUNTER
+				LDA	SET,Y
+				STA	DESTINH
+				LDA	SETOFF,Y
+				TAX
+				LDY	#$00
+CORMORE			LDA	REPDATA,X
+				STA	(DESTINL),Y
+				INY
+				INX
+				CPY	#$03
+				BNE	CORMORE
+				LDA	COUNTER
+				INC	COUNTER
+				CMP	#$05
+				BNE	CORRECT
+
+				LDA	#$00
+				STA	SSTOREL
+				STA	LAST1
+				STA	EOVALUE
+				STA	SSECTOR
+				LDA	#$01
+				STA	STRACK
+				STA	READNUM
+				LDA	#$02
+				STA	SSTOREH
+				PHA
+				PHA
+				JMP	FREAD
+
+SET				DFB	$03,$0C,$0A
+				DFB	$0E,$0D,$0B
+				DFB	$FF
+REPDATA			DFB	$03,$FB,$03
+				DFB	$02,$91,$26
+				DFB	$A9,$00,$85
+				DFB	$1F,$1F,$1B
+				DFB	$27,$A9,$C0
+				DFB	$00,$C6,$15
+				DFB	$FF,$FF
+SETOFF			DFB	$00,$03,$06
+				DFB	$09,$0C,$0F
+				DFB	$FF,$FF

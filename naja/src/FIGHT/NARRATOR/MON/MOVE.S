@@ -1,0 +1,31 @@
+MON_MOVE		LDY	#monCRNTCMD+1
+				LDA	(MONS_PTR),Y
+				TAX
+				AND	#%00001111
+				CMP	#$0B
+				BEQ	:2
+				TXA
+				PHA
+				JSR	PRE_FILLCHK3
+				JSR	CHECK_GRID
+				BCS	:1				;Dest square should never be full
+				JSR	MONS_FROMGRID
+				JSR	DRAW_ALIEN
+				PLA
+				PHA
+				LDY	#monPOSITION
+				STA	(MONS_PTR),Y
+				JSR	MONS_TOGRID
+				JSR	DRAW_ALIEN
+				JSR	UPDATE_MNAMES
+:1				PLA
+				JMP	MCOM
+
+:2				JSR	MONS_FROMGRID
+				JSR	DRAW_ALIEN
+				JSR	UPDATE_MNAMES
+				DEC	ATALLY
+				LDY	#monSTATUS
+				LDA	#dead
+				STA	(MONS_PTR),Y
+				JMP	MCOM

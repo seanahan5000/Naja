@@ -1,0 +1,108 @@
+*** BLOAD SCREEN.III at $0300
+*** BLOAD NCOMMONS at $0980
+*** BLOAD NDOS.525 at $2400
+*** BLOAD character data at $2C80
+*** BRUN HTABLER.HT1
+
+				LST	OFF
+				PUT	/NAJA/VARS/CONSTANTS
+				PUT	/NAJA/VARS/NCOM.VARS
+				PUT	/NAJA/VARS/MISC.VARS
+				PUT	/NAJA/VARS/NDOS.VARS
+				PUT	/NAJA/VARS/ZPAGE
+				PUT	/NAJA/VARS/THALL.VARS
+				PUT	/NAJA/VARS/CAMP.VARS
+				PUT	/NAJA/VARS/TCTRL.VARS
+
+				ORG	$2000
+
+				STA	$C050
+				STA	$C057
+				STA	$C054
+
+				LDX	#$00
+:LOOP1			LDA	$2400,X
+				STA	$400,X
+				LDA	$2500,X
+				STA	$500,X
+				LDA	$2600,X
+				STA	$600,X
+				LDA	$2700,X
+				STA	$700,X
+				LDA	$2C00,X
+				STA	$BC00,X
+				LDA	$2D00,X
+				STA	$BD00,X
+				LDA	$2E00,X
+				STA	$BE00,X
+				LDA	$2F00,X
+				STA	$BF00,X
+				DEX
+				BNE	:LOOP1
+
+				LDA	$C083			;Bank 2
+				LDA	$C083
+
+				LDA	#$C7
+				STA	$03F2
+				LDA	#$03
+				STA	$03F3
+				LDA	#$A6
+				STA	$03F4
+
+				LDA	#side_T1
+				STA	DISK_SIDE
+
+				LDA	#$06
+				STA	GRPNUMB
+				STA	GRPCONT
+				LDA	#$01
+				STA	LOST_CHARS
+
+				LDX	#<BOOT_TABLE
+				LDY	#>BOOT_TABLE
+				JSR	SET_FILE_TABL
+
+				LDX	#$00
+				JSR	SLOADER_FILE
+				LDX	#$01
+				JSR	FLOADER_FILE
+				LDX	#$02
+				JSR	FLOADER_FILE
+				LDX	#$03
+				JSR	FLOADER_FILE
+
+				LDA	$C08B			;Bank 1
+				LDA	$C08B
+
+				LDX	#$04
+				JSR	FLOADER_FILE
+				LDX	#$05
+				JSR	FLOADER_FILE
+				JMP	$9D00
+
+BOOT_TABLE		DFB	$02				;0  PRInfo
+				DW	$0200
+				DB	$01
+
+				DB	$D0				;1 Camp.D000.M2
+				DW	$01F0
+				DB	$0D
+
+				DFB	$B0				;2  Camp.B000
+				DW	$0130
+				DFB	$0B
+
+				DFB	$E0				;3  Camp.Main
+				DW	$01C0
+				DFB	$20
+
+				DB	$D0				;4  Camp.D000.M1
+				DW	$01E0
+				DB	$0B
+
+				DFB	$9D				;5  Loader17
+				DW	$0220
+				DFB	$02
+
+				SAV	FAKE.BOOT

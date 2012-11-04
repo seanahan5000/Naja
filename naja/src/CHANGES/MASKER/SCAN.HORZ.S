@@ -1,0 +1,97 @@
+MAKE_MASK		LDX	#0
+:1				JSR	SCAN_RIGHT
+				JSR	SCAN_LEFT
+				INX
+				CPX	#192
+				BNE	:1
+				RTS
+
+SCAN_RIGHT		LDA	#%00000001
+				LDY	#0
+SCAN_R2			STA	TEMP
+
+				LDA	LOBYTES,X
+				STA	SCREENL
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	SCREENH
+				EOR	#$60
+				STA	DESTINH
+
+:0				LDA	(SCREENL),Y
+				AND	TEMP
+				BNE	:5
+				LDA	TEMP
+				ORA	(DESTINL),Y
+				STA	(DESTINL),Y
+				ASL	TEMP
+				BPL	:0
+				BMI	:2				;Always
+
+:1				LDA	(SCREENL),Y
+				AND	#$7F
+				BNE	:3
+				LDA	#$7F
+				STA	(DESTINL),Y
+:2				INY
+				CPY	#40
+				BNE	:1
+				RTS
+
+:3				LDA	#%00000001
+				STA	TEMP
+:4				LDA	(SCREENL),Y
+				AND	TEMP
+				BNE	:5
+				LDA	TEMP
+				ORA	(DESTINL),Y
+				STA	(DESTINL),Y
+				ASL	TEMP
+				BPL	:4				;Always
+:5				RTS
+
+
+SCAN_LEFT		LDA	#%01000000
+				LDY	#39
+SCAN_L2			STA	TEMP
+
+				LDA	LOBYTES,X
+				STA	SCREENL
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	SCREENH
+				EOR	#$60
+				STA	DESTINH
+
+:0				LDA	(SCREENL),Y
+				AND	TEMP
+				BNE	:5
+				LDA	TEMP
+				ORA	(DESTINL),Y
+				STA	(DESTINL),Y
+				LSR	TEMP
+				BNE	:0
+				BEQ	:2				;Always
+
+:1				LDA	(SCREENL),Y
+				AND	#$7F
+				BNE	:3
+				LDA	#$7F
+				STA	(DESTINL),Y
+:2				DEY
+				BPL	:1
+				RTS
+
+:3				LDA	#%01000000
+				STA	TEMP
+:4				LDA	(SCREENL),Y
+				AND	TEMP
+				BNE	:5
+				LDA	TEMP
+				ORA	(DESTINL),Y
+				STA	(DESTINL),Y
+				LSR	TEMP
+				BNE	:4				;Always
+:5				RTS

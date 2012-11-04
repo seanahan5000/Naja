@@ -1,0 +1,752 @@
+**********************************************************
+*                                                        *
+*              MOTHERSHIP/TRACC CAMP ROUTINE             *
+*                                                        *
+*                        02/21/87                        *
+*                                                        *
+**********************************************************
+
+CAMPER			LDA	#$40
+				STA	PAGE
+				JSR	CLEAR2
+				JSR	SBOXER
+				JSR	MOVDOWN
+				JSR	HSWITCH
+				LDA	#$20
+				STA	PAGE
+				LDA	#VIOLET
+				STA	COLOR
+				LDY	#$03
+				JSR	LINER2
+				LDY	#$0D
+				JSR	TEXTER
+
+				LDX	#<:STAT_DEF
+				LDY	#>:STAT_DEF
+				JSR	INIT_CURSOR
+				JSR	GETKEY
+				JMP	DESTINATION
+
+*-------------------------------
+:STAT_DEF		DB	$02				;min 0, max 2
+				DB	$80				;start at 0, clear LEGALS
+				DW	:STAT_CURS
+				DW	:STAT_JUMPS
+
+:STAT_CURS		LDX	CURSOR
+				LDY	:YPNTS,X
+				LDX	#$75
+				JMP	ARROWER
+:YPNTS			DFB	$24,$2D,$36
+
+:STAT_JUMPS		DW	SMORE
+				DW	SFLIP
+				DW	SOUT
+*-------------------------------
+
+SOUT			LDY	#$0D
+				JSR	TEXTER
+				LDA	#BLACK1
+				STA	COLOR
+				LDY	#$03
+				JSR	LINER2
+				JSR	HTOGGLE
+				JSR	HSWITCH
+				JSR	HTOGGLE
+				JMP	RDKEY
+
+SFLIP			JSR	DRAW_CURSOR
+				LDA	#$7C
+				STA	MODHEAD+1
+				JSR	EXCHNGE
+				JSR	EXFLIP
+				JSR	EXCHNGE
+				LDA	#$02
+				STA	MODHEAD+1
+				JSR	GETKEY2
+				JMP	DESTINATION
+
+BYPOINT			DFB	$86,$8E,$96
+				DFB	$9E,$A6,$AE
+				DFB	$B6
+
+EXCHNGE			LDY	#$06
+EX2				LDA	YPOINTS,Y
+				LDX	BYPOINT,Y
+				STA	BYPOINT,Y
+				TXA
+				STA	YPOINTS,Y
+				DEY
+				BPL	EX2
+				RTS
+
+FORCE_CAMP		LDA	#$40
+				STA	PAGE
+				JSR	CLEAR2
+				JSR	SBOXER
+SMORE			LDX	#$79
+:LOOP1			LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$40
+				STA	SCREENH
+				LDA	#$00
+				LDY	#$27
+:LOOP2			STA	(SCREENL),Y
+				DEY
+				BPL	:LOOP2
+				INX
+				CPX	#$C0
+				BNE	:LOOP1
+				LDA	#$40
+				STA	PAGE
+				LDA	#$60
+				STA	STOPPER
+				JSR	DOPTION
+				LDA	#$8D
+				STA	STOPPER
+				STA	SCNDARY
+				JSR	MOVETO1
+				LDA	#$20
+				STA	PAGE
+				LDA	#$05
+				BNE	STOPPER			;Always
+
+CAMP			ORA	#$80
+				STA	CCURPOS
+				BIT	UNSTROB
+				JSR	CLEAR1
+				LDA	#$20
+				STA	PAGE
+				JSR	SBOXER
+DOPTION			LDY	#$07
+				JSR	TEXTER
+
+				LDX	#BLUE
+				LDA	SHELL
+				BEQ	:SKIPA
+				LDX	#RED
+:SKIPA			STX	COLOR
+
+				LDY	#$02
+				JSR	LINER2
+				LDA	CCURPOS
+STOPPER			STA	PRIMARY
+COPTION			ORA	#$80
+				STA	CCURPOS
+				LDX	#<:CAMP_DEF
+				LDY	#>:CAMP_DEF
+				JSR	INIT_CURSOR
+				JSR	DOWN2
+				LDY	CURSOR
+				JSR	CMARKER
+				LDA	SHELL
+				BEQ	:SKIPA
+				JSR	SET_CAMPFILES
+:SKIPA			JMP	DESTINATION
+
+*-------------------------------
+:CAMP_DEF		DB	$05
+CCURPOS			DB	$80
+				DW	:CAMP_CURS
+				DW	:CAMP_JUMPS
+
+:CAMP_JUMPS		DW	TRADE
+				DW	POOLER
+				DW	GOFORM
+				DW	GOISTAT
+				DW	GOFLOP
+				DW	LEAVE_CAMP
+
+:CAMP_CURS		LDX	CURSOR
+				LDY	YPNTSB,X
+				LDX	#$43
+				JMP	ARROWER
+YPNTSB			DFB	$80,$89,$92
+				DFB	$9B,$A4,$AD
+*-------------------------------
+
+GOFLOP			JSR	EXFLIP
+				LDY	CURSOR
+				JSR	CMARKER
+				JSR	DRAW_CURSOR
+				JSR	GETKEY2
+COPT_COM		LDY	CURSOR
+				JSR	CMARKER
+				JMP	DESTINATION
+
+GOFORM			LDA	SHELL			;REFORMAT
+				BNE	:SKIPA
+				LDY	CURSOR
+				JSR	CMARKER
+				JSR	DOWN2
+				JMP	COPT_COM
+:SKIPA			JSR	LOAD_REFORM
+				JMP	REFORMAT
+
+LOAD_REFORM		LDA	CAMP_HERE
+				AND	#bit_RefRegCom
+				BNE	:EXIT
+				LDX	#cRefRegCom
+				JSR	SLOAD_FILE
+				LDA	CAMP_HERE
+				ORA	#bit_RefRegCom
+				STA	CAMP_HERE
+:EXIT			RTS
+
+LEAVE_CAMP		LDA	SHELL
+				BNE	LOOSE_ENDS
+GET_OUT			JSR	CLEAR2
+				LDA	#$40
+				STA	PAGE
+				LDA	#WHITE1
+				STA	COLOR
+				JSR	NOSCAN
+				LDA	#$20
+				STA	PAGE
+				STA	SCNDARY
+				JSR	MOVETO1
+				STA	PRIMARY
+				JMP	RDKEY
+LOOSE_ENDS
+*** Notify if any characters in group are critical
+				LDA	#$00
+				STA	COUNT
+:LOOP1			JSR	POINTIT
+				LDY	#status
+				LDA	(CHARDL),Y
+				AND	#critical
+				BNE	:SKIPA
+				INC	COUNT
+				LDA	COUNT
+				CMP	GRPNUMB
+				BNE	:LOOP1
+				BEQ	LOOK_FOR_DEAD	;Always
+:SKIPA			LDX	#<CRIT_BOX
+				LDY	#>CRIT_BOX
+				JSR	INIT_BOX
+				LDA	#$40
+				STA	PAGE
+				JSR	CLEAR_OUTSIDE
+				JSR	DRAW_BOX
+				JSR	SWAP_BOX
+				LDA	#$20
+				STA	PAGE
+:LOOP2			JSR	CLEAR_INSIDE
+				JSR	BANK_2
+				LDX	#<TCRITCAMP+3
+				LDY	#>TCRITCAMP+3
+				JSR	FLUSH_NAME
+				JSR	BANK_1
+				LDY	#$11
+				JSR	TEXTER
+				JSR	SPACE_KEY
+:LOOP3			INC	COUNT
+				LDA	COUNT
+				CMP	GRPNUMB
+				BEQ	:SKIPC
+				JSR	POINTIT
+				LDY	#status
+				LDA	(CHARDL),Y
+				AND	#critical
+				BEQ	:LOOP3
+				BNE	:LOOP2			;Always
+:SKIPC			JSR	SWAP_BOX
+*** Ask them to verify that they want to leave character/s
+***   that are dead
+LOOK_FOR_DEAD	JSR	DEAD_LOOKER
+				INX
+				BNE	:1
+				JMP	FILL_FRONT
+:1				LDX	#<DEAD_BOX
+				LDY	#>DEAD_BOX
+				JSR	INIT_BOX
+				LDA	#$40
+				STA	PAGE
+				JSR	CLEAR_OUTSIDE
+				JSR	DRAW_BOX
+				LDY	#$12
+				JSR	TEXTER
+				JSR	SWAP_BOX
+				LDA	#$20
+				STA	PAGE
+				JSR	ASK_YESNO
+				BCS	TAKE_DEAD
+				JSR	SWAP_BOX
+				LDY	CURSOR
+				JSR	CMARKER
+				LDA	#$04
+				JMP	COPTION
+*** Take dead characters out of the group if verified
+TAKE_DEAD		JSR	SWAP_BOX
+:LOOP1			LDA	GRPNUMB
+				BEQ	ALL_DEAD
+				JSR	DEAD_LOOKER
+				LDX	#0
+:LOOP2			LDA	CHAR_LIST,X
+				BEQ	:SKIPA
+				INX
+				BNE	:LOOP2			;Always
+:SKIPA			DEC	GRPNUMB
+				STX	COUNT
+				CPX	GRPNUMB
+				BEQ	:LOOP1
+				TXA
+				PHA
+				JSR	POINTIT
+				JSR	RETURN_DCARDS
+				LDY	#status
+				LDA	#intracc
+				STA	(CHARDL),Y
+				PLA
+				JSR	HIDE_MEMBER
+				JMP	:LOOP1
+*** If all members are dead, force into dead group routine
+ALL_DEAD		LDA	GRPNUMB
+				BNE	FILL_FRONT
+				LDA	DISK_SIDE
+				EOR	#%00000110
+				STA	DISK_SIDE
+				JSR	SET_FGHTFILES
+				LDX	#fDeadGroup
+				JSR	SLOAD_FILE
+				JMP	$8000
+*** Check for someone in front row, if not, force into reformat
+FILL_FRONT		JSR	RESET_CHRLIST
+				LDA	#$05			;Front Row
+				JSR	CSCAN_Y
+				INX
+				BNE	:SKIPA
+				JMP	GOFORM
+*** Calculate max sight range based on robot's max 2
+:SKIPA			JSR	CALC_SRANGE
+				JMP	GET_OUT
+
+DEAD_LOOKER		JSR	RESET_CHRLIST
+				LDX	#<FIND_DEAD
+				LDY	#>FIND_DEAD
+				JMP	CSCAN_COMMON
+
+FIND_DEAD		LDY	#status
+				LDA	(CHARDL),Y
+				AND	#%00111111
+				CMP	#dead
+				BEQ	:EXIT
+				CMP	#broken
+:EXIT			RTS
+
+FIND_CRITCALS	LDY	#status
+				LDA	(CHARDL),Y
+				AND	#critical
+				EOR	#critical
+				RTS
+
+CRIT_BOX		DDB	52
+				DB	86
+				DDB	226
+				DB	106
+				DFB	BLUE
+				DFB	wspace
+
+DEAD_BOX		DDB	32
+				DB	78
+				DDB	248
+				DB	114
+				DFB	BLUE
+				DFB	wyesno
+
+
+RETURN_DCARDS	JSR	RESET_EQLIST
+				LDX	#<DCARD_ORBS
+				LDY	#>DCARD_ORBS
+				JSR	ESCAN_COMMON
+				BCC	:EXIT
+				LDX	#16
+:LOOP1			DEX
+				BMI	:EXIT
+				LDA	EQUIP_LIST,X
+				BEQ	:LOOP1
+				STX	TEMP
+				LDY	CORESPS,X
+				INY
+				LDA	(CHARDL),Y
+				TAY
+				AND	#%00000111
+				PHA
+				TYA
+				LSR
+				LSR
+				LSR
+				TAX
+				PLA
+				CMP	#$02			;ORB
+				BEQ	:SKIPA
+				TXA
+				LSR
+				LSR
+				LSR
+				TAY
+				TXA
+				AND	#%00000111
+				TAX
+				LDA	BITMASKS,X
+				EOR	#$FF
+				AND	DCARDS_FOUND,Y
+				STA	DCARDS_FOUND,Y
+				JMP	:SKIPB
+:SKIPA			LDA	BITMASKS,X
+				EOR	#$FF
+				AND	ORBS_FOUND
+				STA	ORBS_FOUND
+:SKIPB			LDA	TEMP
+				PHA
+				TAX
+				JSR	REMOVE_ITEM
+				PLA
+				TAX
+				BPL	:LOOP1			;Always
+:EXIT			RTS
+
+BITMASKS		DB	%10000000
+				DB	%01000000
+				DB	%00100000
+				DB	%00010000
+				DB	%00001000
+				DB	%00000100
+				DB	%00000010
+				DB	%00000001
+
+DCARD_ORBS		LDA	(CHARDL),Y
+				CMP	#$43
+				BNE	:EXIT
+				INY
+				LDA	(CHARDL),Y
+				AND	#%00000111
+				CMP	#$02			;ORBS
+				BEQ	:EXIT
+				CMP	#$04			;DATA CARDS
+:EXIT			RTS
+
+
+CALC_SRANGE		JSR	RESET_CHRLIST
+				LDA	#robot*16
+				JSR	CSCAN_PROF
+				LDA	#6				;TEMP****
+*LDA #2
+				BCC	:SKIPB
+				LDX	#$00
+:LOOP1			LDA	CHAR_LIST,X
+				BEQ	:SKIPA
+				INX
+				BNE	:LOOP1			;Always
+:SKIPA			TXA
+				JSR	POINTIT
+				LDY	#e1_HEAD
+				LDA	(CHARDL),Y
+				AND	#%00000111
+:SKIPB			CMP	SRANGE
+				BCS	:SKIPC
+				STA	SRANGE
+:SKIPC			STA	MXRANGE
+				RTS
+
+
+GOISTAT			LDY	#$0E
+				JSR	TEXTER
+				JSR	GRPSUB
+				LDA	CURSOR
+				CMP	#$07
+				BNE	NOCANDO
+				LDY	#$0E
+				JSR	TEXTER
+				LDY	#$03
+				JSR	CMARKER
+				LDA	#$02
+				JMP	COPTION
+NOCANDO			JSR	POINTIT
+				JSR	DRAW_CURSOR
+				JMP	DOSTATS
+
+GRPSUB			JSR	RESET_CHRLIST
+GRPSUB2			LDA	#$00
+				STA	GCURPOS
+				STA	LEGALS+7
+				JSR	PRE_ARROW
+				JMP	GETKEY
+
+SBOXER			LDA	#GREEN
+				STA	COLOR
+				LDY	#$00
+				JSR	LINER2
+				LDA	#$42
+				STA	SELECT
+				LDA	#$02
+				STA	YPNT
+				JSR	HEADER
+				LDA	#$00
+				STA	COUNT
+NOTHRLN			TAY
+				LDA	YPOINTS,Y
+				STA	YPNT
+				TYA
+				JSR	STATLIN
+				INC	COUNT
+				LDA	COUNT
+				CMP	GRPNUMB
+				BNE	NOTHRLN
+				RTS
+
+HSWITCH			LDA	#$BF
+				STA	ALINE
+HLOOP1			LDX	ALINE
+				JSR	GET_SWAP
+				LDY	#$27
+HLOOP2			LDA	(DESTINL),Y
+				TAX
+				LDA	(SCREENL),Y
+				STA	(DESTINL),Y
+				TXA
+				STA	(SCREENL),Y
+				DEY
+				BPL	HLOOP2
+				LDA	ALINE
+MODPNT1			DEC	ALINE
+MODPNT2			CMP	#$79
+				BNE	HLOOP1
+				RTS
+
+HTOGGLE			LDA	MODPNT1
+				EOR	#$20
+				STA	MODPNT1
+				LDA	HSWITCH+1
+				LDX	MODPNT2+1
+				STX	HSWITCH+1
+				STA	MODPNT2+1
+				RTS
+
+MOVDOWN			LDA	#$00
+				STA	ALINE
+				LDA	#$7A
+				STA	BLINE
+MD2				LDY	ALINE
+				LDA	LOBYTES,Y
+				STA	SCREENL
+				LDA	HIBYTES,Y
+				ORA	#$40
+				STA	SCREENH
+				LDY	BLINE
+				LDA	LOBYTES,Y
+				STA	DESTINL
+				LDA	HIBYTES,Y
+				ORA	#$40
+				STA	DESTINH
+				JSR	LINMOVE
+				INC	ALINE
+				LDA	BLINE
+				INC	BLINE
+				CMP	#$BF
+				BNE	MD2
+				RTS
+
+POOLER			JSR	CLEAR2
+				LDA	#GREEN
+				STA	COLOR
+				LDA	#$40
+				STA	PAGE
+				LDY	#$00
+				JSR	LINER2
+				LDY	#$10
+				JSR	TEXTER
+				LDA	#$6E
+				STA	XPNT
+				JSR	RESET_CHLIST
+				LDA	#$00
+				STA	COUNT
+DRWCRED			TAY
+				LDA	LEGALS,Y
+				BNE	:SKIPA
+				LDA	YPOINTS,Y
+				STA	YPNT
+				TYA
+				JSR	POINTIT
+				JSR	CHAR_CREDOUT
+:SKIPA			INC	COUNT
+				LDA	COUNT
+				CMP	GRPNUMB
+				BNE	DRWCRED
+POSTOP			JSR	POOL_TO_TOTAL
+				LDA	#$46
+				STA	YPNT
+				JSR	TOTAL_CREDOUT
+				LDA	#$20
+				STA	PAGE
+				JSR	MOVE212
+				LDY	#$0C
+				JSR	TEXTER
+				LDA	#$00
+				STA	LEGALS+7
+				STA	GCURPOS
+				JSR	PRE_ARROW
+				BIT	UNSTROB
+				JSR	GETKEY
+				LDY	#$0C
+				JSR	TEXTER
+				JSR	MOVE212
+				LDA	CURSOR
+				CMP	#$07
+				BEQ	POOLOUT
+				LDA	CURSOR
+				JSR	POOL_TO_CHAR
+POOLOUT			LDY	#$01
+				JSR	CMARKER
+				LDA	#$00
+				JMP	COPTION
+
+CMARKER			LDA	YPNTSB,Y
+				STA	YPNT
+				LDA	#$46
+				STA	XPNT
+				LDA	#$04
+				JMP	SPCHARS
+
+LINER2			JSR	BANK_2
+				TYA
+				ASL	A
+				TAY
+				LDA	LINES,Y
+				STA	POINTL
+				INY
+				LDA	LINES,Y
+				STA	POINTH
+				JSR	LINEOUT
+				JMP	BANK_1
+
+*-------------------------------
+PRE_ARROW		LDX	#<:PRE_DEF
+				LDY	#>:PRE_DEF
+				JMP	INIT_CURSOR
+
+:PRE_DEF		DB	$0A
+GCURPOS			DB	$00
+				DW	:PRE_CURS
+
+:PRE_CURS		LDY	CURSOR
+				LDA	YPOINTS,Y
+				TAY
+				LDX	#$03
+				LDA	CURSOR
+				CMP	#$08
+				BCC	:SKIPA
+				LDX	#$5A
+:SKIPA			JMP	ARROWER
+*-------------------------------
+
+EXFLIP			LDA	#$00
+				STA	COUNT
+MODHEAD			LDA	#$02
+				STA	YPNT
+
+				LDA	SHELL
+				BNE	:SKIPA
+
+				JSR	DORS
+				LDA	SELECT
+				PHA
+				EOR	#$03
+				STA	SELECT
+				JSR	DORS
+				JMP	:SKIPB
+
+:SKIPA			JSR	HEADER2
+				LDA	SELECT
+				PHA
+				EOR	#$C3
+				STA	SELECT
+				JSR	HEADER2
+
+:SKIPB			PLA
+				STA	SELECT
+MORFLOP			LDA	COUNT
+				JSR	POINTIT
+				LDY	COUNT
+				LDA	YPOINTS,Y
+				STA	YPNT
+
+				LDA	SHELL
+				BNE	:SKIPA
+
+				JSR	PICDS
+				LDA	SELECT
+				PHA
+				EOR	#$03
+				STA	SELECT
+				JSR	PICDS
+				JMP	:SKIPB
+
+:SKIPA			JSR	STATL2
+				LDA	SELECT
+				PHA
+				EOR	#$C3
+				STA	SELECT
+				JSR	STATL2
+
+:SKIPB			PLA
+				STA	SELECT
+				INC	COUNT
+				LDA	COUNT
+				CMP	GRPNUMB
+				BNE	MORFLOP
+				LDA	SELECT
+				EOR	#$C3
+				STA	SELECT
+				RTS
+
+MOVE212			LDA	#$00
+				STA	LINENUM
+MLOOP1			LDX	LINENUM
+				JSR	GET_SWAP
+				LDY	#$0F
+MLOOP2			LDA	(SCREENL),Y
+				TAX
+				LDA	(DESTINL),Y
+				STA	(SCREENL),Y
+				TXA
+				STA	(DESTINL),Y
+				INY
+				CPY	#$28
+				BNE	MLOOP2
+				LDA	LINENUM
+				INC	LINENUM
+				CMP	#$4C
+				BNE	MLOOP1
+				RTS
+
+*-------------------------------
+
+GET_SCREEN		LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	PAGE
+				STA	SCREENH
+				RTS
+
+GET_SCRNDEST	JSR	GET_SCREEN
+				DEX
+GET_DESTIN		LDA	LOBYTES,X
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	PAGE
+				STA	DESTINH
+				RTS
+
+GET_SWAP		LDA	LOBYTES,X
+				STA	SCREENL
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	SCREENH
+				EOR	#$60
+				STA	DESTINH
+				RTS
+
+*-------------------------------

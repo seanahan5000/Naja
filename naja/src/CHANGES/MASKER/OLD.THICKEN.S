@@ -1,0 +1,136 @@
+THICKEN_MASK
+				LDX	#0
+:0				JSR	SCRN_2_AUX
+				INX
+				CPX	#192
+				BNE	:0
+
+				LDX	#0
+:1				JSR	SCRN_2_BUFF
+				JSR	SHIFT_LEFT
+				JSR	BUFF_2_SCRN
+				JSR	SCRN_2_BUFF
+				JSR	SHIFT_RIGHT
+				JSR	BUFF_2_SCRN
+				INX
+				CPX	#192
+				BNE	:1
+
+				LDX	#1
+:2				JSR	AUX_2_BUFF
+				DEX
+				JSR	BUFF_2_SCRN
+				INX
+				INX
+				CPX	#192
+				BNE	:2
+
+				LDX	#190
+:3				JSR	AUX_2_BUFF
+				INX
+				JSR	BUFF_2_SCRN
+				DEX
+				DEX
+				CPX	#-1
+				BNE	:3
+
+				LDX	#0
+:4				JSR	AUX_2_BUFF
+				JSR	SHIFT_LEFT
+				JSR	SHIFT_LEFT
+				JSR	BUFF_2_SCRN
+				JSR	AUX_2_BUFF
+				JSR	SHIFT_RIGHT
+				JSR	SHIFT_RIGHT
+				JSR	BUFF_2_SCRN
+				INX
+				CPX	#192
+				BNE	:4
+
+				RTS
+
+
+SHIFT_LEFT		LDY	#39
+				CLC
+				PHP
+:1				LDA	BUFFER,Y
+				ASL
+				PLP
+				ROR
+				LSR
+				PHP
+				STA	BUFFER,Y
+				DEY
+				BPL	:1
+				PLP
+				RTS
+
+SHIFT_RIGHT		LDY	#0
+				CLC
+				PHP
+:1				LDA	BUFFER,Y
+				PLP
+				ROL
+				ASL
+				PHP
+				LSR
+				STA	BUFFER,Y
+				INY
+				CPY	#40
+				BNE	:1
+				PLP
+				RTS
+
+AUX_2_BUFF		LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$60
+				STA	SCREENH
+				LDY	#39
+:1				LDA	(SCREENL),Y
+				STA	BUFFER,Y
+				DEY
+				BPL	:1
+				RTS
+
+SCRN_2_BUFF		LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$40
+				STA	SCREENH
+				LDY	#39
+:1				LDA	(SCREENL),Y
+				STA	BUFFER,Y
+				DEY
+				BPL	:1
+				RTS
+
+BUFF_2_SCRN		LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$40
+				STA	SCREENH
+				LDY	#39
+:1				LDA	BUFFER,Y
+				ORA	(SCREENL),Y
+				STA	(SCREENL),Y
+				DEY
+				BPL	:1
+				RTS
+
+SCRN_2_AUX		LDA	LOBYTES,X
+				STA	SCREENL
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$40
+				STA	SCREENH
+				ORA	#$60
+				STA	DESTINH
+				LDY	#39
+:1				LDA	(SCREENL),Y
+				STA	(DESTINL),Y
+				DEY
+				BPL	:1
+				RTS
+
+BUFFER			DS	40

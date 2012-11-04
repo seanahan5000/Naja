@@ -1,0 +1,212 @@
+*-------------------------------
+* On Entry:
+*   X,Y -> Address of limit subroutine
+*
+* On Exit:
+*   Carry set -> Okay
+*   Carry clear -> Cancel
+
+GET_MULTIPLE	STX	LIMIT_SUB+1
+				STY	LIMIT_SUB+2
+				LDY	#$1B
+				JSR	TEXTER
+
+				LDX	#$00
+				STX	HOWCUR1
+				INX
+				STX	HOWCUR2
+				JSR	DRAWHOW
+				LDX	#2
+:LOOP1			LDA	ENERGY_USAGE,X
+				STA	TOTAL_VALUE,X
+				DEX
+				BPL	:LOOP1
+				LDA	#$C9
+				STA	TOTAL_DEF
+				LDA	#$98
+				STA	TOTAL_DEF+1
+				LDX	#<TOTAL_DEF
+				LDY	#>TOTAL_DEF
+				LDA	#1
+				SEC
+				JSR	TEXT_INIT
+				JSR	START_ENERLEV
+				LDA	TIMLEFT
+				STA	HOLD_TIME
+				CLC
+				JSR	LIMIT_SUB
+NBLINK			LDA	#$10
+				JSR	WAIT
+				LDA	#$F0
+				JSR	WAIT2
+				BMI	NGOTKEY
+				JSR	DRAWHOW
+				LDA	#$00
+				JSR	WAIT2
+				JSR	DRAWHOW
+				BIT	KEYBRD
+				BPL	NBLINK
+NMOVKEY			LDA	KEYBRD
+				BPL	NMOVKEY	
+NGOTKEY			BIT	UNSTROB
+				JSR	CHECK_UP
+				BEQ	MULT_UP
+				JSR	CHECK_DOWN
+				BEQ	MULT_DOWN
+				JSR	CHECK_ENTER
+				BEQ	:EXIT
+				CMP	#"C"
+				BNE	NMOVKEY
+				CLC
+:EXIT			RTS
+
+MULT_UP			LDA	ENERGY_VALUE
+				AND	#%11110000
+				CMP	#$E0
+				BEQ	NMOVKEY
+				CLC
+				JSR	LIMIT_SUB
+				BCC	NMOVKEY
+				JSR	DRAWHOW
+				LDA	HOWCUR2
+				CLC
+				ADC	#$01
+				STA	HOWCUR2
+				CMP	#$0A
+				BNE	:SKIPA
+				LDA	#$00
+				STA	HOWCUR2
+				INC	HOWCUR1
+:SKIPA			JSR	DRAWHOW
+				LDX	#2
+				CLC
+:LOOP1			LDA	TOTAL_VALUE,X
+				SED
+				ADC	ENERGY_USAGE,X
+				CLD
+				STA	TOTAL_VALUE,X
+				DEX
+				BPL	:LOOP1
+				BMI	MULT_UPDWN		;Always
+
+MULT_DOWN		JSR	DRAWHOW
+				DEC	HOWCUR2
+				BPL	:SKIPA
+				LDA	#9
+				STA	HOWCUR2
+				DEC	HOWCUR1
+				BPL	:SKIPA
+				LDA	#0
+				STA	HOWCUR1
+:SKIPA			LDA	HOWCUR1
+				ORA	HOWCUR2
+				BNE	:SKIPB
+				LDA	#1
+				STA	HOWCUR2
+				JSR	DRAWHOW
+				JMP	NMOVKEY
+:SKIPB			SEC
+				JSR	LIMIT_SUB
+				JSR	DRAWHOW
+				LDX	#2
+				SEC
+:LOOP1			LDA	TOTAL_VALUE,X
+				SED
+				SBC	ENERGY_USAGE,X
+				CLD
+				STA	TOTAL_VALUE,X
+				DEX
+				BPL	:LOOP1
+MULT_UPDWN		LDA	#1
+				JSR	TEXT_UPDATE
+				JSR	NEW_ENERLEV
+				JMP	NMOVKEY
+
+*-------------------------------
+
+DRAWHOW			LDA	HOWCUR1
+				BNE	:SKIPA
+				LDA	#$0A
+:SKIPA			STA	TEXTBUF
+				LDA	HOWCUR2
+				STA	TEXTBUF+1
+				LDA	#$8D
+				STA	TEXTBUF+2
+				LDA	#$E1
+				LDY	#$8F
+				JMP	LINE
+
+HOWCUR1			DB	0
+HOWCUR2			DB	0
+
+
+*-------------------------------
+* ON ENTRY:
+*   Carry clear -> up
+*   Carry set   -> down
+*
+* ON EXIT:
+*   Carry set   -> legal to move
+*   Carry clear -> not legal to move
+
+LIMIT_SUB		JMP	$FFFF			;Modified
+
+LIMIT_SWNSHT	BCS	:SKIPA
+				LDA	TIMLEFT
+				CMP	TIMES+timeSHOOT
+				BCC	:EXIT
+				JSR	DOTIME3
+				SEC
+				SED
+				LDA	TIMLEFT
+				SBC	TIMES+timeSHOOT
+				BCS	:SKIPB			;Always
+:SKIPA			JSR	DOTIME3
+				CLC
+				SED
+				LDA	TIMLEFT
+				ADC	TIMES+timeSHOOT
+:SKIPB			CLD
+				STA	TIMLEFT
+				JSR	DOTIME3
+				SEC
+:EXIT			RTS
+
+LIMIT_USE		BCS	:EXIT
+				LDA	HOWCUR1
+				CMP	#5				;50 per command maximum
+				BCC	:SKIPA
+				LDA	HOWCUR2
+				CLC
+				BEQ	:EXIT
+:SKIPA			SEC
+:EXIT			RTS
+
+*-------------------------------
+
+SWNSHT_UNDO		JSR	DOTIME3
+				LDA	HOLD_TIME
+				STA	TIMLEFT
+				JSR	DOTIME3
+				JMP	DE_ENERLEV
+
+HOLD_TIME		DB	0
+
+*-------------------------------
+
+NUMBER_SIGN		STX	XPNT
+				STY	YPNT
+				LDA	#0
+				LDX	#<NUMBER_SHAPE
+				LDY	#>NUMBER_SHAPE
+				JMP	DRAW_SHAPES
+
+NUMBER_SHAPE	DB	%00011011
+				DB	%00011011
+				DB	%01111000
+				DB	%00011011
+				DB	%01111000
+				DB	%00011011
+				DB	%00011011
+
+*-------------------------------

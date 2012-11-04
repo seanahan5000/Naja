@@ -1,0 +1,135 @@
+READ_VECTOR		=	$0406
+ON_OFF_FLAG		=	$07F8
+
+EXTRA_64K		=	$3C0			;???
+
+
+*-------------------------------
+*
+*-------------------------------
+
+REMOVE_WTAB		SEC
+				BCS	MESS_COM		;Always
+ASK_FOR_SIDE	LSR
+				TAX
+				LDA	SIDE_LETTERS,X
+				STA	MESSAGES+12
+				LDX	#1
+				BCC	:SKIPA
+				INX
+:SKIPA			STX	MESSAGES+13
+				CLC
+MESS_COM		PHP
+				JSR	CLEAR_HOLES
+				JSR	SWAP_HOLES
+				PLP
+				LDY	#6
+:LOOP1			LDX	PRESERVES,Y
+				LDA	$00,X
+				PHA
+				DEY
+				BPL	:LOOP1
+
+				LDY	#15
+				BCC	:SKIPA
+				LDY	#31
+:SKIPA			LDX	#15
+:LOOP2			LDA	MESSAGES,Y
+				STA	TEXTBUF,X
+				DEY
+				DEX
+				BPL	:LOOP2
+
+				JSR	DRAW_MESSAGE
+
+				BIT	UNSTROB
+:LOOP3			LDA	KEYBRD
+				BPL	:LOOP3
+				BIT	UNSTROB
+				JSR	SWAP_HOLES
+				LDY	#0
+:LOOP4			PLA
+				LDX	PRESERVES,Y
+				STA	$00,X
+				INY
+				CPY	#7
+				BNE	:LOOP4
+				RTS
+
+*-------------------------------
+
+
+RAM_FILE		BIT	EXTRA_64K
+				BMI	:SKIPA
+				AND	#%01111111
+*BPL NO_RAM ;Always
+:SKIPA
+*** SWITCH IN AUXILIARY TEXT PAGE
+				JMP	$0400			;RAM_DISK later
+
+				DS	$1FFF-111-*
+
+COMMON1			STA	ON_OFF_FLAG
+				TXA
+				DS	2,$EA			;TEMP****
+*BMI RAM_FILE
+NO_RAM			ASL
+				ASL
+				TAX
+FILE_MOD1		LDA	$FFFF,X			;Dest address high
+				STA	SSTOREH
+				INX
+				INX
+				INX
+FILE_MOD2		LDA	$FFFF,X			;# of sectors to read
+				PHA
+				DEX
+FILE_MOD3		LDY	$FFFF,X			;Beginning sector high
+				DEX
+FILE_MOD4		LDA	$FFFF,X			;Beginning sector low
+				TAX
+				LDA	ON_OFF_FLAG
+COMMON2			STA	ON_OFF_FLAG
+				PLA
+				JMP	READ_VECTOR
+
+** FILE TABLE FORMAT
+** DESTH,SECTL,SECTH,LENGTH
+
+SET_FILE_TABL	STX	FILE_MOD1+1
+				STX	FILE_MOD2+1
+				STX	FILE_MOD3+1
+				STX	FILE_MOD4+1
+				STY	FILE_MOD1+2
+				STY	FILE_MOD2+2
+				STY	FILE_MOD3+2
+				STY	FILE_MOD4+2
+				RTS
+
+SLOAD			PHA
+				LDA	#%00000000
+				BPL	COMMON2			;Always
+SLOADER			PHA
+				LDA	#%01000000
+				BPL	COMMON2			;Always
+FLOAD			PHA
+				LDA	#%10000000
+				BMI	COMMON2			;Always
+FLOADER			PHA
+				LDA	#%11000000
+				BMI	COMMON2			;Always
+				NOP
+
+SLOAD_FILE		LDA	#%00000000
+				BPL	COMMON1			;Always
+SLOADER_FILE	LDA	#%01000000
+				BPL	COMMON1			;Always
+FLOAD_FILE		LDA	#%10000000
+				BMI	COMMON1			;Always
+FLOADER_FILE	LDA	#%11000000
+				BMI	COMMON1			;Always
+				NOP
+
+				JMP	$FFFF			;AVAILABLE VECTOR
+UN_WRITE_PRO	JMP	REMOVE_WTAB
+ASK_VECTOR		JMP	ASK_FOR_SIDE

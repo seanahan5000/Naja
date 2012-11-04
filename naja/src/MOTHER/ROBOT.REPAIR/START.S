@@ -1,0 +1,115 @@
+				LDA	KEYBRD
+				BPL	NOCLEAR
+				JSR	CHECK_UP
+				BNE	NOCLEAR
+				BIT	UNSTROB
+NOCLEAR			LDA	#$40
+				STA	PAGE
+				JSR	CLEAR2
+				LDA	#$04
+				STA	COUNT
+:LOOP1			LDY	COUNT
+				JSR	RPICKER
+				DEC	COUNT
+				BPL	:LOOP1
+				LDA	#WHITE1
+				STA	COLOR
+				LDY	#0
+				JSR	RLINER
+				LDA	#<RTEXT0
+				STA	POINTL
+				LDA	#>RTEXT0
+				STA	POINTH
+				JSR	TEXTOUT
+				STA	SCNDARY
+				LDA	#$20
+				STA	PAGE
+				LDA	#$06
+				STA	XPOS
+				STA	YPOS
+				LDA	#$00
+				STA	DIRECTN
+				JSR	GETNSEW
+				JSR	NOSCAN
+				LDA	#BLACK1
+				STA	COLOR
+				LDY	#$02
+				JSR	RLINER
+				LDY	#$05
+				JSR	RPICKER
+				LDA	#$5F
+				PHA
+				LDA	#$FF
+				PHA
+				LDA	#$60
+				STA	SSTOREH
+				LDX	#<$017C
+				LDY	#>$017C
+				LDA	#$30
+				JMP	FLOAD
+
+RTEXT0			PLOTAT	26;25;(CIRCUIT)
+				PLOTAT	23;33;(REPAIRER)
+				PLOTAT	88;25;(MOLECULAR)
+				PLOTAT	91;33;(ARRANGER)
+				PLOTAT	164;33;(LAS-WELDER)+
+
+RLINER			LDA	RLINES,Y
+				STA	POINTL
+				LDA	RLINES+1,Y
+				STA	POINTH
+				JMP	LINEOUT
+
+RLINES			DW	RLINE0
+				DW	RLINE1
+
+RLINE0			DB	$00,$00,$0E
+				DB	$00,$E2,$0E
+				DB	$01,$00,$65
+				DB	$00,$EE,$65
+				DB	$FE
+				DB	$00,$E2,$0E
+				DB	$00,$EC,$00
+				DB	$FE
+				DB	$00,$00,$24
+				DB	$00,$16,$65
+				DB	$00,$37,$65
+				DB	$FE
+				DB	$00,$16,$65
+				DB	$00,$00,$A0
+				DB	$FE
+				DB	$00,$85,$65
+				DB	$00,$AE,$65
+				DB	$FE
+				DB	$01,$16,$5F
+				DB	$01,$00,$65
+				DB	$00,$E8,$A5
+				DB	$FE
+				DB	$00,$E3,$B1
+				DB	$00,$FF,$BF
+				DB	$FE
+				DB	$00,$69,$B1
+				DB	$00,$8B,$B1
+				DB	$FE
+				DB	$00,$23,$B1
+				DB	$00,$3E,$B1
+				DB	$FF
+RLINE1			DB	$00,$5B,$65
+				DB	$00,$BC,$65
+				DB	$FF
+
+RPICKER			TYA
+				ASL
+				TAY
+				LDA	RPICKS,Y
+				STA	TBLPNTL
+				LDA	RPICKS+1,Y
+				STA	TBLPNTH
+				JMP	EXPANDR
+
+RPICKS			DW	ONE
+				DW	TWO
+				DW	THREE
+				DW	FOUR
+				DW	FIVE
+				DW	SIX

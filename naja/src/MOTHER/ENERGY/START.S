@@ -1,0 +1,161 @@
+				LDA	KEYBRD
+				BPL	NOCLEAR
+				JSR	CHECK_UP
+				BNE	NOCLEAR
+				BIT	UNSTROB
+NOCLEAR			LDA	#$40
+				STA	PAGE
+				JSR	CLEAR2
+				LDY	#$00
+				JSR	FILLIT
+				LDA	#<GRAPHIC1
+				STA	TBLPNTL
+				LDA	#>GRAPHIC1
+				STA	TBLPNTH
+				JSR	EXPANDR
+				JSR	FILL_MORE
+				STA	SCNDARY
+				LDA	#$20
+				STA	PAGE
+				LDY	#$01
+				JSR	FILLIT
+				LDA	#<GRAPHIC2
+				STA	TBLPNTL
+				LDA	#>GRAPHIC2
+				STA	TBLPNTH
+				JSR	EXPANDR
+				LDA	#$7F
+				PHA
+				LDA	#$FF
+				PHA
+				LDA	#$80
+				STA	SSTOREH
+				LDX	#<$00AC
+				LDY	#>$00AC
+				LDA	#$0B
+				JMP	FLOAD
+
+*-------------------------------
+*
+*-------------------------------
+
+FILL_MORE		LDA	#5
+				STA	TEMP
+:LOOP1			LDX	TEMP
+				LDA	BYTES,X
+				STA	TEMP+1
+				LDA	LASTS,X
+				STA	:MOD1+1
+				LDY	COLS,X
+				LDA	LINS,X
+				TAX
+:LOOP2			LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$40
+				STA	SCREENH
+				LDA	TEMP+1
+				STA	(SCREENL),Y
+				INX
+				INX
+:MOD1			CPX	#$FF			;Modified
+				BCC	:LOOP2
+				DEC	TEMP
+				BPL	:LOOP1
+				RTS
+
+BYTES			DB	$1C,$45,$48,$0C,$0E,$5C
+LASTS			DB	145,148,148,143,137,166
+COLS			DB	4,14,15,25,27,38
+LINS			DB	32,31,31,34,46,3
+
+*-------------------------------
+*
+*-------------------------------
+
+FILLIT			LDA	XPOINTS,Y
+				STA	XYPOINT
+				LDX	XYPOINT
+NEWXYS			LDY	#$00
+LMORE			LDA	XYDATA,X
+				STA	BEGROW,Y
+				INY
+				INX
+				CPY	#$04
+				BNE	LMORE
+				STX	XYPOINT
+				JSR	FILLER
+				LDX	XYPOINT
+				INC	XYPOINT
+				LDA	XYDATA,X
+				CMP	#$FF
+				BNE	NEWXYS
+				RTS
+
+XPOINTS			DB	$00,$29
+
+FILLER			LDX	BEGLINE
+				LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	PAGE
+				STA	SCREENH
+				TXA
+				AND	#$01
+				STA	ODDEVEN
+				LDA	BEGROW
+				TAY
+				AND	#$03
+				STA	STARTER
+				LDX	STARTER
+MOREROW			LDA	ODDEVEN
+				BEQ	EVEN
+				LDA	ODDOT,X
+				STA	(SCREENL),Y
+				JMP	STORED
+EVEN			LDA	EVENDOT,X
+				STA	(SCREENL),Y
+STORED			CPY	ENDROW
+				BEQ	ROWDONE
+				INY
+				INX
+				CPX	#$04
+				BNE	MOREROW
+				LDX	#$00
+				JMP	MOREROW
+ROWDONE			LDA	BEGLINE
+				INC	BEGLINE
+				CMP	ENDLINE
+				BNE	FILLER
+				RTS
+
+EVENDOT			DB	$44,$08,$11
+				DB	$22
+ODDOT			DB	$11,$22,$44
+				DB	$08
+XYDATA			DB	$00,$25
+				DB	$02,$1D,$00
+				DB	$25,$94,$95
+				DB	$00,$25,$A1
+				DB	$A5,$03,$03
+				DB	$1E,$93,$1A
+				DB	$1A,$1E,$93
+				DB	$25,$25,$1E
+				DB	$93,$00,$07
+				DB	$96,$A0,$0B
+				DB	$12,$96,$A0
+				DB	$16,$1E,$96
+				DB	$A0,$22,$25
+				DB	$96,$A0,$FF
+				DB	$09,$25
+				DB	$36,$43,$09
+				DB	$0A,$44,$6E
+				DB	$0B,$11,$6B
+				DB	$6E,$1A,$25
+				DB	$44,$6E,$1F
+				DB	$25,$6F,$86
+				DB	$24,$25,$87
+				DB	$A5,$17,$25
+				DB	$A6,$AB,$09
+				DB	$11,$A6,$AB
+				DB	$FF

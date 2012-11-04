@@ -1,0 +1,173 @@
+*===============================
+*
+*===============================
+
+TELEPORTER		LDA	SHELL
+				STA	THE_SHELL
+				LDA	FACE
+				STA	THE_FACE
+				LDA	XPOS
+				STA	THE_X
+				LDA	YPOS
+				STA	THE_Y
+
+				JSR	CLEAR1
+				LDY	#1
+				JSR	TEXTER
+
+				LDA	#3
+				STA	CURSOR
+:LOOP1			LDY	CURSOR
+				LDA	VALUES_TABLE,Y
+				JSR	DRAW_BYTE
+				DEC	CURSOR
+				BPL	:LOOP1
+				JSR	SET_LIMITS
+
+				LDA	#$80
+				STA	TELEDEF+1
+RE_TELEPORTER	LDX	#<TELEDEF
+				LDY	#>TELEDEF
+				JSR	INIT_CURSOR
+				JSR	GETKEY
+				LDA	CURSOR
+				ORA	#$80
+				STA	TELEDEF+1
+				JMP	DESTINATION
+
+TELEDEF			DB	$05
+				DB	$80
+				DW	:TELECURS
+				DW	TJMPVECTORS
+:TELECURS		LDX	CURSOR
+				LDY	TELEYPNTS,X
+				LDX	#112
+				JMP	ARROWER
+TELEYPNTS		DB	70,80,90,100,110,120
+TJMPVECTORS		DW	ADD_AND_LIMIT
+				DW	ADD_AND_LIMIT
+				DW	ADD_AND_LIMIT
+				DW	ADD_AND_LIMIT
+				DW	DO_TPORT
+				DW	SELECT_OPTION
+
+*-------------------------------
+
+ADD_AND_LIMIT	LDY	CURSOR
+				LDA	VALUES_TABLE,Y
+				CLC
+				ADC	#1
+				CMP	LIMITS_TABLE,Y
+				BEQ	:SKIPA
+				BCC	:SKIPA
+				LDA	#1
+:SKIPA			PHA
+				LDA	VALUES_TABLE,Y
+				JSR	DRAW_BYTE
+				PLA
+				LDY	CURSOR
+				STA	VALUES_TABLE,Y
+				JSR	DRAW_BYTE
+				JSR	SET_LIMITS
+				JSR	LIMIT_ALL
+				JMP	RE_TELEPORTER
+
+*-------------------------------
+
+LIMIT_ALL		LDA	#3
+				STA	COUNT
+:LOOP1			LDY	COUNT
+				LDA	LIMITS_TABLE,Y
+				CMP	VALUES_TABLE,Y
+				BCS	:SKIPA
+				LDA	VALUES_TABLE,Y
+				JSR	DRAW_BYTE
+				LDY	COUNT
+				LDA	LIMITS_TABLE,Y
+				STA	VALUES_TABLE,Y
+				JSR	DRAW_BYTE
+:SKIPA			DEC	COUNT
+				BPL	:LOOP1
+				RTS
+
+*-------------------------------
+
+DRAW_BYTE		LDX	#$EE
+				STX	TEXTBUF+0
+				CMP	#$10
+				BCC	:SKIPA
+				LDX	#$01
+				STX	TEXTBUF+0
+				AND	#%00001111
+:SKIPA			CMP	#$0A
+				BCC	:SKIPB
+				ADC	#0
+:SKIPB			STA	TEXTBUF+1
+				LDA	#$8D
+				STA	TEXTBUF+2
+				LDA	TELEYPNTS,Y
+				TAY
+				LDA	#127
+				JMP	LINE
+
+*-------------------------------
+
+SET_LIMITS		LDA	#5
+				SEC
+				SBC	THE_SHELL
+				ASL
+				CLC
+				ADC	#9
+				STA	X_LIMIT
+				STA	Y_LIMIT
+				RTS
+
+*-------------------------------
+
+DO_TPORT		JSR	SET_CAMPFILES
+				LDX	THE_SHELL
+				STX	SHELL
+				LDA	DISK_SIDES-1,X
+				STA	DISK_SIDE
+				LDY	THE_SHELL
+				JSR	SLOAD_FILE
+
+				LDX	#3
+:LOOP1			LDA	SHELL_INFO,X
+				STA	MAPSPOT,X
+				DEX
+				BPL	:LOOP1
+
+				LDA	THE_X
+				STA	XPOS
+				LDA	THE_Y
+				STA	YPOS
+				LDA	THE_FACE
+				STA	FACE
+				JMP	LEAVE
+
+DISK_SIDES		DB	side_T1,side_T1,side_T2
+				DB	side_T2,side_T2
+
+*-------------------------------
+
+VALUES_TABLE
+THE_SHELL		DB	1
+THE_FACE		DB	1
+THE_X			DB	1
+THE_Y			DB	1
+
+LIMITS_TABLE	DB	5				;SHELLS
+				DB	6				;FACES
+X_LIMIT			DB	0
+Y_LIMIT			DB	0
+
+TPORT_TEXT		PLOTAT	73;57;(>>_TELEPORTER_<<)
+				PLOTAT	73;70;(SHELL:)
+				PLOTAT	79;80;(FACE:)
+				PLOTAT	97;90;(X:)
+				PLOTAT	97;100;(Y:)
+				PLOTAT	127;110;(TELEPORT)
+				PLOTAT	127;120;(CANCEL)+
+
+*-------------------------------

@@ -1,0 +1,60 @@
+SMALLEST_AREA	LDX	#0
+:1				JSR	TEST_LINE
+				BNE	:2
+				INX
+				CPX	#192
+				BNE	:1
+:2				STX	TOP_LINE
+
+				LDX	#191
+:3				JSR	TEST_LINE
+				BNE	:4
+				DEX
+				CPX	#-1
+				BNE	:3
+				STX	BOT_LINE
+
+				LDY	#0				;THIS IS A BUG!!!!
+:4				JSR	TEST_COLUMN
+				BNE	:5
+				INY
+				CPY	#40
+				BNE	:4
+:5				STY	LEFT_COLUMN
+
+				LDY	#39
+:6				JSR	TEST_COLUMN
+				BNE	:7
+				DEY
+				BPL	:6
+:7				STY	RIGHT_COLUMN
+				RTS
+
+
+TEST_LINE		LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	SCREENH
+				LDY	#39
+:1				LDA	(SCREENL),Y
+				AND	#$7F
+				BNE	:2
+				DEY
+				BPL	:1
+				INY
+:2				RTS
+
+TEST_COLUMN		LDX	#0
+:1				LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	SCREENH
+				LDA	(SCREENL),Y
+				AND	#$7F
+				BNE	:2
+				INX
+				CPX	#192
+				BNE	:1
+:2				RTS

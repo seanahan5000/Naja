@@ -1,0 +1,242 @@
+TRANSPORT		LDA	COUNTER
+				BNE	NOTENRT
+				LDA	GRPNUMB
+				BNE	NOTENRT
+				LDA	#$1C
+				STA	COUNTER
+				JMP	DOOR_TEXTS
+
+NOTENRT			JSR	STEP_SUB
+				JSR	MOVETO2
+				LDA	#$40
+				STA	PAGE
+				LDY	#$00
+				JSR	PICKER
+				DEC	PICHERE			;Set to #$FF
+				LDY	#$19
+				JSR	TEXTER
+				STA	SCNDARY
+				LDY	COUNTER
+				LDA	DVERT,Y
+				STA	WHICHT
+				LDX	#-1
+				STX	LEGALS+0		;Tesserport
+				STX	LEGALS+2		;Arsenal
+				INX
+				STX	LEGALS+1		;Infirmary
+				STX	LEGALS+3		;Enrollment
+				JSR	LOST_IN_GROUP
+				BCS	:SKIPA
+				LDA	#$00
+				STA	LEGALS+2		;ARSENAL
+				BEQ	:SKIPG			;ALWAYS
+
+:SKIPA			LDA	WHICHT
+				BNE	:SKIPF
+:SKIPG			STA	LEGALS+0		;TESSERPORT
+:SKIPF			LDA	#$00
+				STA	COUNT
+				LDX	COUNT
+:LOOP2			LDA	LEGALS,X
+				BNE	:SKIPC
+				TXA
+				CLC
+				ADC	#$15
+				TAY
+				JSR	TEXTER
+:SKIPC			INC	COUNT
+				LDX	COUNT
+				CPX	#$04
+				BNE	:LOOP2
+
+				LDY	#$00
+:LOOP3			LDA	LEGALS,Y
+				BNE	:SKIPD
+				CPY	WHICHT
+				BNE	:SKIPE
+:SKIPD			INY
+				CPY	#$04
+				BNE	:LOOP3			;Always
+:SKIPE			STY	CURSOR
+				JSR	LINCOLR
+				JMP	MOVKEY
+
+BLINK			LDA	#$10
+				JSR	WAIT
+				LDA	#$F0
+				JSR	WAIT2
+				BMI	GOTAKEY
+				LDA	CURSOR
+				ORA	#$80
+				TAY
+				JSR	LINCOLR
+				LDA	#$00
+				JSR	WAIT2
+				LDY	CURSOR
+				JSR	LINCOLR
+MOVKEY			LDA	KEYBRD
+				BPL	BLINK
+GOTAKEY			JSR	CHECK_DOWN
+				BNE	NOZ
+*LDA #$20
+*STA PAGE
+*JSR CLEAR1
+*STA PRIMARY
+				JMP	TLEAVE
+
+NOZ				BIT	UNSTROB
+				JSR	CHECK_LEFT
+				BEQ	MRIGHT	
+				JSR	CHECK_RIGHT
+				BEQ	MLEFT
+				LDY	CURSOR
+				JSR	CHECK_ENTER
+				BNE	MOVKEY	
+				JMP	TCOMMON	
+
+MLEFT			LDA	CURSOR
+				ORA	#$80
+				TAY
+				JSR	LINCOLR
+ML1				INC	CURSOR
+				LDA	CURSOR
+				CMP	#$04
+				BNE	ML2
+				LDA	#$00
+				STA	CURSOR
+ML2				TAY
+				LDA	LEGALS,Y
+				BNE	ML1
+				JSR	LINCOLR
+				JMP	MOVKEY
+
+MRIGHT			LDA	CURSOR
+				ORA	#$80
+				TAY
+				JSR	LINCOLR
+MR1				DEC	CURSOR
+				BPL	MR2
+				LDA	#$03
+				STA	CURSOR
+MR2				LDY	CURSOR
+				LDA	LEGALS,Y
+				BNE	MR1
+				JSR	LINCOLR
+				JMP	MOVKEY
+
+LINCOLR			LDA	#BLACK1
+				STA	COLOR
+				TYA
+				BMI	USEBLK
+				LDA	COLORS2,Y
+				CPY	WHICHT
+				BNE	NOWHITE
+				ORA	#$7F
+NOWHITE			STA	COLOR
+USEBLK			TYA
+				AND	#$7F
+				CLC
+				ADC	#$0C
+				TAY
+				JMP	LINER
+
+COLORS2			DB	GREEN
+				DB	RED
+				DB	VIOLET
+				DB	BLUE
+
+TCOMMON			CPY	WHICHT
+				BNE	TCOM2
+				JSR	CLEAR1
+				LDA	#$20
+				STA	PAGE
+				JSR	NOSCAN
+				STA	PRIMARY
+				JMP	RDKEY
+
+TCOM2			LDA	DESTX,Y
+				STA	XPOS
+				LDA	DESTY,Y
+				STA	YPOS
+				LDA	NSEW,Y
+				STA	DIRECTN
+				LDA	COLORS2,Y
+				STA	FLOOR_COLOR
+				TYA
+				PHA
+				JSR	TRANS_NOISE
+				PLA
+				CMP	#$02	
+				BNE	TLEAVE
+				LDA	FLAG12
+				CMP	#$02
+				BNE	TLEAVE
+				JSR	RNDMIZE	
+				LDA	RANDOM1
+				AND	#$1F
+				CMP	#$13
+				BNE	TLEAVE
+				JSR	RESET_CHRLIST	;Check for not full chars
+				JSR	CSCAN_PUTABLE
+				BCC	TLEAVE			;No room
+				JSR	POOL_TO_TOTAL
+				LDX	#<MIN_PRICE		;Check for minimum credits
+				LDY	#>MIN_PRICE
+				CLC
+				JSR	GROUP_SPEND
+				BCC	TLEAVE			;Not enough
+				LDX	#mInfoSeller
+				JSR	SLOAD_FILE
+				JMP	INFO_GUY
+TLEAVE			PLA
+				PLA
+				JMP	RDKEY
+
+** FILL THIS IN LATER !!!
+MIN_PRICE		HEX	00000099		;Min credits for seller to appear
+
+DESTX			DB	$08,$02,$04,$01
+DESTY			DB	$05,$07,$0C,$05
+NSEW			DB	$00,$F0,$FF,$FF
+
+
+*-------------------------------
+*
+*-------------------------------
+
+TRANS_NOISE		LDX	#$30
+				LDY	#$60
+				JSR	SOUND
+				LDA	#$20
+				STA	PAGE
+				JSR	CLEAR1	
+				JSR	GETNSEW
+				JSR	NOSCAN
+				STA	PRIMARY
+				LDX	#$A0
+				LDY	#$40
+
+*-------------------------------
+*
+*-------------------------------
+
+SOUND			STX	TEMP			;PITCH
+				STY	TEMP+1			;LENGTH
+				LDY	#0
+:LOOP1			LDA	PCHECK,Y
+				LDX	#8
+:LOOP2			LSR
+				BNE	:SKIPA
+				STA	CLICK
+:SKIPA			DEX
+				BNE	:LOOP2
+				LDX	TEMP
+:LOOP3			DEX
+				BNE	:LOOP3
+				LDX	TEMP
+:LOOP4			DEX
+				BNE	:LOOP4
+				INY
+				DEC	TEMP+1
+				BNE	:LOOP1
+				RTS

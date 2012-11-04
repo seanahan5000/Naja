@@ -1,0 +1,513 @@
+BUY_ARMHELM		BIT	UNSTROB
+				LDA	#$00
+				STA	CURSPNT
+				LDA	#WHITE1
+				JSR	BIGSMAL
+				LDY	DISPLAY
+				DEY
+				LDA	WANTED1
+				STA	ON1,Y
+				LDA	#$00
+				STA	STATUS
+				JSR	STATUP
+BBLINK			LDA	#$10
+				JSR	WAIT
+				LDA	#$F0
+				JSR	WAIT2
+				BMI	BIGKEY
+				LDA	#BLACK1
+				JSR	BIGSMAL
+				LDA	#$00
+				JSR	WAIT2
+				LDA	#WHITE1
+				JSR	BIGSMAL
+BIGKEY			LDA	KEYBRD
+				BPL	BBLINK
+				BIT	UNSTROB
+				JSR	CHECK_UP
+				BEQ	GOBIG_UP
+				JSR	CHECK_DOWN
+				BEQ	GOBIG_DOWN
+				JSR	CHECK_LEFT
+				BEQ	BIG_LEFT
+				JSR	CHECK_RIGHT
+				BEQ	BIG_RIGHT
+				CMP	#$9B
+				BEQ	GOBESC
+				JSR	CHECK_ENTER
+				BEQ	GOBENTR
+				CMP	#$CC
+				BNE	BIGKEY
+				LDA	#BLACK1
+				STA	COLOR
+				JSR	DRASTAT
+				LDA	#$00
+				STA	STATUS
+				LDA	#BLACK1
+				JSR	BIGSMAL
+				LDA	#$07
+				STA	WANTED1
+				JSR	DRAW_SCREEN
+				JMP	MAIN_LOOP
+
+GOBIG_UP		JMP	BIG_UP
+GOBIG_DOWN		JMP	BIG_DOWN
+GOBESC			JMP	ARSOUT
+GOBENTR			JMP	BIG_ENTER
+
+BIG_LEFT		LDA	#BLACK1
+				JSR	BIGSMAL
+				LDA	CURSPNT
+				BNE	:SKIPA
+				LDA	#$02
+				STA	CURSPNT
+				LDA	WANTED1
+				CMP	#$0E
+				BNE	:SKIPB
+				LDA	#$01
+				STA	CURSPNT
+				BNE	:SKIPB			;Always
+:SKIPA			DEC	CURSPNT
+:SKIPB			LDA	#WHITE1
+				JSR	BIGSMAL
+				JMP	BIGKEY
+
+BIG_RIGHT		LDA	#BLACK1
+				JSR	BIGSMAL
+				INC	CURSPNT
+				LDA	WANTED1
+				SEC
+				SBC	#$0C
+				EOR	#$03
+				CMP	CURSPNT
+				BCS	RBCOMN
+				LDA	#$00
+				STA	CURSPNT
+RBCOMN			LDA	#WHITE1
+				JSR	BIGSMAL
+				JMP	BIGKEY
+
+BIGSMAL			STA	COLOR
+				LDA	CURSPNT
+				CLC
+				ADC	#$0B
+				TAY
+				JMP	LINER
+
+BIG_UP			JSR	BIGAROW
+				LDX	CURSPNT
+				DEC	BRNCURS,X
+				LDA	BRNCURS,X
+				CMP	MINTABL,X
+				BPL	BIG_COMN
+				LDA	#$04
+				STA	BRNCURS,X
+				BNE	BIG_COMN		;Always
+BIG_DOWN		JSR	BIGAROW
+				LDX	CURSPNT
+				INC	BRNCURS,X
+				LDA	BRNCURS,X
+				CMP	#$05
+				BCC	BIG_COMN
+				LDA	MINTABL,X
+				STA	BRNCURS,X
+BIG_COMN		JSR	BIGAROW
+				JSR	WILFLIP
+				JSR	UPDATER
+				JSR	DRAW_ENUSE
+				JSR	CREATE_ITEM
+				JSR	DRAW_ENUSE
+				JSR	STATUP
+				JMP	BIGKEY
+
+GOBIGKY			JSR	BLINKEM
+				JMP	BIGKEY
+
+BIG_ENTER		LDA	STATUS
+				CMP	#$02
+				BCS	GOBIGKY
+				BIT	UNSTROB
+				JSR	NOISE
+				JSR	BLANKER
+				LDY	#$09
+				JSR	TEXTER
+CONFIRM			LDA	KEYBRD
+				BPL	CONFIRM
+				BIT	UNSTROB
+				JSR	CHECK_ENTER
+				BEQ	BUY_ARMOR
+				CMP	#"C"
+				BNE	CONFIRM
+				JSR	GOSCOMN
+				JMP	BIGKEY
+
+BUY_ARMOR		LDX	#$9C
+				LDY	#$13
+				JSR	UPDATE_CREDIT
+				LDA	WHOPIC
+				JSR	POINTIT
+				LDY	OPEN_SLOT
+				LDX	#0
+BELOOP2			LDA	ETABLE,X
+				STA	(CHARDL),Y
+				INY
+				INX
+				CPX	#4
+				BNE	BELOOP2
+				JSR	NOISE
+				JSR	GOSCOMN
+				JMP	BIGKEY
+
+BLINKEM			LDA	#$02
+				PHA
+:LOOP1			LDA	#$10
+				JSR	WAIT
+				LDA	#$F0
+				JSR	WAIT2
+				BMI	:SKIPA
+				LDA	STATUS
+				PHA
+				LDA	#$00
+				STA	COUNT
+				JSR	STATUPA
+				LDA	#$00
+				JSR	WAIT2
+				PLA
+				STA	COUNT
+				JSR	STATUPA
+				BMI	:SKIPA
+				PLA
+				SEC
+				SBC	#$01
+				PHA
+				BNE	:LOOP1
+:SKIPA			PLA
+				BIT	UNSTROB
+				RTS
+
+WILFLIP			LDA	WANTED1
+				CMP	#$0D
+				BEQ	:EXIT
+				LDA	BRNCURS
+				CLC
+				ADC	CLSCURS
+				AND	#$01
+				EOR	#$01
+				CLC
+				ADC	#$03
+				CMP	YNOCURS
+				BEQ	:EXIT
+				LDA	CURSPNT
+				PHA
+				LDA	#$02
+				STA	CURSPNT
+				JSR	BIGAROW
+				LDA	YNOCURS
+				EOR	#$07
+				STA	YNOCURS
+				JSR	BIGAROW
+				PLA
+				STA	CURSPNT
+:EXIT			RTS
+
+*-------------------------------
+
+UPDATER			LDX	CURSPNT
+				CPX	#2
+				BEQ	UPDOUT
+				LDA	WANTED1
+				SEC
+				SBC	#$0D
+				ASL
+				CLC
+				ADC	CURSPNT
+				TAY
+				LDA	HAOFF,Y
+				PHA
+				CLC
+				ADC	ELECT,X
+				LDY	WANTED1
+				CPY	#$0E
+				BNE	NOHELM1
+				CLC
+				ADC	ELECT,X
+NOHELM1			TAY
+				LDA	HADATA,Y
+				STA	TEXTBUF
+				LDA	HADATA+1,Y
+				STA	TEXTBUF+1
+				LDA	#$8D
+				STA	TEXTBUF+2
+				LDA	WANTED1
+				CMP	#$0E
+				BEQ	ISHELM1
+				LDA	#$0A
+				STA	TEXTBUF+1
+ISHELM1			LDA	HAX,X
+				LDY	#$46
+				JSR	LINE
+				LDX	CURSPNT
+				PLA
+				CLC
+				ADC	BRNCURS,X
+				LDY	WANTED1
+				CPY	#$0E
+				BNE	NOHELM2
+				CLC
+				ADC	BRNCURS,X
+NOHELM2			TAY
+				LDA	HADATA,Y
+				STA	TEXTBUF
+				LDA	HADATA+1,Y
+				STA	TEXTBUF+1
+				LDA	WANTED1
+				CMP	#$0E
+				BEQ	ISHELM2
+				LDA	#$0A
+				STA	TEXTBUF+1
+ISHELM2			LDA	HAX,X
+				LDY	#$46
+				JSR	LINE
+				LDX	CURSPNT
+				LDA	BRNCURS,X
+				STA	ELECT,X
+UPDOUT			JSR	PUTPRIC
+				JSR	AHPRICE
+				JMP	PUTPRIC
+
+*-------------------------------
+
+CREATE_ITEM		LDA	WANTED1
+				SEC
+				SBC	#$0D
+				ASL
+				ASL
+				TAY
+				LDX	#0
+:LOOP1			LDA	FORMS,Y
+				STA	ETABLE,X
+				INY
+				INX
+				CPX	#4
+				BNE	:LOOP1
+				LDA	WANTED1
+				CMP	#$0E
+				BEQ	:SKIPA
+				LDA	CLSCURS			;Create armor
+				ORA	ETABLE+1
+				STA	ETABLE+1
+				LDA	BRNCURS
+				ASL
+				BPL	:SKIPB			;Always
+:SKIPA			LDA	CLSCURS			;Create helmet
+				SEC
+				SBC	#$02
+				ORA	ETABLE+1
+				STA	ETABLE+1
+				LDA	BRNCURS
+				SEC
+				SBC	#$01
+:SKIPB			ASL
+				ASL
+				ORA	ETABLE+1
+				STA	ETABLE+1
+				LDA	YNOCURS
+				SEC
+				SBC	#$03
+				AND	#$01
+				CLC
+				ROR
+				ROR
+				ORA	ETABLE+2
+				STA	ETABLE+2
+				JMP	ENERGY2
+
+FORMS			DB	$44,$00,$00,$89				;Armor
+				DB	$45,$00,$00,$DF				;Helmet
+
+*-------------------------------
+
+DRAW_ENUSE		LDA	WANTED1
+				CMP	#$0D
+				BNE	:EXIT
+				LDA	ENERGY_USAGE
+				ORA	ENERGY_USAGE+1
+				ORA	ENERGY_USAGE+2
+				BNE	:SKIPA
+				LDY	#$2E
+				JMP	TEXTER
+:SKIPA			LDX	#3
+:LOOP1			LDA	ENERGY_USAGE-1,X
+				PHA
+				DEX
+				BNE	:LOOP1
+				LDA	#3
+				JSR	RIGHT_DIGITS
+				LDA	#$8D
+				STA	TEXTBUF,X
+				LDA	#172
+				LDY	#2
+				JSR	LINE
+:EXIT			RTS
+
+*-------------------------------
+
+AHPRICE			LDY	WANTED1
+				LDA	MPLYOFF-$0D,Y
+				CLC
+				ADC	BRNCURS
+				TAX
+				LDA	MPLIER,X
+				PHA
+				LDA	BRNCURS+1
+				ASL
+				CLC
+				ADC	MCNDOFF-$0D,Y
+				TAX
+				LDY	MPLCAND,X
+				LDA	MPLCAND+1,X
+				TAX
+				PLA
+				PHA
+				LSR
+				LSR
+				LSR
+				LSR
+				JSR	MULTIPLY_12
+				PLA
+				AND	#%00001111
+				TAX
+:LOOP1			LDY	#4
+:LOOP2			ASL	PRODUCT_3+2
+				ROL	PRODUCT_3+1
+				ROL	PRODUCT_3+0
+				DEY
+				BNE	:LOOP2
+				DEX
+				BNE	:LOOP1
+
+				LDY	#1
+				LDA	WANTED1
+				CMP	#$0D
+				BNE	:SKIPA
+				LDA	BRNCURS+2
+				CMP	#$04
+				BNE	:SKIPA
+
+				LDA	#$50
+				LDX	#<PRODUCT_3
+				LDY	#>PRODUCT_3
+				JSR	MULTIPLY_13
+				LDA	#$03
+				LDX	#<PRODUCT_4
+				LDY	#>PRODUCT_4
+				JSR	MULTIPLY_14
+				LDY	#0
+:SKIPA			LDX	#0
+:LOOP3			LDA	PRODUCT_5,Y
+				STA	THE_PRICE,X
+				INY
+				INX
+				CPX	#4
+				BNE	:LOOP3
+				RTS
+
+MPLYOFF			DB	$00,$04
+MPLIER			DB	$11,$51,$22
+				DB	$42,$72
+				DB	$11,$51,$12
+				DB	$32
+
+MCNDOFF			DB	$00,$06
+MPLCAND			DB	$00,$10
+				DB	$00,$50
+				DB	$02,$00
+				DB	$04,$00
+				DB	$07,$00
+				DB	$00,$05
+				DB	$00,$75
+				DB	$03,$00
+
+*-------------------------------
+
+HAOFF			DB	$00,$05,$08
+				DB	$0E
+HAX				DB	$B8,$E2
+HADATA			DB	$01,$02,$03
+				DB	$04,$06
+				DB	$01,$02,$04
+				DB	$06,$08
+				DB	$0A,$04,$0A
+				DB	$08,$01,$02
+				DB	$01,$06
+				DB	$0A,$01,$0A
+				DB	$05,$01,$00
+
+*-------------------------------
+
+PUTPRIC			LDA	#$9C
+				STA	XPNT
+				LDA	#$0B
+				STA	YPNT
+				LDX	#<THE_PRICE
+				LDY	#>THE_PRICE
+				JMP	CREDIT_OUT
+
+*-------------------------------
+
+BIGAROW			LDX	CURSPNT
+				LDA	EXES,X
+				STA	XPNT
+				PHA
+				LDA	BRNCURS,X
+				TAX
+				LDA	WYES,X
+				STA	YPNT
+				LDA	#0
+				LDX	#<BIG_SHAPES
+				LDY	#>BIG_SHAPES
+				JSR	DRAW_SHAPES
+				LDA	XPNT
+				CLC
+				ADC	#7
+				STA	XPNT
+				LDA	#2
+				JSR	REDRAW_SHAPES
+				LDA	YPNT
+				CLC
+				ADC	#7
+				STA	YPNT
+				PLA
+				STA	XPNT
+				LDA	#1
+				JMP	REDRAW_SHAPES
+
+EXES			DB	$17,$79,$B9
+WYES			DB	$28,$3B,$4E
+				DB	$61,$74
+
+BIG_SHAPES		DB	%00000011
+				DB	%00001111
+				DB	%00111111
+				DB	%01111111
+				DB	%01111111
+				DB	%01111111
+				DB	%00111111
+
+				DB	%00001111
+				DB	%00000011
+				DB	%00000000
+				DB	%00000000
+				DB	%00000000
+				DB	%00000000
+				DB	%00000000
+
+				DB	%00000000
+				DB	%00000000
+				DB	%00000000
+				DB	%00000001
+				DB	%00000111
+				DB	%00000001
+				DB	%00000000
+
+*-------------------------------

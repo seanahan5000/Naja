@@ -1,0 +1,239 @@
+DRAW_SCREEN		LDA	WANTED1
+				BNE	:SKIPA
+				JMP	ARSOUT
+:SKIPA			LDA	DISPLAY
+				ASL
+				ASL
+				ASL
+				ASL
+				ASL
+				EOR	#$60
+				STA	PAGE
+				LDA	DISPLAY
+				EOR	#$03
+				STA	DISPLAY
+				TAX
+				DEX
+				LDA	WANTED1
+				CMP	ON1,X
+				BEQ	ISHERE
+				CMP	#$09
+				BCC	NOT_SPECIAL
+
+SPECIAL			BEQ	:SKIPA
+				CMP	#$0D
+				BCC	:SKIPB
+				CMP	#$0F
+				BCS	:SKIPB
+:SKIPA			JMP	DRAW_ARMHELM
+:SKIPB			JMP	DRAW_EQUIPMNT
+
+NOT_SPECIAL		LDA	ON1,X
+				CMP	#$09
+				BCS	CHKON
+				CMP	#$03
+				BNE	NOWANT2
+CHKON			TXA
+				EOR	#$01
+				TAY
+				LDA	ON1,Y
+				CMP	#$09
+				BCS	NOWANT2
+				TYA
+				BNE	ISONP2
+				JSR	MOVETO2
+				JMP	NOWANT2
+ISONP2			JSR	MOVETO1
+NOWANT2			JSR	CLRBOTM
+				LDA	WANTED1
+				CMP	#$04
+				BNE	:SKIPA
+				JMP	SELL_ID_REP
+:SKIPA			LDA	#BLUE
+				STA	COLOR
+				LDY	WANTED1
+				DEY
+				LDA	BOXSIZE,Y
+				TAY
+				JSR	LINER
+				LDY	WANTED1
+				DEY
+				LDA	TWOPICS,Y
+				BPL	NOT12
+				CMP	#$FE
+				BNE	NOFE
+				LDY	SOURCE
+				LDA	TTABL,Y
+				BNE	NOT12
+NOFE			PHA
+				LDY	#$12
+				JSR	TEXTER
+				PLA
+				AND	#$7F
+NOT12			TAY
+				JSR	TEXTER
+				LDA	WANTED1
+				CMP	#$03
+				BNE	ISHERE
+
+				JSR	THREE3
+
+ISHERE			LDA	DISPLAY
+				CMP	#$01
+				BNE	NOTONE
+				STA	PRIMARY
+				BEQ	NOISE			;Always
+NOTONE			STA	SCNDARY
+NOISE			LDA	#$20
+				STA	COUNT
+:LOOP1			STA	CLICK
+				LDA	#$08
+				JSR	WAIT
+				DEC	COUNT
+				BNE	:LOOP1
+				RTS
+
+THREE3			JSR	CLRTOP
+				LDA	#GREEN
+				STA	COLOR
+				LDY	#$00
+				JSR	LINER
+				LDY	#$03
+				JSR	TEXTER
+				JSR	RESET_CHLIST
+				LDA	#$6E
+				STA	XPNT
+				LDA	#0
+				STA	COUNT
+:LOOP1			JSR	POINTIT
+				LDY	COUNT
+				LDA	AYPOINTS,Y
+				STA	YPNT
+				JSR	PROFNAM
+				LDA	#$10
+				LDY	YPNT
+				JSR	LINE
+				LDY	#profrace
+				LDA	(CHARDL),Y
+				BMI	:SKIPA
+				JSR	CHAR_CREDOUT
+:SKIPA			INC	COUNT
+				LDA	COUNT
+				CMP	GRPNUMB
+				BNE	:LOOP1
+				JSR	POOL_TO_TOTAL
+				LDA	AYPOINTS+7
+				STA	YPNT
+				JSR	TOTAL_CREDOUT
+				LDA	#0
+				STA	LEGALS+7
+				STA	LEGALS+8
+				RTS
+
+*-------------------------------
+
+BOXSIZE			DB	$01,$02,$02
+				DB	$FF,$03,$03
+				DB	$01,$03
+TWOPICS			DB	$04,$FE,$0B
+				DB	$FF,$8E,$8F
+				DB	$10,$91
+TTABL			DB	$0A,$16,$17
+				DB	$25
+
+*-------------------------------
+
+CLRTOP			LDA	#$45
+				LDX	#0
+				BEQ	CLRCOMN			;Always
+CLRBOTM			LDA	#$C0
+				LDX	#$45
+CLRCOMN			STA	:MOD1+1
+:LOOP1			LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	PAGE
+				STA	SCREENH
+				LDY	#$27
+				LDA	#$00
+:LOOP2			STA	(SCREENL),Y
+				DEY
+				BPL	:LOOP2
+				INX
+:MOD1			CPX	#$C0			;Modified
+				BNE	:LOOP1
+				RTS
+
+*-------------------------------
+
+UPDATE_CREDIT	JSR	SHOW_CREDIT
+				JSR	TAKE_PRICE
+				JMP	TOTAL_CREDOUT
+SHOW_CREDIT		STX	XPNT
+				STY	YPNT
+				JMP	TOTAL_CREDOUT
+
+*-------------------------------
+
+TAKE_PRICE		LDA	WHOSPIC
+				CMP	#7
+				BEQ	:SKIPA
+				JSR	POINTIT
+:SKIPA			LDX	#<THE_PRICE
+				LDY	#>THE_PRICE
+				SEC
+				LDA	WHOSPIC
+				EOR	#7
+				BEQ	:SKIPB
+				JSR	CHAR_SPEND
+				JMP	:SKIPC
+:SKIPB			JSR	GROUP_SPEND
+:SKIPC			LDX	#3
+:LOOP1			LDA	REMAINS,X
+				STA	TOTAL_CREDITS,X
+				DEX
+				BPL	:LOOP1
+				RTS
+
+*-------------------------------
+
+CURSITA			LDY	CURRENT
+				LDX	PICTABL-1,Y
+				LDA	YOFFS-1,X
+				CLC
+				ADC	CURSOR
+				TAX
+				LDA	YTABLE,X
+				LDX	CURSEX-1,Y
+				TAY
+				JMP	ARROWER
+
+CURSEX			DB	$69,$03,$03
+				DB	$03,$57,$57
+				DB	$57,$57
+PICTABL			DB	$01,$02,$02
+				DB	$02,$03,$03
+				DB	$04,$03
+YOFFS			DB	$00,$05,$0E
+				DB	$12
+YTABLE			DB	$75,$7E,$87
+				DB	$90,$99
+
+*-------------------------------
+
+AYPOINTS		DB	$0C,$14,$1C
+				DB	$24,$2C,$34
+				DB	$3C,$46,$4E
+				DB	$80,$89,$92
+				DB	$9B
+				DB	$7C,$85,$8E
+				DB	$97,$A0,$A9
+MAXOPTS			DB	$05,$08,$09
+				DB	$08,$04,$04
+				DB	$06,$04
+GROUPER			DB	$03,$00,$04
+				DB	$FF,$FF,$0A
+				DB	$05,$06,$07
+				DB	$08,$09
+
+*-------------------------------

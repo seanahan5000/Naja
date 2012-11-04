@@ -1,0 +1,254 @@
+				LST	OFF
+DATA_PTR		=	$00				;$01
+SCREENL			=	$02
+SCREENH			=	$03
+BUFFER			=	$6000
+
+DATA_PAGE		=	$20
+MASK_PAGE		=	$40
+
+				ORG	$1800
+
+RIGHT_SCANNER
+				JSR	FIND_FIRST
+				JSR	FIND_LAST
+				JSR	FIND_RCOLUMN
+				JSR	INIT_RECORD
+
+				LDX	START_LINE
+SCAN_LOOP		JSR	SCAN_LINE
+				INC	START_LINE
+				LDX	START_LINE
+				CPX	END_LINE
+				BNE	SCAN_LOOP
+				LDA	#$FF
+				JSR	RECORD_BYTE
+				LDA	#$8D
+				JSR	PUT_CHAR
+				LDA	DATA_PTR
+				SEC
+				SBC	#<BUFFER
+				STA	DATA_PTR
+				LDA	DATA_PTR+1
+				SBC	#>BUFFER
+				STA	DATA_PTR+1
+				RTS
+
+FIND_FIRST		LDX	#0
+:1				JSR	LINE_EMPTY
+				BNE	:2
+				INX
+				BNE	:1				;Always
+:2				STX	START_LINE
+				RTS
+
+FIND_LAST		LDX	#191
+:1				JSR	LINE_EMPTY
+				BNE	:2
+				DEX
+				BNE	:1				;Always
+:2				INX
+				STX	END_LINE
+				RTS
+
+LINE_EMPTY		LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#MASK_PAGE
+				STA	SCREENH
+				LDY	#39
+:1				LDA	(SCREENL),Y
+				AND	#$7F
+				BNE	:2
+				DEY
+				CPY	#19
+				BNE	:1
+:2				RTS
+
+FIND_RCOLUMN	LDY	#39
+:1				LDX	#0
+:2				LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#MASK_PAGE
+				STA	SCREENH
+				LDA	(SCREENL),Y
+				AND	#$7F
+				BNE	:3
+				INX
+				CPX	#192
+				BNE	:2
+				DEY
+				BNE	:1				;Always
+:3				STY	RIGHT_COLUMN
+				RTS
+
+SCAN_LINE
+:1				LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#MASK_PAGE
+				STA	SCREENH
+
+				LDY	#20
+:4				LDA	(SCREENL),Y
+				AND	#$7F
+				BNE	:5
+				INY
+				CPY	#40
+				BNE	:4
+:5				STY	LEFT_COLUMN
+				CPY	RIGHT_COLUMN
+				BEQ	:9
+				BCC	:9
+				LDA	RIGHT_COLUMN
+				JMP	RECORD_BYTE
+:9				DEY
+				DEY
+				TYA
+				JSR	RECORD_BYTE
+
+				LDA	#%00000001
+				STA	TEMP
+				LDX	#0
+				LDY	LEFT_COLUMN
+:7				LDA	(SCREENL),Y
+				AND	TEMP
+				BNE	:8
+				ASL	TEMP
+				INX
+				BNE	:7				;Always
+:8				LDA	RIGHT_MASKS,X
+				JSR	RECORD_BYTE
+
+				LDA	SCREENH
+				EOR	#$60
+				STA	SCREENH
+				LDY	LEFT_COLUMN
+				STY	COUNT
+:6				LDA	(SCREENL),Y
+				JSR	RECORD_BYTE
+				INC	COUNT
+				LDY	COUNT
+				CPY	RIGHT_COLUMN
+				BCC	:6
+				BEQ	:6
+:10				RTS
+
+RIGHT_MASKS		DB	%00000000
+				DB	%00000001
+				DB	%00000011
+				DB	%00000111
+				DB	%00001111
+				DB	%00011111
+				DB	%00111111
+
+*-------------------------------
+*
+*-------------------------------
+
+INIT_RECORD		LDA	#<BUFFER
+				STA	DATA_PTR
+				LDA	#>BUFFER
+				STA	DATA_PTR+1
+				LDA	#0
+				STA	BYTE_COUNT
+				LDA	#" "
+				JSR	PUT_CHAR
+				LDA	#"D"
+				JSR	PUT_CHAR
+				LDA	#"B"
+				JSR	PUT_CHAR
+				LDA	#" "
+				JSR	PUT_CHAR
+				LDA	#"2"
+				JSR	PUT_CHAR
+				LDA	#","
+				JSR	PUT_CHAR
+				LDA	#"$"
+				JSR	PUT_CHAR
+				LDA	START_LINE
+				JSR	PUT_BYTE
+				LDA	#","
+				JSR	PUT_CHAR
+				LDA	#"$"
+				JSR	PUT_CHAR
+				LDA	END_LINE
+				JSR	PUT_BYTE
+				LDA	#","
+				JSR	PUT_CHAR
+				LDA	#"$"
+				JSR	PUT_CHAR
+				LDA	RIGHT_COLUMN
+				JSR	PUT_BYTE
+				LDA	#$8D
+				JSR	PUT_CHAR
+				RTS
+
+*-------------------------------
+*
+*-------------------------------
+
+RECORD_BYTE		PHA
+				STX	HOLDX
+				STY	HOLDY
+				LDA	BYTE_COUNT
+				BNE	:1
+				LDA	#" "
+				JSR	PUT_CHAR
+				LDA	#"H"
+				JSR	PUT_CHAR
+				LDA	#"E"
+				JSR	PUT_CHAR
+				LDA	#"X"
+				JSR	PUT_CHAR
+				LDA	#" "
+				JSR	PUT_CHAR
+:1				PLA
+				JSR	PUT_BYTE
+				INC	BYTE_COUNT
+				LDA	#16
+				CMP	BYTE_COUNT
+				BNE	:2
+				LDA	#$8D
+				JSR	PUT_CHAR
+				LDA	#0
+				STA	BYTE_COUNT
+:2				LDX	HOLDX
+				LDY	HOLDY
+				RTS
+
+PUT_BYTE		PHA
+				LSR
+				LSR
+				LSR
+				LSR
+				JSR	PUT_DIGIT
+				PLA
+				AND	#$0F
+PUT_DIGIT		CMP	#$0A
+				BCC	:1
+				CLC
+				ADC	#"A"-$0A
+				BNE	PUT_CHAR
+:1				ORA	#"0"
+PUT_CHAR		LDY	#0
+				STA	(DATA_PTR),Y
+				INC	DATA_PTR
+				BNE	:1
+				INC	DATA_PTR+1
+:1				RTS
+
+BYTE_COUNT		DB	0
+HOLDX			DB	0
+HOLDY			DB	0
+
+START_LINE		DB	0
+END_LINE		DB	0
+LEFT_COLUMN		DB	0
+RIGHT_COLUMN	DB	0
+COUNT			DB	0
+TEMP			DB	0
+
+				PUT	HIRES.TABLES
+				SAV	SCAN.RGHTSIDE

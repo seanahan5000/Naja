@@ -1,0 +1,128 @@
+********************************
+*
+*  FIXER SECTOR
+*
+********************************
+
+COUNTER			EQU	$0A
+DESTINL			EQU	$0B
+DESTINH			EQU	$0C
+SSTOREL			EQU	$12
+SSTOREH			EQU	$13
+LAST1			EQU	$14
+STRACK			EQU	$7A
+SSECTOR			EQU	$7B
+READNUM			EQU	$7C
+SCMRW			EQU	$0300
+FREAD			EQU	$071E
+TPAGE			EQU	$6000
+DRIVOFF			EQU	$C0E8
+
+				ORG	$0200
+
+				DFB	$60,$0C,$00	
+				LDA	#$4C
+				STA	$20
+				LDA	$0200
+				STA	$21
+				LDA	$0201
+				STA	$22
+				LDA	$0202	
+				STA	$B0
+				LDY	#$00
+MORCMRW			LDA	SCRNDAT,Y
+				STA	SCMRW,Y
+				INY
+				CPY	#$14
+				BNE	MORCMRW
+
+* CHECK FOR ][
+				LDA	$C081			;READ ROM
+				LDA	$C081
+				LDA	$C081			;IS THIS NEEDED???
+				LDA	$FBB3
+				CMP	#$38
+				BNE	:OKAY
+				STA	DRIVOFF
+				LDX	#$0D
+				JMP	MESSAGE
+:OKAY
+
+				LDA	#$60
+				STA	SSTOREH
+				LDA	#$01
+				STA	SSECTOR
+				LDA	#$0F
+				STA	READNUM
+				JSR	FREAD
+
+				LDA	#$83
+				STA	SSTOREH
+				LDA	#$02
+				STA	STRACK
+				LDA	#$00
+				STA	SSECTOR
+				LDA	#$2C
+				STA	READNUM
+				JSR	FREAD
+
+				LDX	#$7F
+:LOOP1			LDA	$AE80,X
+				STA	$0980,X
+				DEX
+				BPL	:LOOP1
+
+				STA	DRIVOFF
+				JSR	$AE00			;HTABLER/SWITCHER
+
+* CHECK FOR 64K
+				LDA	$C083			;READ AND WRITE RAM BANK 2
+				LDA	$C083
+				LDA	$C083
+
+* NOTHING SPECIAL ABOUT $A5 OR $E7
+				LDA	#$A5
+				STA	$E000
+				EOR	$E000
+				BNE	:BAD
+				LDA	#$E7
+				STA	$E000
+				EOR	$E000
+				BNE	:BAD
+				JMP	TPAGE
+
+:BAD			LDX	#$00
+
+MESSAGE
+				LDA	$C054
+				LDA	$C051
+
+				LDA	#$60
+				STA	$3E9
+				TXA
+				PHA
+				JSR	$3BF			;COVER ROUTINE
+				PLA
+				TAX
+				LDA	#$4C
+				STA	$3E9
+
+				LDY	#$00
+:LOOP1			LDA	TEXT1,X
+				BEQ	HANG
+				STA	$400,Y
+				INX
+				INY
+				BNE	:LOOP1			;ALWAYS
+HANG			JMP	HANG
+
+TEXT1			ASC	"64K REQUIRED"00
+				ASC	"NAJA WILL NOT WORK ON AN APPLE ]["00
+
+SCRNDAT			DFB	$8D,$54,$C0
+				DFB	$A9,$20,$85
+				DFB	$E6,$4C,$11
+				DFB	$03,$8D,$55
+				DFB	$C0,$A9,$40
+				DFB	$85,$E6,$8D
+				DFB	$5C,$C0

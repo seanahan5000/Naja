@@ -1,0 +1,153 @@
+				LST	OFF
+				PUT	/NAJA/VARS/ZPAGE
+				PUT	/NAJA/VARS/MISC.VARS
+				LST	ON
+
+LINENUM			=	$00
+SORCLIN			=	$0B
+LINSORC			=	$0C
+LEFTCOL			=	$10
+RITECOL			=	$11
+TOCNT			=	$12
+FROMCNT			=	$13
+
+*-------------------------------
+*
+*-------------------------------
+
+SPRAY			LDX	#0
+				STX	LEFTCOL
+				INX
+				STX	SORCLIN
+				LDA	#$27
+				STA	RITECOL
+				LDA	#$BF	
+				STA	LINSORC
+:LOOP1			BIT	KEYBRD
+				BMI	:EXIT
+				JSR	LEFTIN
+				JSR	RIGHTIN
+				JSR	UPIN
+				JSR	DOWNIN
+				LDA	LINSORC
+				CMP	#$C0	
+				BCC	:LOOP1
+:EXIT			BIT	UNSTROB
+				RTS
+
+LEFTIN			LDA	LEFTCOL
+				CMP	#$27
+				BEQ	:EXIT
+				LDX	#2
+:LOOP1			JSR	LR_SUB
+				LDY	#1
+:LOOP2			LDA	(SCREENL),Y
+				DEY
+				STA	(SCREENL),Y
+				INY
+				INY
+				CPY	#$28
+				BNE	:LOOP2
+				LDY	LEFTCOL
+				LDA	(DESTINL),Y
+				LDY	#$27
+				STA	(SCREENL),Y
+				TXA
+				CLC
+				ADC	#4
+				TAX
+				CPX	#$C2
+				BNE	:LOOP1
+				INC	LEFTCOL
+:EXIT			RTS
+
+RIGHTIN			LDA	RITECOL
+				BEQ	:EXIT
+				LDX	#0
+:LOOP1			JSR	LR_SUB
+				LDY	#$26
+:LOOP2			LDA	(SCREENL),Y
+				INY
+				STA	(SCREENL),Y
+				DEY
+				DEY
+				BPL	:LOOP2
+				LDY	RITECOL
+				LDA	(DESTINL),Y
+				LDY	#$00
+				STA	(SCREENL),Y
+				TXA
+				CLC
+				ADC	#4
+				TAX
+				CPX	#$C0
+				BCC	:LOOP1
+				DEC	RITECOL
+:EXIT			RTS
+
+UPIN			LDA	#1
+				BNE	:SKIPA			;Always
+:LOOP1			JSR	UD_SUB
+:SKIPA			STA	TOCNT
+				CLC
+				ADC	#4
+				STA	FROMCNT
+				CMP	#$C1
+				BNE	:LOOP1
+				LDX	SORCLIN
+				TXA
+				CLC
+				ADC	#4
+				STA	SORCLIN
+				BCC	END_SUB			;Always
+
+DOWNIN			LDA	#$BF
+				BNE	:SKIPA			;Always
+:LOOP1			JSR	UD_SUB
+:SKIPA			STA	TOCNT
+				SEC
+				SBC	#4
+				STA	FROMCNT
+				BCS	:LOOP1
+				LDX	LINSORC
+				TXA
+				SEC
+				SBC	#4
+				STA	LINSORC
+END_SUB			LDA	LOBYTES,X
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$40
+				STA	DESTINH
+				LDY	#$27	
+:LOOP1			LDA	(DESTINL),Y
+				STA	(SCREENL),Y
+				DEY
+				BPL	:LOOP1
+				RTS
+
+LR_SUB			LDA	LOBYTES,X
+				STA	SCREENL
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	SCREENH
+				EOR	#$60
+				STA	DESTINH
+				RTS
+
+UD_SUB			LDX	FROMCNT
+				LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	SCREENH
+				LDX	TOCNT
+				LDA	LOBYTES,X
+				STA	DESTINL
+				LDA	HIBYTES,X
+				ORA	#$20
+				STA	DESTINH
+				JSR	LINMOVE
+				LDA	FROMCNT
+				RTS

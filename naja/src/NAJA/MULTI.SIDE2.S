@@ -1,0 +1,41 @@
+				ORG	$1000
+				LST	OFF
+				PUT	MULTI.SAVE
+
+DEST_SIDE		DB	2
+TOTAL_FILES		DB	8
+
+OFFSETS			DW	FILE1
+				DW	FILE2
+				DW	FILE3
+				DW	FILE4
+				DW	FILE5
+				DW	FILE6
+				DW	FILE7
+				DW	FILE8
+
+FILE1			DB	$11,0,$10		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/CONTROL15,A$2000",8D
+
+FILE2			DB	$12,0,$0C		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/CONTROL13,A$2000",8D
+
+FILE3			DB	$13,0,$0B		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/CAMP.B000,A$2000",8D
+
+FILE4			DB	$16,0,$1F		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/CAMP.7800,A$2000",8D
+
+FILE5			DB	$19,0,$18		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/TUNNELS,A$2000",8D
+
+FILE6			DB	$22,0,$0D		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/LOADER17,A$2000",8D
+
+FILE7			DB	$22,$0D,$03		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/EDITOR/SELECT.OPTION,A$2000",8D
+
+FILE8			DB	$20,$08,$18		;Track,Sector,Readnum
+				ASC	"BLOAD /TRACC/EDITOR/ALIEN.EDITOR,A$2000",8D
+
+				SAV	MULTI.SIDE2

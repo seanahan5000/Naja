@@ -1,0 +1,97 @@
+REFRESH_STATS	JSR	CLEAR2
+				LDA	#$40
+				STA	PAGE
+				LDA	#GREEN
+				STA	COLOR
+				LDY	#$00
+				JSR	LINER
+				LDY	#$03	
+				JSR	TEXTER
+				LDA	#$02
+				STA	YPNT
+				LDY	#$03
+				JSR	TEXTING
+				LDY	#$04
+				JSR	TEXTING
+				LDY	#$06
+				JSR	TEXTING
+				LDA	#$00
+				STA	COUNT
+NEXTG1			LDY	COUNT
+				LDA	YPOINTS,Y
+				STA	YPNT
+				TYA
+				JSR	POINTIT
+				LDA	#$0E
+				JSR	EPSHLD
+				LDA	#$69
+				LDY	YPNT
+				JSR	LINE
+				LDA	#$0F
+				JSR	EPSHLD
+				LDA	#$79
+				LDY	YPNT
+				JSR	LINE
+				JSR	STATUSR
+				LDA	#$87
+				LDY	YPNT
+				JSR	LINE
+				JSR	STATS
+				LDA	#$C0
+				LDY	YPNT
+				JSR	LINE
+				INC	COUNT
+				LDA	COUNT
+				CMP	GRPNUMB
+				BNE	NEXTG1
+				LDA	#$00
+				STA	FLIPPED_FLAG
+				LDA	#$20
+				STA	PAGE
+				RTS
+
+FLIPPED_FLAG	DB	0
+
+STATS			LDY	#$0D
+				LDA	#$0A
+SPACOUT			STA	TEXTBUF,Y
+				DEY
+				BPL	SPACOUT
+				LDA	#$8D
+				STA	TEXTBUF+14
+				LDA	#$00
+				STA	COUNTER
+				STA	XSPOT
+NEXTST			LDY	COUNTER
+				LDA	STPICKR,Y
+				TAY
+				LDA	(CHARDL),Y
+				TAX
+				AND	#$F0
+				BEQ	FIRST0
+				LSR
+				LSR
+				LSR
+				LSR
+				LDY	XSPOT
+				STA	TEXTBUF,Y
+FIRST0			INC	XSPOT
+				TXA
+				AND	#$0F
+				LDY	XSPOT
+				STA	TEXTBUF,Y
+				LDA	XSPOT
+				CLC
+				ADC	#$02
+				STA	XSPOT
+				LDA	COUNTER
+				INC	COUNTER
+				CMP	#$05
+				BNE	NEXTST
+				RTS
+
+STPICKR			DB	intelligence
+				DB	strength
+				DB	lwreflex
+				DB	upreflex
+				DB	organic

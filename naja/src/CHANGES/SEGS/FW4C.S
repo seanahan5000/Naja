@@ -1,0 +1,14 @@
+				DB	$78,$85
+				HEX	7F7F
+				HEX	007C
+				HEX	0078
+				HEX	0070
+				HEX	0060
+				HEX	0040
+				HEX	0040
+				HEX	0040
+				HEX	0040
+				HEX	0040
+				HEX	0040
+				HEX	0040
+				HEX	7F7F

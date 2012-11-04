@@ -1,0 +1,93 @@
+GUARD								;LDX PICHERE
+									;DEX
+									;BEQ :SKIPA
+				LDA	#$40
+				STA	PAGE
+				JSR	CLEAR2	
+				JSR	NOSCAN
+				LDY	#$01
+				JSR	PICKER
+									;LDA #$20
+									;STA PAGE
+:SKIPA			STA	SCNDARY
+				JSR	MOVE_NOISE
+:LOOP1			JSR	SCANNER
+				LDA	#$04	
+				JSR	WAIT	
+				LDA	KEYBRD
+				BPL	:LOOP1
+				BIT	UNSTROB
+				JSR	CPARER2
+				BNE	:LOOP1
+									;BEQ :SKIPB
+									;JMP :LOOP1
+									;:SKIPB PHA
+									;JSR CLEAR1
+									;STA PRIMARY
+				JMP	GOTDIRECTN
+
+SCANNER			DEC	TDELAY
+				BPL	OTHER
+				DEC	TDELAY+1
+				BPL	OTHER
+				LDA	#$80	
+				STA	TDELAY+1
+				LDX	#0
+				LDA	#$4F			;Line $33
+				JSR	SCAN
+OTHER			DEC	BDELAY
+				BPL	SCEXIT
+				DEC	BDELAY+1
+				BPL	SCEXIT
+				LDA	#$60	
+				STA	BDELAY+1
+				LDX	#1
+				LDA	#$57			;Line $35
+SCAN			STX	SELECT
+				STA	:MOD1+2
+				LDA	CYCLE,X
+				ASL
+				ASL
+				TAX
+				LDY	#0
+:LOOP1			LDA	SDATA,X
+:MOD1			STA	$FF12,Y			;Modified
+				INX
+				INY
+				CPY	#4
+				BNE	:LOOP1
+
+:SKIPA			LDX	SELECT
+				LDA	CYCLE,X
+				BEQ	:SKIPB
+				CMP	#$08
+				BNE	:SKIPC
+				LDA	DIRECT,X
+				BNE	DOWN
+				DEC	DIRECT,X
+				RTS
+
+:SKIPB			LDA	DIRECT,X
+				BPL	UP
+				INC	DIRECT,X
+				RTS
+
+:SKIPC			LDA	DIRECT,X
+				BMI	DOWN
+UP				INC	CYCLE,X
+				RTS
+DOWN			DEC	CYCLE,X
+SCEXIT			RTS
+
+DIRECT			DB	$FF,$00
+CYCLE			DB	$04,$04
+
+SDATA			DB	$A8,$85,$80,$80
+				DB	$A0,$95,$80,$80
+				DB	$80,$D5,$80,$80
+				DB	$80,$D4,$82,$80
+				DB	$80,$D0,$8A,$80
+				DB	$80,$C0,$AA,$80
+				DB	$80,$80,$AA,$81
+				DB	$80,$80,$A8,$85
+				DB	$80,$80,$A0,$95

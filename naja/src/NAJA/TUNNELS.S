@@ -1,0 +1,161 @@
+north			=	0
+east			=	1
+south			=	2
+west			=	3
+
+WIDTH			=	15
+
+				LDA	#0
+				STA	INDEX
+				LDA	#NORTH
+				STA	DIRECTION
+
+				LDA	#0
+				STA	LEFT_MARGIN
+				STA	DEPTH
+				LDA	#40
+				STA	RIGHT_MARGIN
+
+				LDY	INDEX
+				LDA	THE_MAP,Y
+*** ALIGN FOR NORTH
+
+*** LOOK AT LEFT
+				AND	#leftside
+				BEQ	:1
+				JSR	DRAW_LEFT
+				JMP	:?????
+
+:1				LDA	THE_BYTE
+				PHA
+				JSR	STEP_LEFT
+				LDA	THE_BYTE
+				AND	#forward
+				BEQ	:3
+				JSR	DRAW_LEFTFORW
+				JMP	:5
+
+DRAW_LEFT
+				LDY	DEPTH
+				LDA	LEFT_BWIDTHS,Y
+				CLC
+				ADC	LEFT_MARGIN
+				RTS
+
+
+LEFT_BWIDTHS	DB	2,6,4,3,2
+RIGHT_BWIDTH	DB	2,6,4,3,2
+
+
+				LDY	DIRECTION
+				LDA	L_OFFSETS,Y
+				STA	LEFT_OFFSET
+				LDA	R_OFFSETS,Y
+				STA	RIGHT_OFFSET
+
+
+BACK_OFFSET		DB	-WIDTH
+LEFT_OFFSET		DB	-1
+FORW_OFFSET		DB	WIDTH
+RGHT_OFFSET		DB	1
+
+STEP_LEFT		LDA	INDEX
+				CLC
+				ADC	LEFT_OFFSET
+				STA	INDEX
+				TAY
+				LDA	THE_MAP,Y
+				LDY	DIRECTION
+				LDX	ALIGNS,Y
+				BEQ	:2
+:1				CMP	#$80
+				ROL
+				DEX
+				BPL	:1
+:2				RTS
+				RTS
+
+TURN_RIGHT		LDX	DIRECTION
+				LDY	NEW_RIGHTS,X
+				BPL	TURN_COM		;Always
+TURN_BACK		JSR	TURN_LEFT
+TURN_LEFT		LDX	DIRECTION
+				LDY	NEW_LEFTS,X
+TURN_COM		STY	DIRECTION
+				LDA	DMASKS,Y
+				STA	MASK
+				LDA	DSHIFTS,Y
+				STA	SHIFT
+				RTS
+
+NEW_LEFTS		DB	west,north,east,south
+
+NEW_RIGHTS		DB	east,south,west,north
+
+DMASKS			DB	%11000000
+				DB	%00110000
+				DB	%00001100
+				DB	%00000011
+
+DSHIFTS			DB	6,4,2,0
+
+
+********************************
+********************************
+********************************
+
+DRAW_LFRONT		LDX	DEPTH
+				LDA	LEFT_COLS,X
+				BPL	DRAW_FRONT		;Always
+
+DRAW_CFRONT		LDX	DEPTH
+				LDA	CENTER_COLS,X
+				BPL	DRAW_FRONT		;Always
+
+DRAW_RFRONT		LDX	DEPTH
+				LDA	RIGHT_COLS,X
+
+DRAW_FRONT		STA	LEFT_COLUMN
+				CLC
+				ADC	FRONT_WIDTHS,X
+				STA	RIGHT_COLUMN
+
+				LDA	DEPTH
+				TAX
+				ASL
+				TAY
+				LDA	FRONTS,Y
+				STA	SOURCE
+				LDA	FRONTS+1,Y
+				STA	SOURCE+1
+
+
+				LDA	END_LINS,X
+				STA	:EL_MOD+1
+				LDA	START_LINS,X
+				TAX
+
+:3				LDA	LOBYTES,X
+				STA	SCREENL
+				LDA	HIBYTES,X
+				ORA	PAGE
+				STA	SCREENH
+
+
+				LDA	SOURCE
+				CLC
+				ADC	BYTE_WIDTH
+				STA	SOURCE
+				BNE	:5
+				INC	SOURCE+1
+:ELMOD1			CPX	#$FF
+				INX
+				BCC	:3
+				RTS
+
+
+FRONTS			DW	DEPTH0-2
+				DW	DEPTH1-6
+				DW	DEPTH2-4
+				DW	DEPTH3-3
+				DW	DEPTH4-2

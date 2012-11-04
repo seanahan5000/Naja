@@ -1,0 +1,37 @@
+				LDA	#$40
+				STA	PAGE
+				JSR	CLEAR2
+				LDA	#<ETPIC
+				STA	TBLPNTL
+				LDA	#>ETPIC
+				STA	TBLPNTH
+				JSR	EXPANDR
+				LDA	#GREEN	
+				STA	COLOR
+				LDA	#<ETLINE
+				STA	POINTL
+				LDA	#>ETLINE
+				STA	POINTH
+				JSR	LINEOUT
+				STA	SCNDARY
+				JSR	MOVETO1
+				STA	PRIMARY
+				LDA	#$20
+				STA	PAGE
+				LDA	#$7F
+				PHA
+				LDA	#$FF
+				PHA
+				LDA	#$80
+				STA	SSTOREH
+				LDX	#<$0101
+				LDY	#>$0101
+				LDA	#5
+				JMP	FLOAD
+
+ETLINE			DB	$00,$01,$BF
+				DB	$00,$01,$8D
+				DB	$01,$17,$8D
+				DB	$01,$17,$BF
+				DB	$00,$01,$BF
+				DB	$FF

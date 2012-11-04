@@ -1,0 +1,161 @@
+SEESTAT			LDA	#$20
+				STA	PAGE
+				JSR	CLEAR1
+				LDA	#GREEN
+				STA	COLOR
+				LDY	#$00	
+				JSR	LINER
+				LDY	#$11	
+				JSR	TEXTER2
+				LDY	#$01	
+				JSR	LINER	
+				JSR	STATUSR
+				LDA	#$DB
+				LDY	#$36
+				JSR	LINE
+				JSR	DAMAGER
+				LDX	#$00
+PUTEE			LDA	TEXTBUF,X
+				CMP	#$0A
+				BNE	PUTSKIP
+				LDA	#$EE
+				STA	TEXTBUF,X
+				INX
+				BNE	PUTEE
+PUTSKIP			LDA	#$DB
+				LDY	#$3F	
+				JSR	LINE
+				LDY	#$1B
+				LDA	(CHARDL),Y
+				JSR	RJUSTIF
+				LDA	#$E7
+				LDY	#$48	
+				JSR	LINE
+				LDY	#$1C
+				LDA	(CHARDL),Y
+				JSR	RJUSTIF
+				LDA	#$25
+				STA	XCOORD
+				LDA	#$02
+				STA	SHIFT
+				LDA	#$48	
+				STA	YCOORD
+				JSR	LINE2
+				LDY	#profrace
+				LDA	(CHARDL),Y
+				BMI	OVRCRED
+				LDA	#$51
+				STA	YPNT
+				LDA	#$DB
+				STA	XPNT
+				JSR	CHAR_CREDOUT
+OVRCRED			JSR	POWROUT
+				LDA	#$B7
+				LDY	#$68
+				JSR	LINE
+				LDA	#$00
+				STA	COUNT
+				LDA	#$76
+				STA	LINENUM
+NEXSTAT			LDY	COUNT
+				LDA	SPOTS,Y
+				TAY
+				LDA	(CHARDL),Y
+HALFSUB			JSR	SPLIT
+				LDA	FEEDERH
+				BNE	NOTAGAP
+				LDA	#$0A
+NOTAGAP			STA	TEXTBUF
+				LDA	FEEDERL
+				STA	TEXTBUF+1
+				LDA	#$8D
+				STA	TEXTBUF+2
+				LDA	#$FF
+				LDY	LINENUM
+				JSR	LINE
+				LDA	LINENUM
+				CLC
+				ADC	#$09
+				STA	LINENUM
+				LDA	COUNT
+				INC	COUNT
+				CMP	#$04
+				BNE	NEXSTAT
+STOPSUB			LDY	#$23
+				LDA	#$00
+				SEC
+				SED
+				SBC	(CHARDL),Y
+				CLD
+				PHA
+				LDA	#$60
+				STA	STOPSUB
+				DEC	COUNT
+				PLA
+				JSR	HALFSUB
+				LDA	#$A0
+				STA	STOPSUB
+				JSR	STAT121
+				BIT	UNSTROB
+				LDA	#$40
+				STA	PAGE
+				LDX	#<:STAT_DEF
+				LDY	#>:STAT_DEF
+				JSR	INIT_CURSOR
+				JSR	GETKEY
+				JSR	STAT212
+				LDA	#$05
+				STA	CURSOR
+				JSR	IMARKER
+				LDA	#$04
+				JMP	RDOPTN
+
+*-------------------------------
+:STAT_DEF		DB	$00
+				DB	$80
+				DW	:STAT_CURS
+
+:STAT_CURS		LDX	#$A7
+				LDY	#$B5
+				JMP	ARROWER
+*-------------------------------
+
+SPOTS			DFB	$1A,$17,$18	
+				DFB	$19,$23
+
+RJUSTIF			LDX	#$00
+				JSR	SPLIT
+				LDA	FEEDERH
+				BEQ	NOZEROA
+				STA	TEXTBUF,X
+				INX
+NOZEROA			LDA	FEEDERL
+				STA	TEXTBUF,X
+				INX
+				LDA	#$8D
+				STA	TEXTBUF,X
+				RTS
+
+RJUST1			PHA
+				LDY	#$00
+				LDA	#$8D
+FNDRET2			CMP	TEXTBUF,Y
+				BEQ	FONDRT2
+				INY
+				JMP	FNDRET2
+FONDRT2			PLA
+				PHA
+				TAX
+ALIGNMR			LDA	TEXTBUF,Y	
+				STA	TEXTBUF,X	
+				DEX	
+				DEY	
+				BPL	ALIGNMR
+				CPX	#$FF
+				BEQ	SAMECOL
+				LDA	#$0A
+DETRAIL			STA	TEXTBUF,X	
+				DEX	
+				BPL	DETRAIL
+SAMECOL			PLA
+				RTS

@@ -1,0 +1,4 @@
+DEBUG			MAC
+				JSR	DEBUG_VECTOR
+				ASC	]1,00EA
+				EOM

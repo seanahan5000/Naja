@@ -1,0 +1,527 @@
+*-------------------------------
+
+SELL_ID_REP		LDX	#$0A
+				LDA	#$FF
+:LOOP1			STA	VISIBLE,X
+				DEX
+				BPL	:LOOP1
+				JSR	CLRBOTM
+				LDA	WHOPIC
+				JSR	POINTIT
+				LDA	#$59
+				STA	LINECNT
+				LDY	#profrace
+				LDA	(CHARDL),Y
+				BMI	IROBOT
+				AND	#%00001111
+				CMP	#deneb
+				BEQ	ISDENEB
+				LDY	#$27
+				LDA	#$69
+				BNE	RDNCOMN			;Always
+ISDENEB			LDY	#$28
+				LDA	#$79
+				BNE	RDNCOMN			;Always
+IROBOT			LDY	#$29
+				LDA	#$79
+RDNCOMN			STA	LINECNT
+				JSR	TEXTER
+				LDA	#$00
+				STA	VISIBLE
+				STA	VISIBLE+1
+				LDX	LINECNT
+				CPX	#$69
+				BEQ	ONLY2
+				STA	VISIBLE+2
+				STA	VISIBLE+3
+ONLY2			LDX	#$03
+BACLOOP			LDA	BACLETS,X
+				STA	TEXTBUF,X
+				DEX
+				BPL	BACLOOP
+HELOOP1			LDA	#$08
+				LDY	LINECNT
+				JSR	LINE
+				LDA	TEXTBUF+1
+				CLC
+				ADC	#$03
+				TAX
+				LDA	#$00
+				STA	VISIBLE,X
+				LDA	LINECNT
+				CLC
+				ADC	#$08
+				STA	LINECNT
+				LDA	TEXTBUF+1
+				INC	TEXTBUF+1
+				LDY	#back
+				CMP	(CHARDL),Y
+				BNE	HELOOP1
+				LDA	#$00
+				STA	VISIBLE+10
+				LDA	#$59
+				STA	LINECNT
+				LDX	#$00
+HELOOP3			LDA	VISIBLE,X
+				BNE	VISKIP1
+				LDA	LINECNT
+				STA	LINTABL,X
+				CLC
+				ADC	#$08
+				STA	LINECNT
+VISKIP1			INX
+				CPX	#$0B
+				BNE	HELOOP3
+				LDA	LINTABL+10
+				CLC
+				ADC	#$02
+				STA	LINTABL+10
+				STA	LEAVMOD
+				ADC	#$0A
+				STA	ORGMOD1+2
+				STA	ORGMOD2+2
+				LDA	#RED
+				STA	COLOR
+				LDY	#$0E
+				JSR	LINER
+
+				LDA	#BLUE
+				JSR	PICK_OF_3
+
+				LDY	#$26
+				JSR	TEXTER
+				LDA	#$00
+				STA	ON1
+				STA	ON1+1
+				LDY	#$34
+				LDX	SOURCE
+				DEX
+				BEQ	:SKIPA
+				DEY
+:SKIPA			JSR	TEXTER
+				JSR	ISHERE
+				JSR	MARKIT
+				LDY	SOURCE
+				LDA	MASKTAB-1,Y
+				STA	MASK
+				LDA	LEGLTAB-1,Y
+				STA	THELEGL
+				LDA	FACTABL-1,Y
+				STA	FACTOR
+				JSR	LEGLSUB
+				LDA	#$00
+				STA	BOX_PRESENT
+				JMP	ZDOWN2
+
+*-------------------------------
+
+PICK_OF_3		STA	COLOR
+				LDY	#$0F
+				JSR	LINER
+				LDY	#$2A
+				LDX	SOURCE
+				DEX
+				BEQ	HEDCOMS
+				INY
+				JSR	TEXTER
+				LDY	#$2D
+				LDA	SOURCE
+				CMP	#$02
+				BEQ	HEDCOMS
+				DEY
+HEDCOMS			JMP	TEXTER
+
+*-------------------------------
+
+CONFIRMER		STA	COLOR
+				LDY	#$12
+				JSR	LINER
+				LDY	#$32
+				JSR	TEXTER
+				LDA	SOURCE
+				CLC
+				ADC	#$37
+				TAY
+				JMP	TEXTER
+
+*-------------------------------
+
+LEGLSUB			LDA	WHOPIC
+				JSR	POINTIT
+				LDX	#$0A
+LELOOP1			LDA	VISIBLE,X
+				STA	LEGALS,X
+				DEX
+				BPL	LELOOP1
+				LDA	#$00
+				STA	COUNT
+				LDY	#e3_UPLFT
+				STY	APOINTER
+LELOOP2			LDX	COUNT
+				LDA	LEGALS,X
+				BEQ	LELS2
+				JMP	LELSKIP
+LELS2			LDA	(CHARDL),Y
+				CMP	#$FF
+				BEQ	NOOK1
+				AND	MASK
+				CMP	THELEGL
+				BNE	NOOK2
+				JSR	OKAYSUB
+				LDA	COUNT
+				PHA
+				JSR	CALC_VALUE
+				PLA
+				STA	COUNT
+				LDY	APOINTER
+				BPL	LESKIPA			;Always
+NOOK2			LDA	#$FE
+NOOK1			LDX	COUNT
+				STA	LEGALS,X
+				BPL	OKAY			;Always
+LESKIPA			LDY	#profrace
+				LDA	(CHARDL),Y
+				BPL	OKAY
+				LDY	APOINTER
+				CPY	#e3_UPLFT
+				BEQ	ISAOF2
+				CPY	#e5_LWLFT
+				BNE	OKAY
+ISAOF2			LDA	(CHARDL),Y
+				AND	#$1F
+				CMP	#$19
+				BNE	OKAY
+				INY
+				INY
+				INY
+				INY
+				LDA	(CHARDL),Y
+				CMP	#$FF
+				BEQ	OKAY
+				LDY	APOINTER
+				LDA	#$FF
+				BNE	NOOK1			;Always
+OKAY			LDY	APOINTER
+				JSR	OKAYSUB
+				JSR	EQUIP1
+				LDX	COUNT
+				LDA	LINTABL,X
+				TAY
+				LDA	#$23
+HALT1			JSR	LINE
+				LDX	COUNT
+				LDA	LEGALS,X
+				CMP	#$FF
+				BEQ	NOVALUR
+				CMP	#$FE
+				BNE	BCCAN
+
+				JSR	STAT_WORD
+				JMP	NOVALUR
+
+BCCAN			LDX	COUNT
+				LDA	LINTABL,X
+				STA	YPNT
+				LDA	#$7A
+				STA	XPNT
+				LDX	#<THE_PRICE
+				LDY	#>THE_PRICE
+HALT2			JSR	CREDIT_OUT
+NOVALUR			LDY	APOINTER
+LELSKIP			LDA	COUNT
+				INC	COUNT
+				CMP	#$09
+				BEQ	LELOUT
+				LDY	APOINTER
+				INY
+				INY
+				INY
+				INY
+				STY	APOINTER
+				JMP	LELOOP2
+LELOUT			LDA	#$0A
+				STA	CURSOR
+				RTS
+
+*-------------------------------
+
+STAT_WORD		LDX	COUNT
+STAT_WORD2		LDA	LINTABL,X
+				STA	TEXT2F+2		;??????
+				STA	TEXT30+2		;BROKEN
+				STA	TEXT31+2		;KNOWN
+				STA	TEXT37+2		;OKAY
+				LDY	#$2F
+				BIT	ETABLE
+				BVC	:SKIPA
+				PHP
+				INY
+				PLP
+				BMI	:SKIPA
+				INY
+:SKIPA			CPY	#$31
+				BNE	HALT3
+				LDA	SOURCE
+				CMP	#$03
+				BNE	HALT3
+				LDY	#$37
+HALT3			JSR	TEXTER
+				RTS
+
+*-------------------------------
+
+OKAYSUB			LDX	#$00
+LELOOP3			LDA	(CHARDL),Y
+				STA	ETABLE,X
+				INY
+				INX
+				CPX	#$04
+				BNE	LELOOP3
+				RTS
+
+*-------------------------------
+
+ZBLINK			LDA	#$10
+				JSR	WAIT
+				LDA	#$F0
+				JSR	WAIT2
+				BMI	ZKEYGOT
+				JSR	ZCURSIT
+				LDA	#$00
+				JSR	WAIT2
+				JSR	ZCURSIT
+ZGETKEY			LDA	KEYBRD
+				BPL	ZBLINK
+ZKEYGOT			BIT	UNSTROB
+				JSR	CHECK_UP
+				BEQ	ZUP1
+				JSR	CHECK_DOWN
+				BEQ	ZDOWN1
+				JSR	CHECK_ENTER
+				BEQ	ZENTER
+				CMP	#$9B
+				BNE	ZGETKEY
+				JMP	ARSOUT
+ZUP1			JSR	ZCURSIT
+ZUP2			DEC	CURSOR
+				BPL	ZUP3
+				LDA	#$0A
+				STA	CURSOR
+ZUP3			LDY	CURSOR
+				LDA	LEGALS,Y
+				BNE	ZUP2
+				JSR	ZCURSIT
+				JSR	UPDATE_BOX
+				JMP	ZGETKEY
+ZDOWN1			JSR	ZCURSIT
+ZDOWN2			INC	CURSOR
+				LDA	CURSOR
+				CMP	#$0B
+				BNE	ZDOWN3
+				LDA	#$00
+				STA	CURSOR
+ZDOWN3			TAY
+				LDA	LEGALS,Y
+				BNE	ZDOWN2
+				JSR	ZCURSIT
+				JSR	UPDATE_BOX
+				JMP	ZGETKEY
+ZENTER			LDA	CURSOR
+				CMP	#$0A
+				BNE	NOZLEAV
+				JSR	ZCURSIT
+ZLEAVE			JSR	MARKIT
+				LDY	DISPLAY
+				DEY
+				BNE	:SKIPA
+				JSR	MOVETO2
+				JMP	:SKIPB
+:SKIPA			JSR	MOVETO1
+:SKIPB			LDA	#$01
+				STA	WANTED1
+				JSR	DRAW_SCREEN
+				JMP	MAIN_LOOP
+
+NOZLEAV			LDA	#$01
+				STA	COUNT
+:LOOP1			LDY	BOX_PRESENT
+				BEQ	:SKIPA
+				JSR	TEXTER
+				LDA	#$00
+				JSR	WAIT2
+				LDY	BOX_PRESENT
+				JSR	TEXTER
+				LDA	#$00
+				JSR	WAIT2
+				BMI	:SKIPB
+				DEC	COUNT
+				BPL	:LOOP1
+:SKIPB			JMP	ZGETKEY
+:SKIPA			JSR	NOISE
+				LDA	#BLACK1
+				JSR	PICK_OF_3
+				BIT	UNSTROB
+				LDA	#GREEN
+				JSR	CONFIRMER
+:KEYLOOP		LDA	KEYBRD
+				BPL	:KEYLOOP
+				BIT	UNSTROB
+				JSR	CHECK_ENTER
+				BEQ	:SKIPC
+				CMP	#"C"
+				BNE	:KEYLOOP
+				LDA	#BLACK1
+				JSR	CONFIRMER
+				LDA	#BLUE
+				JSR	PICK_OF_3
+				JMP	ZGETKEY
+:SKIPC			LDA	WHOPIC
+				JSR	POINTIT
+				JSR	ZCURSIT
+				LDY	CURSOR
+				LDA	CORESP,Y
+				PHA
+				TAY
+				JSR	OKAYSUB
+				JSR	CALC_VALUE
+				LDA	SOURCE
+				CMP	#$01
+				BNE	:SKIPE
+				JMP	ASELLER
+:SKIPE			JSR	TAKE_PRICE
+				LDA	WHOPIC
+				JSR	POINTIT
+				LDA	SOURCE
+				CMP	#$03
+				BEQ	:SKIPD
+				JSR	EDRASUB
+:SKIPD			JSR	PDRASUB
+				PLA
+				TAY
+				LDA	SOURCE
+				CMP	#$02
+				BNE	RPART
+				LDA	(CHARDL),Y
+				ORA	#eq_identified
+				BNE	IRCOMN			;Always
+RPART			LDA	(CHARDL),Y
+				AND	#$7F
+IRCOMN			STA	(CHARDL),Y
+				STA	ETABLE
+				LDA	SOURCE
+				CMP	#$03
+				BEQ	:SKIPA
+				JSR	EDRASUB
+:SKIPA			LDX	CURSOR
+				JSR	STAT_WORD2
+				JSR	NOISE
+				JMP	ZESKIP2
+
+*-------------------------------
+
+UPDATE_BOX		LDX	CURSOR
+				LDY	#$00
+				CPX	#$0A
+				BEQ	:SKIPB
+				LDY	CORESP,X
+				JSR	OKAYSUB
+				JSR	CALC_VALUE
+				LDX	SOURCE
+				DEX
+				BEQ	:SKIPA
+				LDX	#$03
+				SEC
+:LOOP1			LDA	TOTAL_CREDITS,X
+				SED
+				SBC	THE_PRICE,X
+				STA	REMAINS,X
+				CLD
+				DEX
+				BPL	:LOOP1
+				LDY	#$00
+				BCS	:SKIPB
+				LDY	#$35
+				BNE	:SKIPB			;Always
+:SKIPA			LDX	#$03
+				LDA	#$00
+:LOOP2			ORA	REMAINS,X
+				DEX
+				BPL	:LOOP2
+				LDY	#$00
+				TAX
+				BNE	:SKIPB
+				LDY	#$36
+:SKIPB			CPY	BOX_PRESENT
+				BEQ	:EXIT
+				LDA	BOX_PRESENT
+				BNE	:SKIPC
+				LDA	#RED
+				STA	COLOR
+				STY	BOX_PRESENT
+				JSR	TEXTER
+				LDY	#$11
+				JMP	LINER
+:SKIPC			STY	BOX_PRESENT
+				CPY	#$00
+				BNE	:SKIPD
+				TAY
+				JSR	TEXTER
+				LDA	#BLACK1
+				STA	COLOR
+				LDY	#$11
+				JMP	LINER
+:SKIPD			TAY
+				JSR	TEXTER
+				LDY	BOX_PRESENT
+				JMP	TEXTER
+:EXIT			RTS
+
+*-------------------------------
+
+BOX_PRESENT		DB	$00
+
+CORESP			DB	$3D,$41,$45
+				DB	$49,$4D,$51
+				DB	$55,$59,$5D
+				DB	$61
+
+*-------------------------------
+
+EDRASUB			JSR	EQUIP1
+				LDY	CURSOR
+				LDA	LINTABL,Y
+				STA	YPNT
+				TAY
+				LDA	#$23
+				JMP	LINE
+
+PDRASUB			LDX	#<THE_PRICE
+				LDY	#>THE_PRICE
+				LDA	#$7A
+				STA	XPNT
+				JMP	CREDIT_OUT
+
+*-------------------------------
+
+ZCURSIT			LDY	CURSOR
+				LDA	LINTABL,Y
+				STA	YPNT
+				LDA	#$1B
+				STA	XPNT
+				LDA	#2
+				JSR	SPCHARS
+				LDA	CURSOR
+				CMP	#$0A
+				BEQ	:EXIT
+				LDA	#$AE
+				STA	XPNT
+				LDA	#3
+				JMP	SPCHARS
+:EXIT			RTS
+
+MASKTAB			DB	$C0,$40,$C0
+LEGLTAB			DB	$40,$00,$C0
+FACTABL			DB	$88,$25,$13		;SIR
+BACLETS			USR	(B1:)
+
+*-------------------------------

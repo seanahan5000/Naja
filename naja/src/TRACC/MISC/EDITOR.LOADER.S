@@ -1,0 +1,19 @@
+FREAD			EQU	$071E	
+SSTOREH			EQU	$B2	
+STRACK			EQU	$BA	
+SSECTOR			EQU	$BB	
+READNUM			EQU	$BC	
+				ORG	$9000
+				LDA	#$88
+				STA	SSTOREH
+				LDA	#$10
+				STA	STRACK
+				LDA	#$00
+				STA	SSECTOR
+				LDA	#$18
+				STA	READNUM
+				LDA	#$87
+				PHA
+				LDA	#$FF
+				PHA
+				JMP	FREAD

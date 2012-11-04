@@ -1,0 +1,36 @@
+CHR_EXCHANGE	LDX	COMPNTR
+				LDA	COMMAND,X
+				LSR
+				LSR
+				TAX
+				AND	#%00001100
+				CLC
+				ADC	#e3_UPLFT
+				TAY
+				TXA
+				LSR
+				LSR
+				AND	#%00001100
+				CLC
+				ADC	#e3_UPLFT
+				STA	TEMP
+				STY	TEMP+1
+				LDX	#4
+:LOOP1			LDY	TEMP+1
+				LDA	(CHARDL),Y
+				PHA
+				LDY	TEMP
+				LDA	(CHARDL),Y
+				LDY	TEMP+1
+				STA	(CHARDL),Y
+				PLA
+				LDY	TEMP
+				STA	(CHARDL),Y
+				INC	TEMP
+				INC	TEMP+1
+				DEX
+				BNE	:LOOP1
+				JSR	CLEAR_TLINE1
+				LDY	#38				;S>38 Charname.Exchanges.Equipment
+				JSR	SENTENCE_PRET
+				JMP	DEL_CLR_CCOM

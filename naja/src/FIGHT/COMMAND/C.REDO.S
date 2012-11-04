@@ -1,0 +1,63 @@
+REDO			JSR	CLRBOX
+				JSR	DOTIME
+				JSR	CANCEL_IN
+				LDA	#RED
+				STA	COLOR
+				LDY	#$07
+				JSR	LINER
+				LDY	#$09
+				JSR	TEXTER
+				JSR	SPACE_WAIT
+				BCC	NOTSURE
+				LDY	COMPNTR
+				LDA	#$8A
+				STA	COMMAND,Y
+				JSR	DENERGY
+				JSR	CANCEL_OUT
+				JSR	CLRBOX
+				LDA	COMCNT
+				CMP	#$0B
+				BCC	SMALL1
+				LDA	#$40
+				STA	PAGE
+				JSR	CLRBOX2
+				LDY	#$00
+				JSR	TEXTER
+				JSR	SWAP
+				LDA	#$20
+				STA	PAGE
+				BNE	REDCOMN			;Always
+SMALL1			JSR	CLRBOX2
+				LDY	#$00
+				JSR	TEXTER
+REDCOMN			PLA	
+				PLA
+				JMP	PLANSUB
+NOTSURE			JMP	DIDCANC	
+
+*-------------------------------
+
+DENERGY			LDA	PLANNER
+				ASL
+				ASL
+				ASL
+				ASL
+				ASL
+				STA	COUNT
+:LOOP1			LDY	COUNT
+				LDA	COMMAND,Y
+				CMP	#$8A
+				BEQ	:EXIT
+				AND	#$0F
+				CMP	#$02
+				BNE	:SKIPA
+				LDA	COMMAND-2,Y
+				LSR
+				LSR
+				LSR
+				LSR
+				JSR	SPENSUB
+:SKIPA			INC	COUNT
+				INC	COUNT
+				BNE	:LOOP1
+:EXIT			RTS

@@ -1,0 +1,167 @@
+*--------------------------------------
+* On Entry:
+*   SQUARE_HIT: Square to explode in
+*
+* Notes: This code could be re-written
+*         to be shorter than it is now
+*--------------------------------------
+
+DO_EXPLOSION	LDA	SQUARE_HIT
+				TAX
+				AND	#%00001111
+				CMP	#$06
+				BCS	:SKIPA
+
+				LDA	#$80			;In character grid
+				STA	TOPMOD+1
+				LDA	#$B5
+				STA	BOTMOD+1
+				TXA
+				JSR	FROM11B
+				LDA	YPNTS,Y
+				BNE	EXPLODE_COM		;Always
+
+:SKIPA			LDA	#$49			;In alien grid
+				STA	TOPMOD+1
+				LDA	#$7E
+				STA	BOTMOD+1
+				TXA
+				SEC
+				SBC	#$05
+				JSR	FROM11B
+				LDA	YPNTS,Y
+				SEC
+				SBC	#$37
+
+EXPLODE_COM		CLC
+				ADC	#$04
+				STA	YCOUNT
+				TAY
+				LDA	XPNTS,X
+				CLC
+				ADC	#$06
+				STA	XCOUNT
+				TAX
+				JSR	DOTTER
+				CLC
+				JSR	OUTWARD
+				SEC
+				JSR	OUTWARD
+				JSR	INWARD
+				CLC
+				JSR	INWARD
+				LDX	XCOUNT
+				LDY	YCOUNT
+				JMP	DOTTER
+
+OUTWARD			PHP
+				LDA	#$00
+				STA	COUNT
+:LOOP1			LDA	#$38
+				JSR	WAIT2
+				PLP
+				PHP
+				JSR	ALLFOUR
+				INC	COUNT
+				LDA	COUNT
+				CMP	#$04
+				BNE	:LOOP1
+				PLP
+				RTS
+
+INWARD			PHP
+				LDA	#$03
+				STA	COUNT
+:LOOP1			LDA	#$38
+				JSR	WAIT2
+				PLP
+				PHP
+				JSR	ALLFOUR
+				DEC	COUNT
+				BPL	:LOOP1
+				PLP
+				RTS
+
+ALLFOUR			LDX	COUNT
+				PHP
+				BCS	DIAGONA
+				LDA	STRAITY,X
+				TAY
+				LDA	STRAITX,X
+				TAX
+				BNE	CALCFOR
+DIAGONA			LDA	DIAGONY,X
+				TAY
+				LDA	DIAGONX,X
+				TAX
+CALCFOR			STX	XPLUS4
+				STY	YPLUS4
+				LDA	XCOUNT
+				SEC
+				SBC	XPLUS4
+				STA	XMINUS4
+				LDA	XCOUNT
+				CLC
+				ADC	XPLUS4
+				STA	XPLUS4
+				LDA	YCOUNT
+				SEC
+				SBC	YPLUS4
+				STA	YMINUS4
+				LDA	YCOUNT
+				CLC
+				ADC	YPLUS4
+				STA	YPLUS4
+				PLP
+				BCS	DIAGONB
+				LDX	XCOUNT
+				LDY	YMINUS4
+				JSR	DOTTER
+				LDX	XPLUS4
+				LDY	YCOUNT
+				JSR	DOTTER
+				LDX	XCOUNT
+				LDY	YPLUS4
+				JSR	DOTTER
+				LDX	XMINUS4
+				LDY	YCOUNT
+				JMP	DOTTER
+DIAGONB			LDX	XPLUS4
+				LDY	YMINUS4
+				JSR	DOTTER
+				LDX	XPLUS4
+				LDY	YPLUS4
+				JSR	DOTTER
+				LDX	XMINUS4
+				LDY	YPLUS4
+				JSR	DOTTER
+				LDX	XMINUS4
+				LDY	YMINUS4
+				JMP	DOTTER
+
+DOTTER			CPX	#$54
+				BCS	NODOTS
+				CPX	#$08
+				BCC	NODOTS
+BOTMOD			CPY	#$7E			;Modified
+				BCS	NODOTS
+TOPMOD			CPY	#$49			;Modified
+				BCC	NODOTS
+				DEX
+				DEX
+				TYA
+				SEC
+				SBC	#$05
+				TAY
+				LDA	#$2D
+				STA	TEXTBUF
+				LDA	#$8D
+				STA	TEXTBUF+1
+				TXA
+				JMP	LINE
+NODOTS			RTS
+
+STRAITX			DB	$04,$08,$0C,$50
+STRAITY			DB	$04,$07,$0A,$50
+DIAGONX			DB	$02,$04,$06,$08
+DIAGONY			DB	$02,$04,$06,$08
