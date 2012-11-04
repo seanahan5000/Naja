@@ -18,7 +18,7 @@ NOCLEAR			LDA	#$40
 				JSR	GETNSEW
 				LDA	#$01
 				STA	SRANGE
-				JSR	NOSCAN_NOFILL	;TEMP****?????
+				JSR	NOSCAN
 				LDA	#$06
 				STA	SRANGE
 
