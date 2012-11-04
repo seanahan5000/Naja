@@ -14,7 +14,7 @@ SHFTCLC			=	$0BA1
 TABLER			=	$0BD6
 
 EXPANDR			=	$0C60
-*SIMPOSE = $0CFA
+SIMPOSE			=	$0CA3			; used by infirmary -- originally $0CFA
 
 HPOSN			=	$0D01
 HPLOT			=	$0D43

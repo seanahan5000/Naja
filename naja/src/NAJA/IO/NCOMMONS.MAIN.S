@@ -422,77 +422,58 @@ ERASE			STA	CHARTAB,X		;ERASE CHARACTER TABLE
 *
 *-------------------------------
 
-EXPANDR			LDY	#3
-N1				LDA	(TBLPNTL),Y
+EXPANDR			LDY	#0
+:1				LDA	(TBLPNTL),Y
 				STA	TOP,Y
-				DEY
-				BPL	N1
-				INC	TOP
-				LDA	RIGHT
-				PHA
-				LDY	#4
-
+				INY
+				CPY	#4
+				BNE	:1
+				DEC	TOP
+				
 				LDA	#0
 				STA	RPCOUNT
-N2				LDX	BOTTOM
-N3				LDA	LOBYTES,X
+:NEXTCOL		LDX	BOTTOM
+:NEXTLINE		LDA	LOBYTES,X
 				STA	SCREENL
 				LDA	HIBYTES,X
 				ORA	PAGE
 				STA	SCREENH
-
+				
 				LDA	RPCOUNT
-				BNE	N7
+				BNE	:3
+				
 				INC	RPCOUNT
-
 				LDA	(TBLPNTL),Y
 				INY
 				CMP	#RPCODE
-				BNE	N5
-				LDA	(TBLPNTL),Y
-				BNE	N4
-				INY
-				LDA	(TBLPNTL),Y
-				STA	CURCHAR2
-				INY
+				BNE	:2
 				LDA	(TBLPNTL),Y
 				INY
-				BNE	N6				;Always
-N4				INY
 				STA	RPCOUNT
 				LDA	(TBLPNTL),Y
 				INY
-N5				STA	CURCHAR2
-N6				STA	CURCHAR
+:2				STA	CURCHAR
 				TYA
 				CLC
 				ADC	TBLPNTL
 				STA	TBLPNTL
-				BCC	N7
+				BCC	:3
 				INC	TBLPNTH
-N7				LDA	CURCHAR
-				BEQ	N8
+:3				LDA	CURCHAR
+:SIMPOSE		BEQ	:4				; modified by INFIRMARY
 				LDY	RIGHT
 				STA	(SCREENL),Y
-N8				CMP	CURCHAR2
-				BEQ	N9
-				LDY	CURCHAR2
-				STA	CURCHAR2
-				STY	CURCHAR
-N9				LDY	#0
+:4				LDY	#0
 				DEC	RPCOUNT
-
-				CPX	TOP
+				
 				DEX
-				BCS	N3
-
+				CPX	TOP
+				BNE	:NEXTLINE
+				
 				LDA	RIGHT
 				DEC	RIGHT
 				CMP	LEFT
-				BNE	N2
-				DEC	TOP
-				PLA
-				STA	RIGHT
+				BNE	:NEXTCOL
 				RTS
 
 *-------------------------------
