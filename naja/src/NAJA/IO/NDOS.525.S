@@ -175,22 +175,12 @@ LOOPC			LDA	READER,X
 				BNE	CHECKA
 :LOOP1			LDA	READER,X
 				BPL	:LOOP1
-			do NEW_DOS
-				ROL					;Carry set
-				STA	HOLDA
-			else
 				STA	HOLDA
 				NOP
-			fin
 :LOOP2			LDA	READER,X
 				BPL	:LOOP2
-			do NEW_DOS
-				AND	HOLDA
-				NOP
-			else
 				ROL					;Carry set
 				AND	HOLDA
-			fin
 				STA	TRACK_FOUND
 LOOPD			LDA	READER,X
 				BPL	LOOPD
@@ -206,7 +196,7 @@ LOOPE			LDA	READER,X
 				RTS
 ERROR			SEC
 				RTS
-			fin
+			fin	; NEW_DOS = 0
 
 
 READ_DATA		LDX	SLOT_X0
