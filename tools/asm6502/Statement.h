@@ -139,14 +139,17 @@ protected:
 class AscStatement : public Statement
 {
 public:
-	AscStatement() : Statement()
+	AscStatement(bool prependLength) : Statement()
 	{
+		mPrependLength = prependLength;
 	}
 	
 	void Parse(Parser* p,const char* label);
 	void Write(Assembler* assembler);
 	
 protected:
+	bool mPrependLength;
+	UINT8 mBaseLength;
 	GrowBuffer mBuffer;
 };
 

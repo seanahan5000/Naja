@@ -633,6 +633,7 @@ AscStatement::Parse(Parser* p,const char* label)
 	else
 		memcpy(dp,string,length);
 	mBuffer.Consume(length);
+	mBaseLength = (UINT8)length;
 	
 	while (true)
 	{
@@ -647,7 +648,7 @@ AscStatement::Parse(Parser* p,const char* label)
 			return;
 	}
 	
-	assembler->AdvancePC(mBuffer.GetSize());
+	assembler->AdvancePC((mPrependLength ? 1 : 0) + mBuffer.GetSize());
 	mBuffer.Trim();
 }
 
@@ -655,6 +656,9 @@ AscStatement::Parse(Parser* p,const char* label)
 void
 AscStatement::Write(Assembler* assembler)
 {
+	if (mPrependLength)
+		assembler->WriteByte(mBaseLength);
+	
 	assembler->WriteBytes(mBuffer.GetPtr(),mBuffer.GetSize());
 }
 

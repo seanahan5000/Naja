@@ -124,9 +124,9 @@ Parser::ParseLine(const char* string)
 	{
 		statement = new HexStatement();
 	}
-	else if (t == TokenASC)
+	else if (t == TokenASC || t == TokenSTR)
 	{
-		statement = new AscStatement();
+		statement = new AscStatement(t == TokenSTR);
 	}
 	else if (t == TokenUSR)
 	{
