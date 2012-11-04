@@ -52,8 +52,8 @@ START			STX	TOH
 				LDA	#0
 				STA	TOL
 				STA	FROML
-				LDX	#64
-:1				LDY	#77
+				LDX	#32
+:1				LDY	#$77
 :2				LDA	(FROML),Y
 				STA	(TOL),Y
 				DEY
