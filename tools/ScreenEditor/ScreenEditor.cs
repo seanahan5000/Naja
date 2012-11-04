@@ -117,8 +117,10 @@ namespace ScreenEditor
 				| System.Windows.Forms.AnchorStyles.Right)));
 			this.screenControl.Location = new System.Drawing.Point(0, 0);
 			this.screenControl.Name = "screenControl";
+			this.screenControl.Scale = 1;
 			this.screenControl.Size = new System.Drawing.Size(560, 384);
 			this.screenControl.TabIndex = 0;
+			this.screenControl.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.screenControl_KeyPress);
 			// 
 			// _mainMenu
 			// 
@@ -281,26 +283,26 @@ namespace ScreenEditor
 			// _viewMenuScale1x
 			// 
 			this._viewMenuScale1x.Index = 0;
-			this._viewMenuScale1x.Shortcut = System.Windows.Forms.Shortcut.Ctrl1;
 			this._viewMenuScale1x.Text = "Scale 1x";
+			this._viewMenuScale1x.Click += new System.EventHandler(this._viewMenuScale1x_Click);
 			// 
 			// _viewMenuScale2x
 			// 
 			this._viewMenuScale2x.Index = 1;
-			this._viewMenuScale2x.Shortcut = System.Windows.Forms.Shortcut.Ctrl2;
 			this._viewMenuScale2x.Text = "Scale 2x";
+			this._viewMenuScale2x.Click += new System.EventHandler(this._viewMenuScale2x_Click);
 			// 
 			// _viewMenuScale4x
 			// 
 			this._viewMenuScale4x.Index = 2;
-			this._viewMenuScale4x.Shortcut = System.Windows.Forms.Shortcut.Ctrl4;
 			this._viewMenuScale4x.Text = "Scale 4x";
+			this._viewMenuScale4x.Click += new System.EventHandler(this._viewMenuScale4x_Click);
 			// 
 			// _viewMenuScale8x
 			// 
 			this._viewMenuScale8x.Index = 3;
-			this._viewMenuScale8x.Shortcut = System.Windows.Forms.Shortcut.Ctrl8;
 			this._viewMenuScale8x.Text = "Scale 8x";
+			this._viewMenuScale8x.Click += new System.EventHandler(this._viewMenuScale8x_Click);
 			// 
 			// Form1
 			// 
@@ -353,6 +355,32 @@ namespace ScreenEditor
 		private void _fileMenuExit_Click(object sender, System.EventArgs e)
 		{
 			this.Close();
+		}
+
+		private void _viewMenuScale1x_Click(object sender, System.EventArgs e)
+		{
+			screenControl.Scale = 1;
+		}
+
+		private void _viewMenuScale2x_Click(object sender, System.EventArgs e)
+		{
+			screenControl.Scale = 2;
+		}
+
+		private void _viewMenuScale4x_Click(object sender, System.EventArgs e)
+		{
+			screenControl.Scale = 4;
+		}
+
+		private void _viewMenuScale8x_Click(object sender, System.EventArgs e)
+		{
+			screenControl.Scale = 8;
+		}
+
+		private void screenControl_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+		{
+			Point point = screenControl.PointToClient(Control.MousePosition);
+			screenControl.Zoom(e.KeyChar,point);
 		}
 	}
 }

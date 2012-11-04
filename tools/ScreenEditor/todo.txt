@@ -4,10 +4,11 @@
 // select part of screen
 	// copy/paste of hex data
 
+// scroll and zoom
+
 // screen position read out (pixels and bytes)
 
 // pixel editing
-	// zoom
 
 // packing and unpacking
 
