@@ -422,7 +422,11 @@ ERASE			STA	CHARTAB,X		;ERASE CHARACTER TABLE
 *
 *-------------------------------
 
-EXPANDR			LDY	#0
+EXPANDR			LDA	#$F0			;BEQ OPCODE
+				DB	$2C				; (skip next 2 bytes)
+EXPANDR2		LDA	#$24			;BIT OPCODE
+				STA	:SIMPOSE		; (prevent $00 transparency)		
+				LDY	#0
 :1				LDA	(TBLPNTL),Y
 				STA	TOP,Y
 				INY
@@ -460,7 +464,7 @@ EXPANDR			LDY	#0
 				BCC	:3
 				INC	TBLPNTH
 :3				LDA	CURCHAR
-:SIMPOSE		BEQ	:4				; modified by INFIRMARY
+:SIMPOSE		BEQ	:4				; modified above and below
 				LDY	RIGHT
 				STA	(SCREENL),Y
 :4				LDY	#0
@@ -474,6 +478,9 @@ EXPANDR			LDY	#0
 				DEC	RIGHT
 				CMP	LEFT
 				BNE	:NEXTCOL
+				
+				LDA	#$F0			;BEQ OPCODE
+				STA	:SIMPOSE		; (restore $00 transparency)
 				RTS
 
 *-------------------------------

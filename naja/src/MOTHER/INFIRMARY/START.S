@@ -34,9 +34,6 @@ NOCLEAR			LDA	#$40
 				CMP	#$60
 				BNE	:LOOP1
 
-				LDA	#$24			;BIT OPCODE
-				STA	SIMPOSE			; (prevent $00 transparency)
-
 				LDA	#$0A
 				STA	COUNTER2
 :LOOP2			LDA	COUNTER2
@@ -46,12 +43,9 @@ NOCLEAR			LDA	#$40
 				STA	TBLPNTL
 				LDA	PICTURES+1,X
 				STA	TBLPNTH
-				JSR	EXPANDR
+				JSR	EXPANDR2		;expand without transparency
 				DEC	COUNTER2
 				BPL	:LOOP2
-
-				LDA	#$F0			;BEQ OPCODE
-				STA	SIMPOSE			; (restore $00 transparency)
 
 				LDA	#<DTEXT
 				STA	POINTL
