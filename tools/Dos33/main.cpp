@@ -154,7 +154,7 @@ int main(int argc,char* argv[])
 	}
 	
 	Dos33* diskImage = new Dos33();
-	if (!diskImage->Open(diskName,true/*(op == Create)*/))	//***
+	if (!diskImage->Open(diskName,(op == Create)))
 	{
 		printf("Unable to open/create disk image file\n");
 		goto error;
@@ -177,8 +177,6 @@ int main(int argc,char* argv[])
 		
 		case Bsave:
 		{
-			diskImage->Format();		//***
-			
 			FILE* file = fopen(fileName,"rb");
 			if (!file)
 			{
