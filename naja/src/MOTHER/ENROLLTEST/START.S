@@ -22,12 +22,8 @@
 				PHA
 				LDA	#$FF
 				PHA
-				LDA	#$80
-				STA	SSTOREH
-				LDX	#<$0101
-				LDY	#>$0101
-				LDA	#5
-				JMP	FLOAD
+				LDX	#mEnrollTest_Control
+				JMP	FLOAD_FILE
 
 ETLINE			DB	$00,$01,$BF
 				DB	$00,$01,$8D

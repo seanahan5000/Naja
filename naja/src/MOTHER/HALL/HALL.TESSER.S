@@ -161,8 +161,8 @@ TESBACK			LDA	#0
 
 				LDA	#$A0			;Load in mothership
 				STA	SSTOREH			;   hall controller
-				LDX	#<$0040
-				LDY	#>$0040
+				LDX	#<$00E0
+				LDY	#>$00E0
 				LDA	#$10
 				JSR	FLOADER
 
@@ -175,8 +175,8 @@ TESBACK			LDA	#0
 
 				LDA	#$9F			;Load in OPENBUF data
 				STA	SSTOREH
-				LDX	#<$000A
-				LDY	#>$000A
+				LDX	#<charTrack+$0A
+				LDY	#>charTrack+$0A
 				LDA	#1
 				JSR	FLOAD
 				LDX	#10

@@ -61,8 +61,8 @@ FROMCNT			=	$13
 
 				LDA	#$9F			;Load in OPENBUF data
 				STA	SSTOREH
-				LDX	#<$000A
-				LDY	#>$000A
+				LDX	#<charTrack+$000A
+				LDY	#>charTrack+$000A
 				LDA	#1
 				JSR	FLOAD
 				LDX	#10

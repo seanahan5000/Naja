@@ -41,12 +41,8 @@ NOCLEAR			LDA	#$40
 				PHA
 				LDA	#$FF
 				PHA
-				LDA	#$60
-				STA	SSTOREH
-				LDX	#<$017C
-				LDY	#>$017C
-				LDA	#$30
-				JMP	FLOAD
+				LDX	#mRobotRepair_Control
+				JMP	FLOAD_FILE
 
 RTEXT0			PLOTAT	26;25;(CIRCUIT)
 				PLOTAT	23;33;(REPAIRER)

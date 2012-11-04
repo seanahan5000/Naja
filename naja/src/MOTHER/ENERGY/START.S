@@ -28,12 +28,8 @@ NOCLEAR			LDA	#$40
 				PHA
 				LDA	#$FF
 				PHA
-				LDA	#$80
-				STA	SSTOREH
-				LDX	#<$00AC
-				LDY	#>$00AC
-				LDA	#$0B
-				JMP	FLOAD
+				LDX	#mEnergyCenter_Control
+				JMP	FLOAD_FILE
 
 *-------------------------------
 *

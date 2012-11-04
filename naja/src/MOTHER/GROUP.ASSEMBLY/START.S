@@ -89,12 +89,8 @@ NOCLEAR			LDA	#$40
 				PHA
 				LDA	#$FF
 				PHA
-				LDA	#$80
-				STA	SSTOREH
-				LDX	#<$00D9
-				LDY	#>$00D9
-				LDA	#$13
-				JMP	FLOADER
+				LDX	#mGroupAssembly_Control
+				JMP	FLOADER_FILE
 
 DO_COLOR		LDA	COLOR
 				STA	COLORHOLD

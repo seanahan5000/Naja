@@ -60,24 +60,16 @@ CANTEST			LDA	#$AA
 				CMP	INMEMRY
 				BEQ	:SKIPA
 				STA	INMEMRY
-				LDA	#$85
-				STA	SSTOREH
-				LDX	#<$0120
-				LDY	#>$0120
-				LDA	#$0C
-				JSR	SLOAD
+				LDX	#mEnrollTest_Test
+				JSR	SLOAD_FILE
 :SKIPA			JMP	TESTING
 
 GOROLL			LDA	#$EE
 				CMP	INMEMRY
 				BEQ	ROLHERE
 				STA	INMEMRY
-				LDA	#$85
-				STA	SSTOREH
-				LDX	#<$0106
-				LDY	#>$0106
-				LDA	#$1A
-				JSR	SLOAD
+				LDX	#mEnrollTest_Enroll
+				JSR	SLOAD_FILE
 ROLHERE			JMP	ENROLL	
 
 ENEXIT			BIT	RUINED_FLAG

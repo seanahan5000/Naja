@@ -112,12 +112,8 @@ NOCLEAR			LDA	#$40
 				PHA
 				LDA	#$FF
 				PHA
-				LDA	#$80
-				STA	SSTOREH
-				LDX	#<$00C0
-				LDY	#>$00C0
-				LDA	#$0F
-				JMP	FLOAD
+				LDX	#mInfirmary_Control
+				JMP	FLOAD_FILE
 
 PICTURES		DW	ARROW
 				DW	LEFT_POST

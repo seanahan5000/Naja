@@ -169,8 +169,6 @@ side_T2			=	3
 side_F1			=	4
 side_F2			=	5
 
-charTrack		=	$0000			;Track/Sector for character data
-
 *** File numbers for camp
 cCtrlCommon		=	0
 cControl17		=	1				;cControl's must coresp. to shell #'s
@@ -198,13 +196,27 @@ fDeadGroup		=	5
 fReNarrate		=	6
 
 *** File numbers for mothership
-* (0 to 5 are arsenal, etc.)
-mWriter			=	6
-mHallsPicts		=	7
-mPictures		=	8
-mTesseract		=	9
-mInfoSeller		=	10
+mHallsPicts				=	0
+mPictures				=	1
+mTesseract				=	2
+mInfoSeller				=	3
+mWriter					=	4
+mGroupAssembly_Start	=	5
+mGroupAssembly_Control	=	6
+mEnrollTest_Start		=	7
+mEnrollTest_Control		=	8
+mEnrollTest_Enroll		=	9
+mEnrollTest_Test		=	10
+mInfirmary_Start		=	11
+mInfirmary_Control		=	12
+mEnergyCenter_Start		=	13
+mEnergyCenter_Control	=	14
+mArsenal_Start			=	15
+mArsenal_Control		=	16
+mRobotRepair_Start		=	17
+mRobotRepair_Control	=	18
 
+charTrack		=	$0100		;Track/Sector for character data
 
 *** Bit positions in ALLCAMP_HERE
 bit_RefRegCom	=	%10000000

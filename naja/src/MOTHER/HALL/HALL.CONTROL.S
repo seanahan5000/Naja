@@ -104,15 +104,32 @@ COUNTS			DB	$00,$02,$FF
 				DB	$0E,$0F,$14
 				DB	$15,$FF,$19
 
-TYPES			DB	$0A,$0B,$0A
-				DB	$80,$0B,$81
-				DB	$0A,$07,$82
-				DB	$0B,$08,$0B
-				DB	$0B,$0B,$83
-				DB	$09,$0B,$0A
-				DB	$84,$0B,$0B
-				DB	$85,$0B,$0B
-				DB	$0B,$0A
+TYPES			DB	$0A
+				DB	$0B
+				DB	$0A
+				DB	$80 + mInfirmary_Start
+				DB	$0B
+				DB	$80 + mGroupAssembly_Start
+				DB	$0A
+				DB	$07
+				DB	$80 + mEnergyCenter_Start
+				DB	$0B
+				DB	$08
+				DB	$0B
+				DB	$0B
+				DB	$0B
+				DB	$80 + mEnrollTest_Start
+				DB	$09
+				DB	$0B
+				DB	$0A
+				DB	$80 + mArsenal_Start
+				DB	$0B
+				DB	$0B
+				DB	$80 + mRobotRepair_Start
+				DB	$0B
+				DB	$0B
+				DB	$0B
+				DB	$0A
 
 DATA			DB	$05,$F0
 				DB	$0A,$FF
@@ -205,49 +222,81 @@ LOAD_SUB		STY	:MOD1+1
 :MOD2			JMP	$FF00			;Modified
 
 
-MOTHER_FILES	DB	$80				;Infirmary
-				DW	$00B8
-				DB	$08
-
-				DB	$80				;Group Assembly
-				DW	$00D0
-				DB	$09
-
-				DB	$80				;Energy Center
-				DW	$0090
-				DB	$1C
-
-				DB	$80				;Enrollment/Testing
-				DW	$00F0
-				DB	$11
-
-				DB	$80				;Arsenal
-				DW	$0130
-				DB	$10
-
-				DB	$80				;Robot Repair
-				DW	$0170
-				DB	$0C
-
-				DB	$9E				;mWriter
-				DW	$000E
-				DB	$02
-
-				DB	$60				;mHallsPicts
-				DW	$0020
+MOTHER_FILES	DB	$60				; mHallsPicts
+				DW	$00C0
 				DB	$20
 
-				DB	$70				;mPictures
-				DW	$0030
+				DB	$70				; mPictures
+				DW	$00D0
 				DB	$10
 
-				DB	$90				;mTesseract
-				DW	$0010
+				DB	$90				; mTesseract
+				DW	$00F0
 				DB	$06
 
-				DB	$80				;mInfoSeller
-				DW	$0016
+				DB	$80				; mInfoSeller
+				DW	$00F6
 				DB	$06
+
+				DB	$9E				; mWriter
+				DW	charTrack+$0E
+				DB	$02
+
+				DB	$80				; mGroupAssembly_Start
+				DW	$0110
+				DB	$09
+
+				DB	$80				; mGroupAssembly_Control
+				DW	$0119
+				DB	$13
+
+				DB	$80				; mEnrollTest_Start
+				DW	$0130
+				DB	$11
+
+				DB	$80				; mEnrollTest_Control
+				DW	$0141
+				DB	$05
+
+				DB	$85				; mEnrollTest_Enroll
+				DW	$0146
+				DB	$1A
+
+				DB	$85				; mEnrollTest_Test
+				DW	$0160
+				DB	$0C
+
+				DB	$80				; mInfirmary_Start
+				DW	$0170
+				DB	$08
+
+				DB	$80				; mInfirmary_Control
+				DW	$0178
+				DB	$0F
+
+				DB	$80				; mEnergyCenter_Start
+				DW	$0188
+				DB	$1C
+
+				DB	$80				; mEnergyCenter_Control
+				DW	$01A4
+				DB	$0B
+
+				DB	$80				; mArsenal_Start
+				DW	$01B0
+				DB	$10
+
+				DB	$70				; mArsenal_Control
+				DW	$01C0
+				DB	$24
+
+				DB	$80				; mRobotRepair_Start
+				DW	$01F0
+				DB	$0C
+
+				DB	$60				; mRobotRepair_Control
+				DW	$01FC
+				DB	$30
 
 *--------------------------------------
 * On Entry:

@@ -11,9 +11,15 @@
 
 				DS	128
 
+		do FAKE_GROUP
+				DB	$FF				;Characters 1 and 2
+				DB	$FF				;3 and 4
+				DB	$FF				;5 and 6
+		else
 				DB	$00				;Characters 1 and 2
 				DB	$00				;3 and 4
 				DB	$00				;5 and 6
+		fin
 				DB	$00				;7 and 8
 				DB	$00				;9 and 10
 				DB	$00				;11 and 12
@@ -85,4 +91,5 @@ SHLDSTK			DB	$7F,$18,$06
 
 				DS	32
 
-				SAV	T7.SECTOR.A
+				DS	\,$EE
+;				SAV	T7.SECTOR.A

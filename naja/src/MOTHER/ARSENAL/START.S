@@ -77,12 +77,8 @@ SMAINER			LDA	#$6F
 				PHA
 				LDA	#$FF
 				PHA
-				LDA	#$70
-				STA	SSTOREH
-				LDX	#<$0140
-				LDY	#>$0140
-				LDA	#$24
-				JMP	FLOADER
+				LDX	#mArsenal_Control
+				JMP	FLOADER_FILE
 
 GOBACK			JSR	DRIVE_OFF
 				JSR	CLEAR1
