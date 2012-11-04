@@ -91,3 +91,14 @@ protected:
 
 //------------------------------------------------------------------------------
 
+class Naja2Image : public DiskImage
+{
+public:
+	Naja2Image() {}
+	
+protected:
+	const UINT8* GetPhysicalInterleave(VTS vts);
+};
+
+//------------------------------------------------------------------------------
+

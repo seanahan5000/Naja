@@ -388,14 +388,6 @@ NajaImage::GetPhysicalInterleave(VTS vts)
 const UINT8*
 NajaImage::GetWriteTranslateTable(VTS vts)
 {
-	// On the boot disk, the first two sectors of
-	//	the first track are standard DOS 3.3 format.
-	if (vts.volume == 0 && vts.track == 0)
-	{
-		if (vts.sector == 0 || vts.sector == 1)
-			return DiskImage::GetWriteTranslateTable(vts);
-	}
-	
 	static const UINT8
 	sNajaWriteTranslateTable[0x40] =
 	{
@@ -425,14 +417,6 @@ NajaImage::WriteEvenOdd(UINT8* p,INT32 n)
 UINT8*
 NajaImage::WriteAddressField(UINT8* p,VTS vts)
 {
-	// On the boot disk, the first two sectors of
-	//	the first track are standard DOS 3.3 format.
-	if (vts.volume == 0 && vts.track == 0)
-	{
-		if (vts.sector == 0 || vts.sector == 1)
-			return DiskImage::WriteAddressField(p,vts);
-	}
-	
 	// SIDE CODE = 11111AAA where AAA = SIDE+1
 	//	0 = BOOT, 1 = UNUSED
 	//	2 = TRACC 17,15,  3 = TRACC 13,11,9
@@ -454,14 +438,6 @@ NajaImage::WriteAddressField(UINT8* p,VTS vts)
 UINT8*
 NajaImage::WriteDataFieldProlog(UINT8* p,VTS vts)
 {
-	// On the boot disk, the first two sectors of
-	//	the first track are standard DOS 3.3 format.
-	if (vts.volume == 0 && vts.track == 0)
-	{
-		if (vts.sector == 0 || vts.sector == 1)
-			return DiskImage::WriteDataFieldProlog(p,vts);
-	}
-	
 	*p++ = 0xCD;
 	*p++ = 0xFF;
 	*p++ = 0xDC;
@@ -472,16 +448,23 @@ NajaImage::WriteDataFieldProlog(UINT8* p,VTS vts)
 UINT8*
 NajaImage::WriteDataFieldEpilog(UINT8* p,VTS vts)
 {
-	// On the boot disk, the first two sectors of
-	//	the first track are standard DOS 3.3 format.
-	if (vts.volume == 0 && vts.track == 0)
-	{
-		if (vts.sector == 0 || vts.sector == 1)
-			return DiskImage::WriteDataFieldEpilog(p,vts);
-	}
-	
 	// there is no data epilog so just write sync bytes
 	return WriteSyncBytes(p,vts,3);
+}
+
+//------------------------------------------------------------------------------
+
+const UINT8*
+Naja2Image::GetPhysicalInterleave(VTS vts)
+{
+	static const UINT8
+	sNaja2PhysicalInterleave[16] =
+	{
+		0x0,0x2,0x4,0x6,0x8,0xA,0xC,0xE,
+		0x1,0x3,0x5,0x7,0x9,0xB,0xD,0xF
+	};
+	
+	return sNaja2PhysicalInterleave;
 }
 
 //------------------------------------------------------------------------------

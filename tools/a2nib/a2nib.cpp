@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include "DiskImage.h"
 
+#define NEW_DOS		//***
+
 int main(int argc,char* argv[])
 {
 	const char* fileName = NULL;
@@ -151,7 +153,7 @@ int main(int argc,char* argv[])
 	FILE* file = NULL;
 	UINT8* fileData = NULL;
 	INT32 fileDataSize = 0;
-	NajaImage* diskImage = NULL;
+	DiskImage* diskImage = NULL;
 	
 	if (!create)
 	{
@@ -176,7 +178,11 @@ int main(int argc,char* argv[])
 		fclose(file);
 	}
 	
+#ifdef NEW_DOS
+	diskImage = new Naja2Image();
+#else
 	diskImage = new NajaImage();
+#endif
 	if (!diskImage->Open(diskName,create))
 	{
 		printf("Unable to open/create disk image file\n");
