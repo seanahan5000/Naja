@@ -63,6 +63,7 @@ int main(int argc,char* argv[])
 {
 	bool setRoot = false;
 	bool setBase = false;
+	char* listName = NULL;
 	char* fileName = NULL;
 	Assembler* assembler = new Assembler();
 	
@@ -119,6 +120,18 @@ int main(int argc,char* argv[])
 			assembler->SetCurrentDir(str);
 			setBase = true;
 		}
+		else if (stricmp(str,"-list") == 0)
+		{
+			if (argc == 0)
+			{
+				printf("Missing list directory\n");
+				return -1;
+			}
+			
+			str = *argv++;
+			--argc;
+			listName = str;
+		}
 		else if (stricmp(str,"-bin") == 0)
 		{
 			assembler->SetSaveAsBin(true);
@@ -145,11 +158,10 @@ int main(int argc,char* argv[])
 		goto usage;
 	}
 	
-	assembler->Assemble(fileName,NULL,//***NULL);
-						"D:\\Misc\\Asm6502\\games\\out.asm.lst");
+	assembler->Assemble(fileName,NULL,listName);
 	return 0;
 	
 usage:
-	printf("\nasm6502 [-bin] -root <directory> -base <directory> <filename>\n\n");
+	printf("\nasm6502 [-bin] [-list <filename>] -root <directory> -base <directory> <filename>\n\n");
 	return -1;
 }
