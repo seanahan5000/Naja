@@ -1,5 +1,5 @@
 
-FAST_BOOT		=	1
+NO_TITLE		=	0
 
 				PUT	/NAJA/VARS/CONSTANTS
 				PUT	/NAJA/VARS/NCOM.VARS
@@ -127,10 +127,9 @@ LOAD_FILES		LDA	#side_MS
 				LDX	#$04			; Camp.D000.M1
 				JSR	FLOADER_FILE
 				
-			DO	FAST_BOOT
-				BIT	KEYBRD
-				BMI	FINISH_BOOT
-			FIN
+			do NO_TITLE
+				JMP	FINISH_BOOT
+			fin
 				
 				LDA	#$5F
 				PHA
@@ -139,9 +138,9 @@ LOAD_FILES		LDA	#side_MS
 				LDX	#$05			; Title.Page
 				JMP	FLOAD_FILE
 				
-			DO	FAST_BOOT
+			do NO_TITLE
 				PUT	NDOS.BOOT2
-			FIN
+			fin
 				
 				DS	\,$00
 				ERR	*-LOAD_BASE-$0200
