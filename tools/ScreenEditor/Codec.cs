@@ -305,10 +305,10 @@ namespace ScreenEditor
 			
 			HexDataType type = HexDataType.Unknown;
 			int startIndex = 0;
+			int rawSize = (bounds.Width + 6) / 7 * bounds.Height;
 			
 			if (!bounds.IsEmpty)
 			{
-				int rawSize = (bounds.Width + 6) / 7 * bounds.Height;
 				if (data.Length == rawSize)
 				{
 					// raw hex without header
@@ -332,7 +332,7 @@ namespace ScreenEditor
 			}
 			
 			// check for compressed data
-			if (type == HexDataType.Unknown && (data.Length > 4))
+			if (type != HexDataType.RawWithHeader && (data.Length > 4))
 			{
 				int y1 = data[0];	// top
 				int y2 = data[1];	// bottom
@@ -341,11 +341,30 @@ namespace ScreenEditor
 				
 				if (y1 <= y2 && x1 <= x2 && y2 < 192 && x2 < 40)
 				{
-					type = HexDataType.Compressed;
-					bounds.X = x1 * 7;
-					bounds.Y = y1;
-					bounds.Width = (x2 - x1 + 1) * 7;
-					bounds.Height = y2 - y1 + 1;
+					if (type == HexDataType.RawNoHeader)
+					{
+						int minFE = 3;
+						for (int i = 0; i < rawSize; ++i)
+						{
+							if (data[i] == 0xFE)
+							{
+								if (--minFE == 0)
+								{
+									type = HexDataType.Unknown;
+									break;
+								}
+							}
+						}
+					}
+					
+					if (type == HexDataType.Unknown)
+					{
+						type = HexDataType.Compressed;
+						bounds.X = x1 * 7;
+						bounds.Y = y1;
+						bounds.Width = (x2 - x1 + 1) * 7;
+						bounds.Height = y2 - y1 + 1;
+					}
 				}
 			}
 			

@@ -1,5 +1,8 @@
 
 // clear selection
 
+// file name from command line
+// drag and drop
+
 // scrolling?
 // general graphic editing
