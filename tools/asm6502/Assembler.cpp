@@ -646,7 +646,7 @@ Assembler::AddLabelSymbol(const char* label,bool local)
 		label = buffer;
 	}
 	
-	Symbol* symbol = new Symbol(mPC,true);
+	Symbol* symbol = new Symbol(mPC,false);
 	return mSymbols->Add(label,symbol);
 }
 
