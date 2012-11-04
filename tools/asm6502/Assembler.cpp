@@ -15,7 +15,8 @@ Assembler::Assembler()
 	mSyntax = SyntaxMerlin;
 	mParser = NULL;
 	mRootDir[0] = 0;
-	mCurrentDir[0] = 0;
+	mSourceDir[0] = 0;
+	mObjectDir[0] = 0;
 	mMacroDef = NULL;
 	mWriteAsBin = false;
 }
@@ -49,7 +50,7 @@ Assembler::Assemble(const char* inName,const char* outName,const char* listName)
 		strcpy(mOutFileName,outName);
 	else
 	{
-		BuildFullPath(mOutFileName,inName);
+		BuildFullObjectPath(mOutFileName,inName);
 		INT32 len = strlen(mOutFileName);
 		if (len > 1)
 		{
@@ -89,7 +90,7 @@ Assembler::Assemble(const char* inName,const char* outName,const char* listName)
 	if (!IncludeFile(inName))
 		goto exit;
 	
-	printf("Assembling %s%s\n",mCurrentDir,inName);
+	printf("Assembling %s%s\n",mSourceDir,inName);
 	
 	mInWritePhase = false;
 	SetOrg(0x8000);		// Merlin default
@@ -406,11 +407,33 @@ Assembler::GetVar(const char* name,const char** value)
 //------------------------------------------------------------------------------
 
 void
-Assembler::BuildFullPath(char* fullPath,const char* fileName)
+Assembler::BuildFullSourcePath(char* fullPath,const char* fileName)
 {
 	strcpy(fullPath,mRootDir);
 	if (fileName[0] != '\\' && fileName[0] != '/')
-		strcat(fullPath,mCurrentDir);
+		strcat(fullPath,mSourceDir);
+	
+	strcat(fullPath,fileName);
+	
+	for (INT32 i = 0; i < sizeof(fullPath); ++i)
+	{
+		if (fullPath[i] == '/')
+			fullPath[i] = '\\';
+	}
+}
+
+
+void
+Assembler::BuildFullObjectPath(char* fullPath,const char* fileName)
+{
+	strcpy(fullPath,mRootDir);
+	if (fileName[0] != '\\' && fileName[0] != '/')
+	{
+		if (mObjectDir[0] != 0)
+			strcat(fullPath,mObjectDir);
+		else
+			strcat(fullPath,mSourceDir);
+	}
 	
 	strcat(fullPath,fileName);
 	
@@ -438,28 +461,42 @@ Assembler::SetRootDir(const char* dirName)
 }
 
 
-void
-Assembler::SetCurrentDir(const char* dirName)
+/*protected*/ void
+Assembler::CleanDirName(char* cleanName,const char* dirName)
 {
 	// must have leading slash
 	if (dirName[0] != '/' && dirName[0] != '\\')
 	{
-		mCurrentDir[0] = '\\';
-		mCurrentDir[1] = 0;
-		strcat(mCurrentDir,dirName);
+		cleanName[0] = '\\';
+		cleanName[1] = 0;
+		strcat(cleanName,dirName);
 	}
 	else
-		strcpy(mCurrentDir,dirName);
+		strcpy(cleanName,dirName);
 	
 	// and must have trailing slash
-	INT32 length = strlen(mCurrentDir);
+	INT32 length = strlen(cleanName);
 	if (length)
 	{
-		char c = mCurrentDir[length - 1];
+		char c = cleanName[length - 1];
 		if (c == '/' || c == '\\')
 			return;
 	}
-	strcat(mCurrentDir,"\\");
+	strcat(cleanName,"\\");
+}
+
+
+void
+Assembler::SetSourceDir(const char* dirName)
+{
+	CleanDirName(mSourceDir,dirName);
+}
+
+
+void
+Assembler::SetObjectDir(const char* dirName)
+{
+	CleanDirName(mObjectDir,dirName);
 }
 
 
@@ -503,7 +540,7 @@ Assembler::SetDiskFile(const char* fileName)
 	if (mOutBuffer.GetSize() != 0 && mOutFileName[0])
 		FlushToFile(mOutFileName);
 	
-	BuildFullPath(mOutFileName,fileName);
+	BuildFullObjectPath(mOutFileName,fileName);
 }
 
 
@@ -511,7 +548,7 @@ bool
 Assembler::SaveFile(const char* fileName)
 {
 	char fullPath[1024];
-	BuildFullPath(fullPath,fileName);
+	BuildFullObjectPath(fullPath,fileName);
 	return FlushToFile(fullPath);
 }
 

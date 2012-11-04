@@ -107,11 +107,14 @@ public:
 	
 	void SetSaveAsBin(bool saveAsBin) { mWriteAsBin = saveAsBin; }
 	void SetRootDir(const char* dirName);
-	void SetCurrentDir(const char* dirName);
+	void SetSourceDir(const char* dirName);
+	void SetObjectDir(const char* dirName);
 	const char* GetRootDir() { return mRootDir; }
-	const char* GetCurrentDir() { return mCurrentDir; }
+	const char* GetSourceDir() { return mSourceDir; }
+	const char* GetObjectDir() { return mObjectDir; }
 	void SetDiskFile(const char* fileName);
-	void BuildFullPath(char* fullPath,const char* fileName);
+	void BuildFullSourcePath(char* fullPath,const char* fileName);
+	void BuildFullObjectPath(char* fullPath,const char* fileName);
 	
 	bool Assemble(const char* inName,const char* outName,const char* listName);
 	void AddStatement(Statement* statement);
@@ -172,10 +175,13 @@ public:
 	bool FlushToFile(const char* fileName);
 	
 protected:
+	void CleanDirName(char* cleanName,const char* dirName);
+	
 	Syntax mSyntax;
 	
 	char mRootDir[1024];
-	char mCurrentDir[1024];
+	char mSourceDir[1024];
+	char mObjectDir[1024];
 	char mOutFileName[1024];
 	
 	Array<SourceFile*> mFileList;

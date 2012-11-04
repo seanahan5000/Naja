@@ -12,7 +12,7 @@ SourceFile::SourceFile(Assembler* assembler,const char* fileName)
 	mBuffer = NULL;
 	
 	char fullPath[1024];
-	assembler->BuildFullPath(fullPath,fileName);
+	assembler->BuildFullSourcePath(fullPath,fileName);
 	
 	// must opened as binary, not text
 	strcat(fullPath,".S");

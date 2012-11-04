@@ -107,17 +107,30 @@ int main(int argc,char* argv[])
 			assembler->SetRootDir(str);
 			setRoot = true;
 		}
-		else if (stricmp(str,"-base") == 0)
+		else if (stricmp(str,"-srcbase") == 0 || stricmp(str,"-base") == 0)
 		{
 			if (argc == 0)
 			{
-				printf("Missing base directory\n");
+				printf("Missing srcbase directory\n");
 				return -1;
 			}
 			
 			str = *argv++;
 			--argc;
-			assembler->SetCurrentDir(str);
+			assembler->SetSourceDir(str);
+			setBase = true;
+		}
+		else if (stricmp(str,"-objbase") == 0)
+		{
+			if (argc == 0)
+			{
+				printf("Missing objbase directory\n");
+				return -1;
+			}
+			
+			str = *argv++;
+			--argc;
+			assembler->SetObjectDir(str);
 			setBase = true;
 		}
 		else if (stricmp(str,"-list") == 0)
@@ -162,6 +175,6 @@ int main(int argc,char* argv[])
 	return 0;
 	
 usage:
-	printf("\nasm6502 [-bin] [-list <filename>] -root <directory> -base <directory> <filename>\n\n");
+	printf("\nasm6502 [-bin] [-list <filename>] [-root <directory> -srcbase <directory> [-objbase <directory>]] <filename>\n\n");
 	return -1;
 }
