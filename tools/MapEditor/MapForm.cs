@@ -264,7 +264,7 @@ namespace MapEditor
 
 		private void _mapControl_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
 		{
-			switch (e.KeyChar)
+			switch (char.ToLower(e.KeyChar))
 			{
 				case 'w':
 					_mapControl.SegmentType = Map.SegmentType.Wall;

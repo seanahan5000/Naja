@@ -152,11 +152,17 @@ namespace MapEditor
 				int x = (_selStart.X < p.X ? _selStart.X : p.X);
 				int y = (_selStart.Y < p.Y ? _selStart.Y : p.Y);
 				if (_selStart.X != p.X)
-					_map.SetSegment(x,y,Map.Direction.North,_segmentType);
+				{
+					if (x < _map.Width && y <= _map.Height)
+						_map.SetSegment(x,y,Map.Direction.North,_segmentType);
+				}
 				else
-					_map.SetSegment(x,y,Map.Direction.West,_segmentType);
-				_selStart = p;
+				{
+					if (x <= _map.Width && y < _map.Height)
+						_map.SetSegment(x,y,Map.Direction.West,_segmentType);
+				}
 				Invalidate();
+				_selStart = p;
 			}
 			
 			base.OnMouseMove(e);
