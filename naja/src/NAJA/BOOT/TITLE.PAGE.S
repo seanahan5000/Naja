@@ -71,11 +71,6 @@ LOBYTES			EQU	$0800
 HIBYTES			EQU	$08C0
 TEXTOUT			EQU	$09E0
 EXPANDR			EQU	$0C60
-CDATA			EQU	$83B4	
-ES				EQU	$88E0	
-PRESENT			EQU	$8934	
-PLANET			EQU	$89A0
-SERIAL			EQU	$97C7	
 KEYBRD			EQU	$C000
 UNSTROB			EQU	$C010
 CLICK			EQU	$C030
@@ -92,10 +87,6 @@ BEGLING			EQU	$35
 BEGLINS			EQU	$51
 ENDLING			EQU	$54
 ENDLINS			EQU	$62
-POINTLG			EQU	$30	
-POINTHG			EQU	$85	
-POINTLS			EQU	$30	
-POINTHS			EQU	$87	
 BEGROWA			EQU	$22	
 ENDROWA			EQU	$28	
 BEGLINA			EQU	$55
@@ -113,8 +104,11 @@ EROWES			EQU	$12
 EROWEN			EQU	$15
 EROWTS			EQU	$18
 APITCH1			EQU	$10	
-APITCH2			EQU	$01	
-				ORG	$6000
+APITCH2			EQU	$01
+
+;
+; Draw star field
+;
 				BIT	KEYBRD
 				BPL	NOKEY7
 				JMP	MESSAGE
@@ -217,9 +211,9 @@ MORBIG1			LDX	POINT
 				CMP	#$1E
 				BNE	MORBIG2
 				STA	PRIMARY
-				LDA	#$CF	
+				LDA	#<SPACESHIP
 				STA	TBLPNTL
-				LDA	#$97
+				LDA	#>SPACESHIP
 				STA	TBLPNTH
 				JSR	EXPANDR
 				LDA	#$20
@@ -256,6 +250,9 @@ MORBIG1			LDX	POINT
 				STA	MOVMOR1+1
 				LDA	#$26
 				STA	MOVMOR2+1
+;
+; Slide space ship in three passes.
+;
 SLOOP			BIT	KEYBRD
 				BPL	NOKEY10
 				JMP	GOMESS1
@@ -274,7 +271,10 @@ NOKEY10			JSR	SLIDEIN
 				INC	NXTSTEP+1	
 				CMP	#$3D
 				BNE	SLOOP
-				JMP	ARMIN	
+				JMP	ARMIN
+;
+; Draw one pass of space ship slide.
+;
 SLIDEIN			LDA	#$01
 				STA	START2
 NXTSTEP			LDA	#$3B
@@ -315,6 +315,7 @@ NOSTORE			LDA	CLICK
 				CMP	#$27
 				BNE	NXTSTEP
 				RTS
+
 STARS			DFB	$01,$02,$04
 				DFB	$08,$10,$20
 				DFB	$40	
@@ -333,6 +334,9 @@ BIG1			DFB	$00,$01,$00
 				DFB	$40,$03,$00
 				DFB	$01,$00,$01
 				DFB	$00,$01
+;
+; Move data from page 1 to 2
+;
 STARMOV			LDX	LINE2
 				LDA	LOBYTES,X
 				STA	SCREENL
@@ -358,6 +362,9 @@ ROWDONE			LDA	LINE2
 				CMP	ENDLINE
 				BNE	STARMOV	
 				RTS
+;
+; Slide ship arm over then down
+;
 ARMIN			LDA	#$00
 				JSR	WAIT
 				LDA	#APITCH1
@@ -371,14 +378,14 @@ TIMEA			LDA	#$5C
 				LDA	STARTS
 				LSR	A
 				BCS	EVENCOL
-				LDA	#$40
+				LDA	#<ARM_ODD
 				STA	ARMDATL
-				LDA	#$81
+				LDA	#>ARM_ODD
 				STA	ARMDATH
 				JMP	NOTHROW
-EVENCOL			LDA	#$00
+EVENCOL			LDA	#<ARM_EVEN
 				STA	ARMDATL
-				LDA	#$80
+				LDA	#>ARM_EVEN
 				STA	ARMDATH
 NOTHROW			LDA	#$13	
 				STA	DATACOL
@@ -492,14 +499,14 @@ MOVMORE			LDA	(SCREENL),Y
 				BNE	MOVMORE
 				LDA	#$00
 				STA	LINECNT
-				LDA	#$00
+				LDA	#<ARM_EVEN
 				STA	NOTYET+1
 				STA	YET2+1
 				STA	YET3+1
 				STA	YET4+1
 				STA	YET5+1
 				STA	YET6+1
-				LDA	#$80
+				LDA	#>ARM_EVEN
 				STA	NOTYET+2
 				STA	YET2+2
 				STA	YET3+2
@@ -612,9 +619,11 @@ NOLOOP0			LDA	#$80
 				CMP	#$78	
 				BEQ	LAUNCHR	
 				JMP	LOOPINX
+
 MASKS			DFB	$00,$40,$60	
 				DFB	$70,$78,$7C	
 				DFB	$7E,$7F	
+
 LAUNCHR			BIT	KEYBRD
 				BPL	NOKEY11
 				JMP	GOMESS1
@@ -629,14 +638,14 @@ LAUNCHA			LDA	#$60
 				LDA	STARTS
 				LSR	A
 				BCC	EVNCOL
-				LDA	#$1A	
+				LDA	#<LAUNCH_ODD
 				STA	LNCDATL
-				LDA	#$83	
+				LDA	#>LAUNCH_ODD
 				STA	LNCDATH
 				JMP	GOROW	
-EVNCOL			LDA	#$80	
+EVNCOL			LDA	#<LAUNCH_EVEN
 				STA	LNCDATL
-				LDA	#$82	
+				LDA	#>LAUNCH_EVEN
 				STA	LNCDATH
 GOROW			LDA	#$06
 				STA	DATACOL
@@ -675,12 +684,14 @@ NOTCARR			LDA	LINENUM
 				INC	LINENUM
 				CMP	#$75
 				BNE	GOROW
+
 				LDA	#$A0	
 				JSR	WAIT	
 				LDA	STARTS
 				INC	STARTS
 				CMP	#$1A
 				BNE	LAUNCHA
+
 				LDA	#$00
 				JSR	WAIT
 				JSR	WAIT
@@ -793,6 +804,7 @@ CLOOPA			JSR	CDRAW
 				JSR	WAIT	
 				JMP	CLOOPA	
 CEXIT			RTS
+
 CLOOP2			STA	PRIMARY
 				LDA	#$3F	
 				JSR	WAIT
@@ -823,12 +835,16 @@ CPNT			CMP	#$27
 				JSR	CDRAW2
 				JMP	CLOOP2
 CEXIT2			RTS
+
 CDRAW2			INC	BEGROW	
 				INC	ENDROW
 				JSR	CDRAW
 				DEC	BEGROW
 				DEC	ENDROW	
 				RTS
+;
+; Draw the flying letter "C"
+;
 CDRAW			LDA	TOPLINE
 				STA	LINENUM
 				LDA	#$00
@@ -856,6 +872,7 @@ ROWOVER			LDA	LINENUM
 				CMP	ENDLINE
 				BNE	CMORE0
 				RTS
+
 GFADE			LDA	#BEGROWG
 				STA	BEGROW
 				LDA	#ENDROWG	
@@ -864,9 +881,9 @@ GFADE			LDA	#BEGROWG
 				STA	BEGLINE
 				LDA	#ENDLING
 				STA	ENDLINE
-				LDA	#POINTLG
+				LDA	#<GRAPHIC
 				STA	LOOPNT1+1
-				LDA	#POINTHG
+				LDA	#>GRAPHIC
 				STA	SPOT1+1
 				LDA	#$04
 				STA	HERE+1
@@ -931,9 +948,9 @@ NOKEY3			LDA	#$60
 				STA	BEGLINE
 				LDA	#ENDLINS
 				STA	ENDLINE
-				LDA	#POINTLS	
+				LDA	#<SIMULATIONS	
 				STA	LOOPNT1+1
-				LDA	#POINTHS
+				LDA	#>SIMULATIONS
 				STA	SPOT1+1
 				LDA	#$06
 				STA	HERE+1
@@ -947,6 +964,9 @@ NOKEY3			LDA	#$60
 				STA	PRIMARY
 				JMP	MESSAGE
 NOKEY4			JMP	SOFTUP
+;
+; Fade in a word ("Graphic" or "Simulation")
+;
 FADEIN			LDA	#$00
 				STA	STARTER
 				STA	CYCLE
@@ -999,18 +1019,22 @@ HERE			LDA	#$04
 				STA	CYCLE
 				CMP	#$07
 				BNE	LOOPNT1	
-				RTS	
+				RTS
+
 GSMASKS			DFB	$81,$90,$84
 				DFB	$C0,$82,$A0
 				DFB	$88
+;
+; Scroll up "Software, Inc."
+;
 SOFTUP			LDA	#SOFBROW
 				STA	BEGROW
 				LDA	#SOFEROW
 				STA	ENDROW
-				LDA	#$FC	
+				LDA	#<SOFTWARE_INC
 				STA	MODPNT+1
-				LDA	#$83	
-				STA	MODPNT+2	
+				LDA	#>SOFTWARE_INC
+				STA	MODPNT+2
 				LDA	#$00
 				STA	DATAPNT
 				LDA	#$BE
@@ -1046,7 +1070,10 @@ DATAON2			DEC	BEGLINE
 				JSR	SCROLL
 				LDA	BEGLINE
 				CMP	#$69	
-				BNE	DATAON	
+				BNE	DATAON
+;
+; Delay and prep for bringing in "Presents..."
+;
 				BIT	KEYBRD
 				BPL	NOKEY5
 				STA	PRIMARY
@@ -1072,7 +1099,10 @@ NOKEY5			LDA	#$EA
 :LOOP1			JSR	WAIT
 				DEX
 				BNE	:LOOP1
-				JMP	PRESNTS	
+				JMP	PRESNTS
+;
+; Scroll loop used to bring in "Software, Inc."
+;
 SCROLL			LDX	BEGLINE
 LOOPA			LDA	LOBYTES,X
 				STA	DESTINL
@@ -1094,13 +1124,19 @@ LOOPB			LDA	(SCREENL),Y
 				CPX	ENDLINE
 				BNE	LOOPA
 				RTS
+;
+; Squish in "Presents..."
+;
 PRESNTS			JSR	PRLETTR
 				JSR	ESLETTR
 				JSR	ENLETTR
 				JSR	TSLETTR
 				LDA	#$B0
 				JSR	WAIT
-				JMP	PRESNTS	
+				JMP	PRESNTS
+;
+; Squish in "Pr"
+;
 PRLETTR			NOP
 				LDA	#BROWPR
 				STA	BEGROW
@@ -1126,6 +1162,9 @@ PRLETTR			NOP
 				JMP	EXITPR
 FIRST1P			DEC	GAPPER
 EXITPR			RTS
+;
+; Squish in "es"
+;
 ESLETTR			NOP
 				LDA	ESDELAY
 				BEQ	ESGO
@@ -1155,6 +1194,9 @@ ESGO			LDA	#BROWES
 				JMP	EXITES
 FIRST1S			DEC	GAPPER+1
 EXITES			RTS
+;
+; Squish in "en"
+;
 ENLETTR			NOP
 				LDA	ENDELAY
 				BEQ	ENGO
@@ -1184,6 +1226,9 @@ ENGO			LDA	#BROWEN
 				JMP	EXITEN
 FIRST1E			DEC	GAPPER+2
 EXITEN			RTS
+;
+; Squish in "ts"
+;
 TSLETTR			NOP	
 				LDA	TSDELAY
 				BEQ	TSGO
@@ -1213,12 +1258,17 @@ TSGO			LDA	#BROWTS
 				JMP	DOTS	
 FIRST1T			DEC	GAPPER+3
 EXITTS			RTS
+
 GAPPER			DFB	$04,$04,$04
 				DFB	$04
 ESDELAY			DFB	$01
-ENDELAY			DFB	$02	
-TSDELAY			DFB	$03	
-SQUISHR			LDA	#$05	
+ENDELAY			DFB	$02
+TSDELAY			DFB	$03
+
+;
+; Common routine to squish letters of "Presents"
+;
+SQUISHR			LDA	#$05
 				SEC
 				SBC	GAP
 				ASL	A
@@ -1257,6 +1307,10 @@ SQUISH			LDX	LINENUM
 				STA	LINENUM
 				JMP	SQUISH
 SQUISHD			RTS
+
+;
+; Draw the "..." on Presents
+;
 DOTS			LDA	#$AB	
 				PHA
 DOTS2			TAX
@@ -1279,8 +1333,14 @@ MORDOTS			LDA	DOTSTAB,X
 				LDA	#$AC
 				PHA
 				JMP	DOTS2
-DOTOUT			JMP	GOPLAN	
+DOTOUT			JMP	GOPLAN
+
 DOTSTAB			DFB	$0E,$47,$03
+
+;
+; White noise generator used during
+;	"Graphic" and "Simulations" fades.
+;
 NOISE			LDY	POINT	
 				LDA	$6000,Y
 				LDX	#$08
@@ -1297,7 +1357,8 @@ DELAY			DEX
 				BNE	NOISE	
 HERE2A			INC	PITCH
 HERE2			INC	PITCH
-				RTS	
+				RTS
+
 GOPLAN			LDY	#$06	
 				LDA	#$00
 MOPAUSE			BIT	KEYBRD
@@ -1346,6 +1407,10 @@ NOKEY9			LDA	PBEGLIN
 				CMP	#$24
 				BNE	MORUPIT
 				JMP	SCAPEIN
+
+;
+; Scroll in ringed planet.
+;
 PLANIT			LDA	#$00
 				STA	LINECNT
 				STA	POINT
@@ -1377,13 +1442,17 @@ NOTRANS			STA	(DESTINL),Y
 				CMP	#$27
 				BNE	PLOOPER
 				RTS
+
+;
+; Scroll in "moon"
+;
 MOONIT			LDA	#$00
 				STA	LINECNT
 				LDA	MBEGLIN
 				STA	LINENUM
-				LDA	#$68
+				LDA	#<MOON
 				STA	MOONL
-				LDA	#$8A
+				LDA	#>MOON
 				STA	MOONH
 MLOOPER			LDX	LINENUM
 				LDA	LOBYTES,X
@@ -1423,12 +1492,16 @@ NOTRNSP			STA	(DESTINL),Y
 				INC	MOONH
 				JMP	MLOOPER
 MEXIT			RTS
+
+;
+; Scroll in landscape
+;
 SCAPEIN			LDA	#$40
 				STA	PAGE
 				JSR	NOHGRC
-				LDA	#$1A	
+				LDA	#<LANDSCAPE
 				STA	TBLPNTL
-				LDA	#$9E
+				LDA	#>LANDSCAPE
 				STA	TBLPNTH
 				JSR	EXPANDR
 				LDA	#$BF	
@@ -1474,6 +1547,9 @@ NOKEY8			LDA	BEGLINE
 				DEC	BEGLINE
 				CMP	#$4D
 				BNE	INLOOP0
+;
+; Delay and then fade in "NAJA"
+;
 				LDA	#$00
 				JSR	WAIT
 				JSR	WAIT
@@ -1504,7 +1580,8 @@ MORPART			LDY	PARTNUM
 				INC	PARTNUM
 				CMP	#$04
 				BNE	MORPART
-				JMP	BUBBLER	
+				JMP	BUBBLER
+
 LINEBEG			DFB	$55,$56,$6C
 				DFB	$55,$89
 LINEEND			DFB	$8B,$8D,$9B
@@ -1513,10 +1590,15 @@ ROWBEG			DFB	$02,$08,$09
 				DFB	$0E,$01
 ROWEND			DFB	$0B,$0F,$11
 				DFB	$17,$0D
-STARTIN			DFB	$D8,$8B,$FE
-				DFB	$8D,$BE,$8F
-				DFB	$6E,$91,$E4
-				DFB	$93
+STARTIN			DW	NAJA_N
+				DW	NAJA_A1
+				DW	NAJA_J
+				DW	NAJA_A2
+				DW	NAJA_UNDER
+
+;
+; Subroutine used to fade each letter of "NAJA"
+;
 FADENAJ			LDA	#$00
 				STA	STARTER
 FADPNT0			LDA	BEGLINE
@@ -1576,12 +1658,17 @@ NOENDCY			LDA	ROW
 				CMP	#$06
 				BNE	FADPNT0
 				RTS
+
 ISOMASK			DFB	$C0,$84,$90
 				DFB	$81,$A0,$82
 				DFB	$88
 SLTMASK			DFB	$BF,$FB,$EF
 				DFB	$FE,$DF,$FD
 				DFB	$F7
+
+;
+; Delay and then animate green bubbles.
+;
 BUBBLER			LDA	#$00
 				JSR	WAIT
 				JSR	WAIT
@@ -1680,6 +1767,10 @@ GOMESS1			LDA	#$40
 				STA	PRIMARY
 				JMP	MESSAGE	
 GONGAIN			JMP	AGAIN
+
+;
+; Animate one bubble.
+;
 BUBLOUT			LDA	#$00
 				STA	POINT
 				LDA	CYCLE
@@ -1727,6 +1818,7 @@ MPNT2			LDA	#$FF
 				DEY
 				BNE	MORPOP
 BUBEXIT			RTS
+
 BROWTAB			DFB	$12,$1A,$18
 				DFB	$1E
 EROWTAB			DFB	$17,$1F,$1D	
@@ -1739,13 +1831,20 @@ BDELAY			DFB	$B9,$04,$C0
 				DFB	$0D,$C5,$09	
 				DFB	$C4,$05	
 CYCOUNT			DFB	$03,$01,$02	
-				DFB	$04	
-PICPNT			DFB	$73,$94,$BE	
-				DFB	$94,$09,$95	
-				DFB	$54,$95,$9F	
-				DFB	$95,$EA,$95	
-				DFB	$35,$96,$80	
-				DFB	$96,$CB,$96	
+				DFB	$04
+;
+; bubble pointers
+;
+PICPNT			DW	BUBBLE_0
+				DW	BUBBLE_1
+				DW	BUBBLE_2
+				DW	BUBBLE_3
+				DW	BUBBLE_4
+				DW	BUBBLE_5
+				DW	BUBBLE_6
+				DW	BUBBLE_7
+				DW	BUBBLE_8
+
 DELNUM			DFB	$00,$18,$00	
 				DFB	$0A,$00,$0A	
 				DFB	$00,$0A,$00	
@@ -1753,7 +1852,8 @@ DELNUM			DFB	$00,$18,$00
 				DFB	$00,$02,$00	
 				DFB	$02,$00,$02	
 COVER			DFB	$0F,$09,$07
-				DFB	$0A,$07,$02	
+				DFB	$0A,$07,$02
+
 DECOVER			LDY	#$05	
 UNCOVER			LDA	$FA,Y
 				AND	#$0F
@@ -1761,19 +1861,23 @@ UNCOVER			LDA	$FA,Y
 				DEY
 				BPL	UNCOVER
 				RTS
+
+;
+; Put up message text and signatures.
+;
 MESSAGE			LDA	#$40	
 				STA	PAGE
 				JSR	NOHGRC
 				JSR	DECOVER
-				LDA	#$16
+				LDA	#<MESSAGE_TEXT
 				STA	POINTL
-				LDA	#$97
+				LDA	#>MESSAGE_TEXT
 				STA	POINTH
 				JSR	TEXTOUT
 				JSR	DECOVER
-				LDA	#$97	
+				LDA	#<SIGNATURES
 				STA	TBLPNTL
-				LDA	#$A6
+				LDA	#>SIGNATURES
 				STA	TBLPNTH
 				JSR	EXPANDR
 				STA	SCNDARY
