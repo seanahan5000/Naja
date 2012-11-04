@@ -6,7 +6,7 @@ set OBJDIR=%BUILD%\obj
 set ASMB=asm6502 -bin -root %ROOT% -objbase ..\build\obj -base
 set ASM=asm6502 -root %ROOT% -objbase ..\build\obj -base
 
-REM *** create obj directory if necessary ***
+if not exist %OBJDIR% mkdir %OBJDIR%
 
 %ASMB% NAJA\BOOT	SCREEN.III.S
 %ASMB% NAJA\IO		MBOOT.S			-list %BUILD%\MBOOT.LST
