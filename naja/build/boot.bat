@@ -24,7 +24,7 @@ if not exist %OBJDIR% mkdir %OBJDIR%
 %ASM% MOTHER\INFIRMARY		ASM.INFIRMARY.S
 
 a2nib -create -volume 0 -disk boot.nib
-a2nib %OBJDIR%\NDOS.BOOT		-t 00 -s 00 -disk boot.nib
+a2nib %OBJDIR%\NDOS.BOOT1		-t 00 -s 00 -disk boot.nib
 a2nib %OBJDIR%\PR.INFO			-t 00 -s 02 -disk boot.nib
 a2nib %OBJDIR%\SCREEN.III		-t 00 -s 03 -disk boot.nib
 a2nib %OBJDIR%\NDOS.525			-t 00 -s 04 -disk boot.nib
