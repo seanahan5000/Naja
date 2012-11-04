@@ -47,9 +47,11 @@ namespace ScreenEditor
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
-		private Point _selStart;
 		private System.Windows.Forms.MenuItem _editMenuCompress;
-		private bool _selDragging = false;
+		private System.Windows.Forms.MenuItem _toolMenuItem;
+		private System.Windows.Forms.MenuItem _toolMenuPencilOrange;
+		private System.Windows.Forms.MenuItem _toolMenuSelection;
+		private System.Windows.Forms.MenuItem _toolMenuPencilGreen;
 		
 		public Form1()
 		{
@@ -103,6 +105,10 @@ namespace ScreenEditor
 			this._viewMenuScale2x = new System.Windows.Forms.MenuItem();
 			this._viewMenuScale4x = new System.Windows.Forms.MenuItem();
 			this._viewMenuScale8x = new System.Windows.Forms.MenuItem();
+			this._toolMenuItem = new System.Windows.Forms.MenuItem();
+			this._toolMenuSelection = new System.Windows.Forms.MenuItem();
+			this._toolMenuPencilGreen = new System.Windows.Forms.MenuItem();
+			this._toolMenuPencilOrange = new System.Windows.Forms.MenuItem();
 			this._openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this._saveFileDialog = new System.Windows.Forms.SaveFileDialog();
 			this._statusBar = new System.Windows.Forms.StatusBar();
@@ -115,17 +121,17 @@ namespace ScreenEditor
 			this._screenControl.Name = "_screenControl";
 			this._screenControl.Size = new System.Drawing.Size(560, 384);
 			this._screenControl.TabIndex = 0;
+			this._screenControl.ToolMode = ScreenEditor.ToolMode.Selection;
 			this._screenControl.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this._screenControl_KeyPress);
-			this._screenControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this._screenControl_MouseUp);
 			this._screenControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this._screenControl_MouseMove);
-			this._screenControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this._screenControl_MouseDown);
 			// 
 			// _mainMenu
 			// 
 			this._mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 																					  this._fileMenuItem,
 																					  this._editMenuItem,
-																					  this._viewMenuItem});
+																					  this._viewMenuItem,
+																					  this._toolMenuItem});
 			// 
 			// _fileMenuItem
 			// 
@@ -314,6 +320,37 @@ namespace ScreenEditor
 			this._viewMenuScale8x.Text = "Scale 8x";
 			this._viewMenuScale8x.Click += new System.EventHandler(this._viewMenuScale8x_Click);
 			// 
+			// _toolMenuItem
+			// 
+			this._toolMenuItem.Index = 3;
+			this._toolMenuItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+																						  this._toolMenuSelection,
+																						  this._toolMenuPencilGreen,
+																						  this._toolMenuPencilOrange});
+			this._toolMenuItem.Text = "Tool";
+			// 
+			// _toolMenuSelection
+			// 
+			this._toolMenuSelection.Checked = true;
+			this._toolMenuSelection.Index = 0;
+			this._toolMenuSelection.Shortcut = System.Windows.Forms.Shortcut.F1;
+			this._toolMenuSelection.Text = "Selection";
+			this._toolMenuSelection.Click += new System.EventHandler(this._toolMenuSelection_Click);
+			// 
+			// _toolMenuPencilGreen
+			// 
+			this._toolMenuPencilGreen.Index = 1;
+			this._toolMenuPencilGreen.Shortcut = System.Windows.Forms.Shortcut.F2;
+			this._toolMenuPencilGreen.Text = "Pencil - Green";
+			this._toolMenuPencilGreen.Click += new System.EventHandler(this._toolMenuPencilGreen_Click);
+			// 
+			// _toolMenuPencilOrange
+			// 
+			this._toolMenuPencilOrange.Index = 2;
+			this._toolMenuPencilOrange.Shortcut = System.Windows.Forms.Shortcut.F3;
+			this._toolMenuPencilOrange.Text = "Pencil - Orange";
+			this._toolMenuPencilOrange.Click += new System.EventHandler(this._toolMenuPencilOrange_Click);
+			// 
 			// _statusBar
 			// 
 			this._statusBar.Location = new System.Drawing.Point(0, 384);
@@ -435,21 +472,39 @@ namespace ScreenEditor
 		{
 			Zoom('4');
 		}
-
+		
+		private void _toolMenuSelection_Click(object sender, System.EventArgs e)
+		{
+			_toolMenuSelection.Checked = true;
+			_toolMenuPencilGreen.Checked = false;
+			_toolMenuPencilOrange.Checked = false;
+			_screenControl.ToolMode = ToolMode.Selection;
+		}
+		
+		private void _toolMenuPencilGreen_Click(object sender, System.EventArgs e)
+		{
+			_toolMenuSelection.Checked = false;
+			_toolMenuPencilGreen.Checked = true;
+			_toolMenuPencilOrange.Checked = false;
+			_screenControl.ToolMode = ToolMode.PencilGreen;
+		}
+		
+		private void _toolMenuPencilOrange_Click(object sender, System.EventArgs e)
+		{
+			_toolMenuSelection.Checked = false;
+			_toolMenuPencilGreen.Checked = false;
+			_toolMenuPencilOrange.Checked = true;
+			_screenControl.ToolMode = ToolMode.PencilOrange;
+		}
+		
 		private void _screenControl_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
 		{
 			Zoom(e.KeyChar);
 		}
 		
-		private void _screenControl_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
-		{
-			_selDragging = true;
-			_selStart = _screenControl.MouseToScreen();
-		}
-		
 		private void _screenControl_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
-			Point p = _screenControl.MouseToScreen();
+			Point p = _screenControl.PointToScreen(e.X,e.Y);
 			
 			if (!_screenControl.Selection.IsEmpty)
 			{
@@ -464,16 +519,6 @@ namespace ScreenEditor
 				_statusBar.Text = String.Format("X: {0} ({1}), Y: {2}",
 					p.X,p.X / 7,p.Y);
 			}
-			
-			if (_selDragging)
-				_screenControl.SetSelection(_selStart,p);
-		}
-		
-		private void _screenControl_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
-		{
-			Point p = _screenControl.MouseToScreen();
-			_screenControl.SetSelection(_selStart,p);
-			_selDragging = false;
 		}
 	}
 }

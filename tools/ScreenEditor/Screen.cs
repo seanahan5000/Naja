@@ -16,7 +16,7 @@ namespace ScreenEditor
 		private const byte kGREEN = 3;
 		private const byte kBLUE = 4;
 		private const byte kORANGE = 5;
-		private Rectangle lockRect = Rectangle.Empty;
+		private Rectangle lockRect = new Rectangle(0,0,280,192);
 		private bool _interpolate;
 		
 		public Bitmap Bitmap
@@ -104,6 +104,23 @@ namespace ScreenEditor
 			UpdateColorBuffer();
 		}
 		
+		public void SetPixel(Point p,bool pixelOn,bool highBit)
+		{
+			int index = p.Y * 40 + p.X / 7;
+			byte mask = (byte)(1 << (p.X % 7));
+			byte b = _rawBuffer[index];
+			if (pixelOn)
+				b |= mask;
+			else
+				b = (byte)(b & ~mask);
+			if (highBit)
+				b |= 0x80;
+			else
+				b &= 0x7F;
+			_rawBuffer[index] = b;
+			UpdateColorBuffer(p.Y,p.Y + 1);
+		}
+		
 		public void UpdateColorBuffer()
 		{
 			UpdateColorBuffer(0,192);
@@ -113,10 +130,6 @@ namespace ScreenEditor
 		public unsafe void UpdateColorBuffer(int startLine,int endLine)
 		{
 			BitmapData lockData;
-			lockRect.X = 0;
-			lockRect.Width = 280;
-			lockRect.Y = startLine;
-			lockRect.Height = endLine - startLine;
 			lockData = _colorBuffer.LockBits(lockRect,
 											 ImageLockMode.ReadWrite,
 											 PixelFormat.Format8bppIndexed);

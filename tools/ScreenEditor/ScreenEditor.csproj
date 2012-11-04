@@ -108,6 +108,10 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "pencil.cur"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Screen.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

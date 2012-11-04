@@ -2,5 +2,4 @@
 // clear selection
 
 // scrolling?
-// pixel editing
 // general graphic editing

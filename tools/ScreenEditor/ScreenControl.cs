@@ -9,6 +9,13 @@ using System.Windows.Forms;
 
 namespace ScreenEditor
 {
+	public enum ToolMode
+	{
+		Selection,
+		PencilGreen,
+		PencilOrange,
+	}
+	
 	public class ScreenControl : System.Windows.Forms.Control
 	{
 		private System.ComponentModel.Container components = null;
@@ -21,6 +28,11 @@ namespace ScreenEditor
 											HatchStyle.LargeCheckerBoard,
 											Color.Black,
 											Color.White);
+		private ToolMode _toolMode = ToolMode.Selection;
+		private Cursor _pencilCursor = new Cursor(typeof(ScreenControl),"pencil.cur");
+		private bool _selDragging = false;
+		private Point _selStart;
+		private bool _setPixel;
 		
 		public Screen Screen
 		{
@@ -30,6 +42,19 @@ namespace ScreenEditor
 		public Rectangle Selection
 		{
 			get { return _selRect; }
+		}
+		
+		public ToolMode ToolMode
+		{
+			get { return _toolMode; }
+			set
+			{
+				_toolMode = value;
+				if (_toolMode == ToolMode.Selection)
+					Cursor = Cursors.Cross;
+				else
+					Cursor = _pencilCursor;
+			}
 		}
 		
 		public void SetSelection(Point p1,Point p2)
@@ -80,11 +105,10 @@ namespace ScreenEditor
 				this.Invalidate();
 		}
 		
-		public Point MouseToScreen()
+		public Point PointToScreen(int x,int y)
 		{
-			Point p = PointToClient(Control.MousePosition);
-			return new Point(p.X / _scale + _corner.X,
-							 p.Y / _scale + _corner.Y);
+			return new Point(x / _scale + _corner.X,
+							 y / _scale + _corner.Y);
 		}
 		
 		public void Zoom(char key,Point at)
@@ -178,6 +202,53 @@ namespace ScreenEditor
 						GraphicsUnit.Pixel);
 			
 			DrawSelection(g);
+		}
+		
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			_selDragging = true;
+			_selStart = PointToScreen(e.X,e.Y);
+			
+			if (_toolMode == ToolMode.PencilGreen ||
+				_toolMode == ToolMode.PencilOrange)
+			{
+				_setPixel = (e.Button == MouseButtons.Left);
+				_screen.SetPixel(_selStart,_setPixel,_toolMode == ToolMode.PencilOrange);
+				Invalidate();
+			}
+			
+			base.OnMouseDown(e);
+		}
+		
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			Point p = PointToScreen(e.X,e.Y);
+			if (_toolMode == ToolMode.Selection)
+			{
+				if (_selDragging)
+					SetSelection(_selStart,p);
+			}
+			else if (_toolMode == ToolMode.PencilGreen ||
+					 _toolMode == ToolMode.PencilOrange)
+			{
+				if (_selDragging && p != _selStart)
+				{
+					_selStart = p;
+					_screen.SetPixel(p,_setPixel,_toolMode == ToolMode.PencilOrange);
+					Invalidate();
+				}
+			}
+			
+			base.OnMouseMove(e);
+		}
+		
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			if (_toolMode == ToolMode.Selection)
+				SetSelection(_selStart,PointToScreen(e.X,e.Y));
+			
+			_selDragging = false;
+			base.OnMouseUp(e);
 		}
 		
 		private void DrawSelection(Graphics g)
