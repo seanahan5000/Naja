@@ -1,0 +1,49 @@
+
+- a2nib - handle init/write of character data track
+	= use soft interleave
+
+- check enroll/test
+- add FAKEGROUP to boot (some values are bad -- EL/PH)
+- infirmary doesn't build
+
+- remove floor lines
+
+
+Tools
+-----
+
+	Asm6502
+	
+		- Add -outbase (and -inbase) so all binaries
+			can go into a directory separate from source
+	
+	Level Editor
+	
+		- Create it
+		- Support copying/pasting text form of levels
+			(like ScreenEditor)
+	
+	Emulator/Debugger
+	
+		- Get building from source and checked in.
+		- Attach custom debugger
+			- Symbol support
+			- Stack crawl
+			- Way to toggle screens (see what's being drawn offscreen)
+			- copy/paste a2 memory as text to clipboard
+
+Game
+----
+
+- Pooled credits lost after using energy center?
+- Cancel from enrollment screen.
+
+General
+-------
+
+- organize build
+	- separate directory for bins
+	- nest batch files to build everything
+
+- "warping" boot -- load/save state and relaunch to that point
+	- anywhere in mothership or tracc
