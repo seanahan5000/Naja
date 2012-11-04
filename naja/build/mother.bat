@@ -2,8 +2,11 @@
 
 set ROOT=d:\misc\dev\naja\src
 set BUILD=d:\misc\dev\naja\build
-set ASMB=asm6502 -bin -root %ROOT% -base
-set ASM=asm6502 -root %ROOT% -base
+set OBJDIR=%BUILD%\obj
+set ASMB=asm6502 -bin -root %ROOT% -objbase ..\build\obj -base
+set ASM=asm6502 -root %ROOT% -objbase ..\build\obj -base
+
+REM *** create obj directory if necessary ***
 
 %ASMB% NAJA\BOOT	SCREEN.III.S
 %ASMB% NAJA\IO		MBOOT.S			-list %BUILD%\MBOOT.LST
@@ -23,23 +26,23 @@ set ASM=asm6502 -root %ROOT% -base
 %ASM% MOTHER\INFIRMARY		ASM.INFIRMARY.S
 
 a2nib -create -volume 0 -disk mother.nib
-a2nib %ROOT%\NAJA\IO\CHAR.DATA		-t 00 -s 00 -disk mother.nib
-a2nib %ROOT%\NAJA\BOOT\PR.INFO		-t 00 -s 0C -disk mother.nib
+a2nib %OBJDIR%\CHAR.DATA		-t 00 -s 00 -disk mother.nib
+a2nib %OBJDIR%\PR.INFO			-t 00 -s 0C -disk mother.nib
 %ASM% NAJA\IO		NDOS.525.S
-a2nib %ROOT%\NAJA\IO\NDOS.525W		-t 00 -s 0E -disk mother.nib
-a2nib %ROOT%\MOTHER\HALL\MTESSINFO	-t 01 -s 00 -disk mother.nib
-a2nib %ROOT%\MOTHER\HALL\MTUNNELS	-t 02 -s 00 -disk mother.nib
-a2nib %ROOT%\MOTHER\HALL\MCONTROL	-t 04 -s 00 -disk mother.nib
-a2nib %ROOT%\TRACC\CAMP.B000		-t 05 -s 00 -disk mother.nib
-a2nib %ROOT%\TRACC\CAMP.E000		-t 05 -s 0B -disk mother.nib
-a2nib %ROOT%\TRACC\CAMP.D000.M1		-t 07 -s 0B -disk mother.nib
-a2nib %ROOT%\TRACC\CAMP.D000.M2		-t 08 -s 04 -disk mother.nib
+a2nib %OBJDIR%\NDOS.525W		-t 00 -s 0E -disk mother.nib
+a2nib %OBJDIR%\MTESSINFO		-t 01 -s 00 -disk mother.nib
+a2nib %OBJDIR%\MTUNNELS			-t 02 -s 00 -disk mother.nib
+a2nib %OBJDIR%\MCONTROL			-t 04 -s 00 -disk mother.nib
+a2nib %OBJDIR%\CAMP.B000		-t 05 -s 00 -disk mother.nib
+a2nib %OBJDIR%\CAMP.E000		-t 05 -s 0B -disk mother.nib
+a2nib %OBJDIR%\CAMP.D000.M1		-t 07 -s 0B -disk mother.nib
+a2nib %OBJDIR%\CAMP.D000.M2		-t 08 -s 04 -disk mother.nib
 
-a2nib %ROOT%\MOTHER\ENERGY\ENERGY.CENTER		  -t 09 -s 00 -disk mother.nib
-a2nib %ROOT%\MOTHER\INFIRMARY\INFIRMARY			  -t 0B -s 08 -disk mother.nib
-a2nib %ROOT%\MOTHER\GROUP.ASSEMBLY\GROUP.ASSEMBLY -t 0D -s 00 -disk mother.nib
-a2nib %ROOT%\MOTHER\ENROLLTEST\ENROLL.TEST		  -t 0F -s 00 -disk mother.nib
-a2nib %ROOT%\MOTHER\ARSENAL\ARSENAL				  -t 13 -s 00 -disk mother.nib
-a2nib %ROOT%\MOTHER\ROBOT.REPAIR\ROBOT.REPAIR	  -t 17 -s 00 -disk mother.nib
+a2nib %OBJDIR%\ENERGY.CENTER	-t 09 -s 00 -disk mother.nib
+a2nib %OBJDIR%\INFIRMARY		-t 0B -s 08 -disk mother.nib
+a2nib %OBJDIR%\GROUP.ASSEMBLY	-t 0D -s 00 -disk mother.nib
+a2nib %OBJDIR%\ENROLL.TEST		-t 0F -s 00 -disk mother.nib
+a2nib %OBJDIR%\ARSENAL			-t 13 -s 00 -disk mother.nib
+a2nib %OBJDIR%\ROBOT.REPAIR		-t 17 -s 00 -disk mother.nib
 
-%ASMB% NAJA\IO		NDOS.525.S		-list %BUILD%\NDOS.525.LST
+%ASMB% NAJA\IO		NDOS.525.S	-list %BUILD%\NDOS.525.LST
