@@ -243,7 +243,7 @@ MOTHER_FILES	DB	$80				;Infirmary
 				DB	$06
 
 				DB	$80				;mInfoSeller
-				DW	$0017
+				DW	$0016
 				DB	$06
 
 *--------------------------------------
