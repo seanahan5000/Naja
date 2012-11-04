@@ -120,7 +120,8 @@ READ_ADDRESS	LDX	SLOT_X0
 				CMP	#$AA
 				BNE	:ERROR
 				
-				LDA	SECTOR_FOUND
+				LDX	SECTOR_FOUND
+				LDA	INTERLEAVE,X	; physical to logical
 				EOR	SECTOR
 				BMI	:SUCCESS		; don't care which sector
 				BNE	READ_ADDRESS
@@ -505,6 +506,9 @@ CODETAB			=	*-$96
 				DB	$39,$3A,$3B
 				DB	$3C,$3D,$3E
 				DB	$3F
+				
+INTERLEAVE		DB	$00,$08,$01,$09,$02,$0A,$03,$0B
+				DB	$04,$0C,$05,$0D,$06,$0E,$07,$0F
 			else
 				DB	$3F,$3E,$98
 				DB	$99,$3D,$3C
@@ -542,11 +546,6 @@ CODETAB			=	*-$96
 				DB	$06,$05,$04
 				DB	$03,$02,$01
 				DB	$00
-			fin
-
-			do NEW_DOS
-				; make sure NOTDONE doesn't cross pages
-				DS	$6F5-*
 			fin
 
 ARMOVE			LDX	SLOT_X0
