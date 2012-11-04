@@ -25,15 +25,14 @@ public:
 	bool Write(VTS vts,UINT8* src,INT32 length);
 	
 protected:
-	UINT8* GetPhysicalSectorPtr(VTS vts);
-	UINT8* GetLogicalSectorPtr(VTS vts);
-
-	void InitializePhysicalSector(VTS vts);
+	UINT8* LogicalToPhysicalSectorPtr(VTS vts);
+	
+	void InitializeLogicalSector(VTS vts);
 	void WriteLogicalSector(VTS vts,UINT8* src);
 	UINT8* WriteSectorProlog(UINT8* p,VTS vts);
 	UINT8* WriteSectorEpilog(UINT8* p,VTS vts);
 	UINT8* WriteSyncBytes(UINT8* p,VTS vts,INT32 count);
-	UINT8* WriteEvenOdd(UINT8* p,INT32 n);
+	UINT8* WriteOddEven(UINT8* p,INT32 n);
 	
 	INT32 SectorLogicalToPhysical(VTS vts);
 	
@@ -84,6 +83,7 @@ protected:
 	const UINT8* GetWriteTranslateTable(VTS vts);
 	UINT8 GetSyncValue(VTS vts);
 	
+	UINT8* WriteEvenOdd(UINT8* p,INT32 n);
 	UINT8* WriteAddressField(UINT8* p,VTS vts);
 	UINT8* WriteDataFieldProlog(UINT8* p,VTS vts);
 	UINT8* WriteDataFieldEpilog(UINT8* p,VTS vts);

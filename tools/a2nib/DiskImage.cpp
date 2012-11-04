@@ -98,7 +98,7 @@ DiskImage::Initialize(INT32 v)
 		for (INT32 s = 0; s < 16; ++s)
 		{
 			vts.sector = s;
-			InitializePhysicalSector(vts);
+			InitializeLogicalSector(vts);
 		}
 		
 		WriteSyncBytes(mImage + (t + 1) * kBytesPerTrack - kSyncLeadOut,vts,kSyncLeadOut);
@@ -117,6 +117,7 @@ DiskImage::Write(VTS vts,UINT8* src,INT32 length)
 		
 		if (++vts.sector == 16)
 		{
+			vts.sector = 0;
 			if (++vts.track == 35)
 			{
 				printf("Writing off end of disk\n");
@@ -129,44 +130,46 @@ DiskImage::Write(VTS vts,UINT8* src,INT32 length)
 
 //------------------------------------------------------------------------------
 
+// given a logical vts, return physical position
 UINT8*
-DiskImage::GetPhysicalSectorPtr(VTS vts)
+DiskImage::LogicalToPhysicalSectorPtr(VTS vts)
 {
+	vts.sector = GetLogicalInterleave(vts)[vts.sector];
 	vts.sector = GetPhysicalInterleave(vts)[vts.sector];
-	
 	return mImage + vts.track * kBytesPerTrack + kSyncLeadIn +
 		vts.sector * kBytesPerSector;
 }
 
 
-UINT8*
-DiskImage::GetLogicalSectorPtr(VTS vts)
-{
-	vts.sector = GetLogicalInterleave(vts)[vts.sector];
-	return GetPhysicalSectorPtr(vts);
-}
-
-
 void
-DiskImage::InitializePhysicalSector(VTS vts)
+DiskImage::InitializeLogicalSector(VTS vts)
 {
-	UINT8* p = GetPhysicalSectorPtr(vts);
+	// get physical position of sector
+	UINT8* p = LogicalToPhysicalSectorPtr(vts);
+	
+	// but write interleaved virtual sector number
+	vts.sector = GetLogicalInterleave(vts)[vts.sector];
+	
 	p = WriteSectorProlog(p,vts);
-	memset(p,0x96,342);
-	p += 342;
-	*p++ = 0;
+	
+	UINT8 buffer[256];
+	memset(buffer,0,256);
+	WriteLogicalSector(vts,buffer);
+	p += 343;
+	
 	WriteSectorEpilog(p,vts);
 }
 
 
-// Given 256 bytes of data in src, nibblize 343 bytes into dst.
+// Given a logical vts and 256 bytes of data in src,
+//	nibblize 343 bytes into physical dst.
 
 void
 DiskImage::WriteLogicalSector(VTS vts,UINT8* src)
 {
-	UINT8* dst = GetLogicalSectorPtr(vts) + kSectorDataOffset;
+	UINT8* dst = LogicalToPhysicalSectorPtr(vts) + kSectorDataOffset;
 	UINT8 dbuffer[342];
-
+	
 	INT32 i;
 	
 	memset(dbuffer + 256,0,342 - 256);
@@ -206,6 +209,7 @@ DiskImage::WriteLogicalSector(VTS vts,UINT8* src)
 }
 
 
+// vts should be interleaved logical
 UINT8*
 DiskImage::WriteSectorProlog(UINT8* p,VTS vts)
 {
@@ -216,6 +220,7 @@ DiskImage::WriteSectorProlog(UINT8* p,VTS vts)
 }
 
 
+// vts should be interleaved logical
 UINT8*
 DiskImage::WriteSectorEpilog(UINT8* p,VTS vts)
 {
@@ -236,7 +241,7 @@ DiskImage::WriteSyncBytes(UINT8* p,VTS vts,INT32 count)
 
 
 UINT8*
-DiskImage::WriteEvenOdd(UINT8* p,INT32 n)
+DiskImage::WriteOddEven(UINT8* p,INT32 n)
 {
 	*p++ = (n >> 1) | 0xAA;
 	*p++ = (n >> 0) | 0xAA;
@@ -325,10 +330,10 @@ DiskImage::WriteAddressField(UINT8* p,VTS vts)
 	*p++ = 0xAA;
 	*p++ = 0x96;
 	
-	p = WriteEvenOdd(p,vts.volume);
-	p = WriteEvenOdd(p,vts.track);
-	p = WriteEvenOdd(p,vts.sector);
-	p = WriteEvenOdd(p,vts.volume ^ vts.track ^ vts.sector);
+	p = WriteOddEven(p,vts.volume);
+	p = WriteOddEven(p,vts.track);
+	p = WriteOddEven(p,vts.sector);
+	p = WriteOddEven(p,vts.volume ^ vts.track ^ vts.sector);
 	
 	*p++ = 0xDE;
 	*p++ = 0xAA;
@@ -409,6 +414,15 @@ NajaImage::GetWriteTranslateTable(VTS vts)
 
 
 UINT8*
+NajaImage::WriteEvenOdd(UINT8* p,INT32 n)
+{
+	*p++ = (n >> 0) | 0xAA;
+	*p++ = (n >> 1) | 0xAA;
+	return p;
+}
+
+
+UINT8*
 NajaImage::WriteAddressField(UINT8* p,VTS vts)
 {
 	// On the boot disk, the first two sectors of
@@ -429,7 +443,7 @@ NajaImage::WriteAddressField(UINT8* p,VTS vts)
 	*p++ = 0xCD;
 	
 	p = WriteEvenOdd(p,vts.track);
-	p = WriteEvenOdd(p,vts.sector);
+	p = WriteOddEven(p,vts.sector);
 	
 	// the address field is shorter than the standard
 	//	format, so pad it out with sync bytes
