@@ -993,7 +993,7 @@ SavStatement::Parse(Parser* p,const char* label)
 		return;
 	}
 	
-	mString = strdup(p->GetString());
+	mString = _strdup(p->GetString());
 }
 
 
@@ -1035,7 +1035,7 @@ DskStatement::Parse(Parser* p,const char* label)
 		return;
 	}
 	
-	mString = strdup(p->GetString());
+	mString = _strdup(p->GetString());
 }
 
 

@@ -29,7 +29,7 @@ StringArray::Add(const char* string)
 			mCapacity = 8;
 		mStrings = (char**)realloc(mStrings,mCapacity * sizeof(char*));
 	}
-	mStrings[mCount++] = strdup(string);
+	mStrings[mCount++] = _strdup(string);
 	return mCount - 1;
 }
 
@@ -92,7 +92,7 @@ StringHash::Add(const char* string,void* object)
 bool
 StringHash::AddNoCase(const char* string,void* object)
 {
-	char* sp = strdup(string);
+	char* sp = _strdup(string);
 	char* cp;
 	char c;
 	bool result;

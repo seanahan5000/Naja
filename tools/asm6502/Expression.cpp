@@ -179,7 +179,7 @@ NumberExpression::Resolve(Assembler* assembler,INT32* value,bool setError)
 
 SymbolExpression::SymbolExpression(char* string) : Expression()
 {
-	mString = strdup(string);
+	mString = _strdup(string);
 }
 
 

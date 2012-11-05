@@ -40,7 +40,7 @@ class Var
 public:
 	Var(const char* value)
 	{
-		mValue = strdup(value);
+		mValue = _strdup(value);
 	}
 	
 	~Var()
@@ -51,7 +51,7 @@ public:
 	void SetValue(const char* value)
 	{
 		free(mValue);
-		mValue = strdup(value);
+		mValue = _strdup(value);
 	}
 	
 	const char* GetValue()

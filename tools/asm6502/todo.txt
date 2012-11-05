@@ -60,3 +60,20 @@ TRACC\ASM.CAMP.S
 Lines 244-246 generate (FF FF FF FF) but reference file contains 
 (A4 00 01 0C).  This is very likely caused by a change that was
 made without reassembling.
+
+
+FIGHT\AWARDER\AWARD.EQUIP.S
+
+Line 202 generates $FF instead of $A9 like the reference binary:
+
+				DB	GROUP_H-GROUP_END/6		; bug in original code
+
+96C1: 00 00 00  GROUP_H			DB	0,0,0,0,0,0		;DUMMY
+                GROUP_END
+                
+96C7: 55 96     GROUP_ADRS		DW	GROUP_A
+
+96DD: FF        				DB	GROUP_H-GROUP_END/6		; bug in original code
+
+This is because Merlin works using 16-bit math, and Asm6502 using 32-bit signed math.
+	$96C1 - $96C7 = $FFFA, $FFFA / 6 = $22A9

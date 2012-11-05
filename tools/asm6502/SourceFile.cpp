@@ -8,7 +8,7 @@
 SourceFile::SourceFile(Assembler* assembler,const char* fileName)
 	: mOffsets(256)
 {
-	mFileName = strdup(fileName);
+	mFileName = _strdup(fileName);
 	mBuffer = NULL;
 	
 	char fullPath[1024];

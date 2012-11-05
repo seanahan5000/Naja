@@ -94,7 +94,7 @@ int main(int argc,char* argv[])
 	while (argc--)
 	{
 		char* str = *argv++;
-		if (stricmp(str,"-root") == 0)
+		if (_stricmp(str,"-root") == 0)
 		{
 			if (argc == 0)
 			{
@@ -107,7 +107,7 @@ int main(int argc,char* argv[])
 			assembler->SetRootDir(str);
 			setRoot = true;
 		}
-		else if (stricmp(str,"-srcbase") == 0 || stricmp(str,"-base") == 0)
+		else if (_stricmp(str,"-srcbase") == 0 || _stricmp(str,"-base") == 0)
 		{
 			if (argc == 0)
 			{
@@ -120,7 +120,7 @@ int main(int argc,char* argv[])
 			assembler->SetSourceDir(str);
 			setBase = true;
 		}
-		else if (stricmp(str,"-objbase") == 0)
+		else if (_stricmp(str,"-objbase") == 0)
 		{
 			if (argc == 0)
 			{
@@ -133,7 +133,7 @@ int main(int argc,char* argv[])
 			assembler->SetObjectDir(str);
 			setBase = true;
 		}
-		else if (stricmp(str,"-list") == 0)
+		else if (_stricmp(str,"-list") == 0)
 		{
 			if (argc == 0)
 			{
@@ -145,7 +145,7 @@ int main(int argc,char* argv[])
 			--argc;
 			listName = str;
 		}
-		else if (stricmp(str,"-bin") == 0)
+		else if (_stricmp(str,"-bin") == 0)
 		{
 			assembler->SetSaveAsBin(true);
 		}
