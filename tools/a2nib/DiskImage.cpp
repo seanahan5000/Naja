@@ -111,6 +111,12 @@ DiskImage::Write(VTS vts,UINT8* src,INT32 length)
 {
 	while (length > 0)
 	{
+        if (vts.track >= 35)
+        {
+			printf("Writing off end of disk\n");
+			return false;
+        }
+
 		WriteLogicalSector(vts,src);
 		src += 256;
 		length -= 256;
@@ -118,11 +124,7 @@ DiskImage::Write(VTS vts,UINT8* src,INT32 length)
 		if (++vts.sector == 16)
 		{
 			vts.sector = 0;
-			if (++vts.track == 35)
-			{
-				printf("Writing off end of disk\n");
-				return false;
-			}
+			++vts.track;
 		}
 	}
 	return true;

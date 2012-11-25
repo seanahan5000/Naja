@@ -24,7 +24,7 @@ int main(int argc,char* argv[])
 	{
 		char* str = *argv++;
 		
-		if (stricmp(str,"-d") == 0 || stricmp(str,"-disk") == 0)
+		if (_stricmp(str,"-d") == 0 || _stricmp(str,"-disk") == 0)
 		{
 			if (argc-- == 0)
 			{
@@ -41,7 +41,7 @@ int main(int argc,char* argv[])
 			
 			diskName = str;
 		}
-		else if (stricmp(str,"-v") == 0 || stricmp(str,"-volume") == 0)
+		else if (_stricmp(str,"-v") == 0 || _stricmp(str,"-volume") == 0)
 		{
 			if (argc-- == 0)
 			{
@@ -57,7 +57,7 @@ int main(int argc,char* argv[])
 				return -1;
 			}
 		}
-		else if (stricmp(str,"-t") == 0 || stricmp(str,"-track") == 0)
+		else if (_stricmp(str,"-t") == 0 || _stricmp(str,"-track") == 0)
 		{
 			if (argc-- == 0)
 			{
@@ -73,7 +73,7 @@ int main(int argc,char* argv[])
 				return -1;
 			}
 		}
-		else if (stricmp(str,"-s") == 0 || stricmp(str,"-sector") == 0)
+		else if (_stricmp(str,"-s") == 0 || _stricmp(str,"-sector") == 0)
 		{
 			if (argc-- == 0)
 			{
@@ -89,7 +89,7 @@ int main(int argc,char* argv[])
 				return -1;
 			}
 		}
-		else if (stricmp(str,"-c") == 0 || stricmp(str,"-create") == 0)
+		else if (_stricmp(str,"-c") == 0 || _stricmp(str,"-create") == 0)
 		{
 			create = true;
 		}
