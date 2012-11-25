@@ -64,6 +64,7 @@ int main(int argc, char* argv[])
 	bool setRoot = false;
 	bool setBase = false;
 	char* listName = NULL;
+	char* symName = NULL;
 	char* fileName = NULL;
 	Assembler* assembler = new Assembler();
 	
@@ -145,6 +146,18 @@ int main(int argc, char* argv[])
 			--argc;
 			listName = str;
 		}
+		else if (_stricmp(str, "-sym") == 0)
+		{
+			if (argc == 0)
+			{
+				printf("Missing sym directory\n");
+				return -1;
+			}
+			
+			str = *argv++;
+			--argc;
+			symName = str;
+		}
 		else if (_stricmp(str, "-bin") == 0)
 		{
 			assembler->SetSaveAsBin(true);
@@ -171,10 +184,10 @@ int main(int argc, char* argv[])
 		goto usage;
 	}
 	
-	assembler->Assemble(fileName, NULL, listName);
+	assembler->Assemble(fileName, NULL, listName, symName);
 	return 0;
 	
 usage:
-	printf("\nasm6502 [-bin] [-list <filename>] [-root <directory> -srcbase <directory> [-objbase <directory>]] <filename>\n\n");
+	printf("\nasm6502 [-bin] [-list <filename>] [-sym <filename>] [-root <directory> -srcbase <directory> [-objbase <directory>]] <filename>\n\n");
 	return -1;
 }

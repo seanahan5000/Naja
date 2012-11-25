@@ -116,7 +116,10 @@ public:
 	void BuildFullSourcePath(char* fullPath, const char* fileName);
 	void BuildFullObjectPath(char* fullPath, const char* fileName);
 	
-	bool Assemble(const char* inName, const char* outName, const char* listName);
+	bool Assemble(const char* inName,
+                  const char* outName,
+                  const char* listName,
+                  const char* symName);
 	void AddStatement(Statement* statement);
 	
 	bool IncludeFile(const char* fileName);

@@ -39,9 +39,13 @@ Assembler::~Assembler()
 //------------------------------------------------------------------------------
 
 bool
-Assembler::Assemble(const char* inName, const char* outName, const char* listName)
+Assembler::Assemble(const char* inName,
+                    const char* outName,
+                    const char* listName,
+                    const char* symName)
 {
 	FILE* listFile = NULL;
+	FILE* symFile = NULL;
 	bool result = false;
 	
 	mError[0] = 0;
@@ -72,6 +76,16 @@ Assembler::Assemble(const char* inName, const char* outName, const char* listNam
 		if (!listFile)
 		{
 			SetError("Unable to open list file \"%s\"", listName);
+			goto exit;
+		}
+	}
+	
+	if (symName)
+	{
+		symFile = fopen(symName, "wt+");
+		if (!symFile)
+		{
+			SetError("Unable to open sym file \"%s\"", symName);
 			goto exit;
 		}
 	}
@@ -207,6 +221,47 @@ Assembler::Assemble(const char* inName, const char* outName, const char* listNam
 			goto exit;
 	}
 	
+    // dump symbols to file for use in debuggers
+    if (symFile)
+    {
+        INT32 count = mSymbols->GetEntryCount();
+        HashEntry** entries = new HashEntry*[count];
+        mSymbols->GetEntries(entries);
+
+        // dumb bubble-sort of entries
+        bool didSwap;
+        do
+        {
+            didSwap = false;
+            for (INT32 i = 0; i < count - 1; ++i)
+            {
+                Symbol* symbol1 = (Symbol*)(entries[i]->object);
+                Symbol* symbol2 = (Symbol*)(entries[i + 1]->object);
+                if (symbol1->GetValue() > symbol2->GetValue())
+                {
+                    HashEntry* tempEntry = entries[i];
+                    entries[i] = entries[i + 1];
+                    entries[i + 1] = tempEntry;
+                    didSwap = true;
+                }
+            }
+        } while (didSwap);
+
+        // dump entries to file, skipping z-page addresses
+        for (INT32 i = 0; i < count; ++i)
+        {
+            Symbol* symbol = (Symbol*)(entries[i]->object);
+            if (symbol->GetValue() >= 0x100)
+            {
+                INT32 len = strlen(entries[i]->string);
+                fprintf(symFile, "%s", entries[i]->string);
+                for (INT32 j = 0; j < 22 - len; ++j)
+                    fprintf(symFile, " ");
+                fprintf(symFile, "= $%04X\n", symbol->GetValue());
+            }
+        }
+    }
+
 	result = true;
 	
 exit:
@@ -232,6 +287,8 @@ exit:
 	
 	if (listFile)
 		fclose(listFile);
+	if (symFile)
+		fclose(symFile);
 	return result;
 }
 

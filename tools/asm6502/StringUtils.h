@@ -40,10 +40,14 @@ public:
 	bool Add(const char* string, void* object);
 	bool AddNoCase(const char* string, void* object);
 	void* Find(const char* string);
-	
+
+    INT32 GetEntryCount() { return mCount; }
+    void GetEntries(HashEntry** entries);
+
 protected:
 	UINT32 GenerateKey(const char* string);
 	
+    UINT32 mCount;
 	UINT32 mSize;
 	HashEntry** mEntries;
 };

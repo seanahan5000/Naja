@@ -37,6 +37,7 @@ StringArray::Add(const char* string)
 
 StringHash::StringHash(UINT32 size)
 {
+    mCount = 0;
 	mSize = size;
 	INT32 byteCount = sizeof(HashEntry*) * size;
 	mEntries = (HashEntry**)malloc(byteCount);
@@ -85,6 +86,7 @@ StringHash::Add(const char* string, void* object)
 	strcpy(entry->string, string);
 	entry->next = mEntries[index];
 	mEntries[index] = entry;
+    ++mCount;
 	return true;
 }
 
@@ -152,6 +154,24 @@ StringHash::GenerateKey(const char* string)
 	while ((c = *sp++) != 0)
 		key = (key << 5) - key + c;
 	return key;
+}
+
+
+// Caller assumed to have allocated enough space for entries
+//  based on previous call to GetEntryCount().
+void
+StringHash::GetEntries(HashEntry** entries)
+{
+    INT32 index = 0;
+    for (UINT32 i = 0; i < mSize; ++i)
+    {
+        HashEntry* entry = mEntries[i];
+        while (entry)
+        {
+            entries[index++] = entry;
+            entry = entry->next;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
