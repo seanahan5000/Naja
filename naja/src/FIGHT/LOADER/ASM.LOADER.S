@@ -56,4 +56,4 @@ GROUP_BUFF3		DS	bytespergroup
 NEW_MONSTER		DS	bytespermons
 				DEND
 
-				SAV	/FIGHT/FIGHT.LOADER
+				SAV	FIGHT.LOADER
