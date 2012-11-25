@@ -1394,6 +1394,7 @@ INRANGE			STA	SRANGE
 				JMP	RDKEY	
 
 TESBACK
+				; button down changes 'T' tesback to select option
 				BIT	$C061			;TEMP
 				BMI	:TEMP			;TEMP
 				LDA	FACE
@@ -1402,17 +1403,18 @@ TESBACK
 				LDA	SHELL
 				CMP	#$01
 				BEQ	:SKIPB
-:SKIPA								;JMP RDKEY
+:SKIPA								;JMP RDKEY ;(any face for now)
 :SKIPB			LDA	#side_MS
 				STA	DISK_SIDE
 				LDA	#$90
 				STA	SSTOREH
-				LDX	#<$0010
-				LDY	#>$0010
-				LDA	#3
+				LDX	#<$00F0			; MTESSINFO
+				LDY	#>$00F0
+				LDA	#6
 				JSR	SLOADER
 				JMP	$9000
 
+				; Load SELECT.OPTION
 :TEMP			LDA	#0				;TEMP
 				STA	CAMP_HERE		;TEMP
 				LDA	#$78			;TEMP
