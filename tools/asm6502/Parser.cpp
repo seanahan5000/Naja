@@ -52,7 +52,7 @@ Parser::ParseLine(const char* string)
 	char expandBuffer[1024];
 	if (mAssembler->InMacroExpand())
 	{
-		if (!ExpandVars(string,expandBuffer,sizeof(expandBuffer)))
+		if (!ExpandVars(string, expandBuffer, sizeof(expandBuffer)))
 			goto error;
 		string = expandBuffer;
 	}
@@ -80,7 +80,7 @@ Parser::ParseLine(const char* string)
 		goto exit;
 	}
 	
-	if (!ParseLabel(hasLabel,labelBuffer,sizeof(labelBuffer),&labelIsLocal))
+	if (!ParseLabel(hasLabel, labelBuffer, sizeof(labelBuffer), &labelIsLocal))
 	{
 		if (hasLabel || labelIsLocal)
 		{
@@ -191,7 +191,7 @@ Parser::ParseLine(const char* string)
 			t = Next();
 			if (t != TokenON && t != TokenOFF)
 			{
-				mAssembler->SetError("Invalid option \"%s\"",GetString());
+				mAssembler->SetError("Invalid option \"%s\"", GetString());
 				goto error;
 			}
 		}
@@ -249,7 +249,7 @@ Parser::ParseLine(const char* string)
 				goto error;
 			}
 			
-			statement = new DummyStatement(dummySegment,0);
+			statement = new DummyStatement(dummySegment, 0);
 		}
 		else if (t == TokenDUM || t == TokenDUMMY)
 		{
@@ -258,11 +258,11 @@ Parser::ParseLine(const char* string)
 			if (!ParseAndResolveExpression(&value))
 				goto error;
 			
-			statement = new DummyStatement(true,value);
+			statement = new DummyStatement(true, value);
 		}
 		else if (t == TokenDEND)
 		{
-			statement = new DummyStatement(false,0);
+			statement = new DummyStatement(false, 0);
 		}
 		else if (t == TokenLUP || t == TokenREPEAT)
 		{
@@ -319,13 +319,13 @@ Parser::ParseLine(const char* string)
 				if (!mTokenizer->NextMacroArg())
 					break;
 				
-				mAssembler->SetVar(name,GetString());
+				mAssembler->SetVar(name, GetString());
 				++name[0];
 			}
 		}
 		else
 		{
-			mAssembler->SetError("Unknown keyword \"%s\"",GetString());
+			mAssembler->SetError("Unknown keyword \"%s\"", GetString());
 			goto error;
 		}
 	}
@@ -334,18 +334,18 @@ Parser::ParseLine(const char* string)
 	{
 		if (labelIsLocal)
 		{
-			if (!mAssembler->AddLabelSymbol(label,true))
+			if (!mAssembler->AddLabelSymbol(label, true))
 			{
-				mAssembler->SetError("Duplicate local label \"%s\"",label);
+				mAssembler->SetError("Duplicate local label \"%s\"", label);
 				goto error;
 			}
 		}
 		else
 		{
 			mAssembler->SetLocalBase(label);
-			if (!mAssembler->AddLabelSymbol(label,false))
+			if (!mAssembler->AddLabelSymbol(label, false))
 			{
-				mAssembler->SetError("Duplicate label \"%s\"",label);
+				mAssembler->SetError("Duplicate label \"%s\"", label);
 				goto error;
 			}
 		}
@@ -355,7 +355,7 @@ exit:
 	if (statement)
 	{
 		statement->SetPC(mAssembler->GetPC());
-		statement->Parse(this,label);
+		statement->Parse(this, label);
 		
 		t = Next();
 		if (t != 0)
@@ -368,7 +368,7 @@ error:;
 
 
 bool
-Parser::ExpandVars(const char* inString,char* outString,INT32 outSize)
+Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
 {
 	const char* sp = inString;
 	char* dp = outString;
@@ -415,11 +415,11 @@ Parser::ExpandVars(const char* inString,char* outString,INT32 outSize)
 			return false;
 		}
 		
-		memcpy(name,start,len);
+		memcpy(name, start, len);
 		name[len] = 0;
 		
 		const char* varValue;
-		if (!mAssembler->GetVar(name,&varValue))
+		if (!mAssembler->GetVar(name, &varValue))
 		{
 			mAssembler->SetError("Unknown variable");
 			return false;
@@ -449,7 +449,7 @@ Parser::ExpandVars(const char* inString,char* outString,INT32 outSize)
 //	@LABEL:
 //	:LABEL:
 bool
-Parser::ParseLabel(bool firstColumn,char* label,INT32 labelMax,bool* isLocal)
+Parser::ParseLabel(bool firstColumn, char* label, INT32 labelMax, bool* isLocal)
 {
 	*label = 0;
 	*isLocal = false;
@@ -477,7 +477,7 @@ Parser::ParseLabel(bool firstColumn,char* label,INT32 labelMax,bool* isLocal)
 		}
 	}
 	
-	strncpy(label,mTokenizer->GetTokenString(),labelMax - 1);
+	strncpy(label, mTokenizer->GetTokenString(), labelMax - 1);
 	label[labelMax - 1] = 0;
 	
 	INT32 colonMark = mTokenizer->GetPosition();
@@ -501,18 +501,18 @@ fail:
 Expression*
 Parser::ParseExpression(Token t)
 {
-	return Expression::Parse(this,t,true);
+	return Expression::Parse(this, t, true);
 }
 
 
 bool
-Parser::ParseAndResolveExpression(Token t,INT32* value)
+Parser::ParseAndResolveExpression(Token t, INT32* value)
 {
 	Expression* exp = ParseExpression(t);
 	if (!exp)
 		return false;
 	
-	bool result = exp->Resolve(mAssembler,value);
+	bool result = exp->Resolve(mAssembler, value);
 	delete exp;
 	return result;
 }

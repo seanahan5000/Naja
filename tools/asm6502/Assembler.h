@@ -15,7 +15,7 @@ class LineReader;
 class Symbol
 {
 public:
-	Symbol(INT32 value,bool forceLong)
+	Symbol(INT32 value, bool forceLong)
 	{
 		mValue = value;
 		mForceLong = forceLong;
@@ -113,10 +113,10 @@ public:
 	const char* GetSourceDir() { return mSourceDir; }
 	const char* GetObjectDir() { return mObjectDir; }
 	void SetDiskFile(const char* fileName);
-	void BuildFullSourcePath(char* fullPath,const char* fileName);
-	void BuildFullObjectPath(char* fullPath,const char* fileName);
+	void BuildFullSourcePath(char* fullPath, const char* fileName);
+	void BuildFullObjectPath(char* fullPath, const char* fileName);
 	
-	bool Assemble(const char* inName,const char* outName,const char* listName);
+	bool Assemble(const char* inName, const char* outName, const char* listName);
 	void AddStatement(Statement* statement);
 	
 	bool IncludeFile(const char* fileName);
@@ -134,20 +134,20 @@ public:
 	void StartLoop(INT32 loopCount);
 	void EndLoop();
 	
-	void SetVar(const char* name,const char* value);
-	bool GetVar(const char* name,const char** value);
+	void SetVar(const char* name, const char* value);
+	bool GetVar(const char* name, const char** value);
 	
-	void SetError(char* format,...);
+	void SetError(char* format, ...);
 	bool HasError() { return mError[0] != 0; }
 	char* GetError() { return mError; }
 	void ClearError() { mError[0] = 0; }
 	void PrintError(LineRecord* lineRec);
 	
-	void SetLocalBase(const char* localBase) { strcpy(mLocalBase,localBase); }
-	bool LocalToGlobal(const char* symbol,char* buffer,INT32 bufferSize);
+	void SetLocalBase(const char* localBase) { strcpy(mLocalBase, localBase); }
+	bool LocalToGlobal(const char* symbol, char* buffer, INT32 bufferSize);
 	
-	bool AddLabelSymbol(const char* string,bool local = false);
-	bool AddEquateSymbol(const char* string,INT32 value,bool forceLong);
+	bool AddLabelSymbol(const char* string, bool local = false);
+	bool AddEquateSymbol(const char* string, INT32 value, bool forceLong);
 	
 	Symbol* FindSymbol(const char* string)
 	{
@@ -167,15 +167,15 @@ public:
 	void WriteConsume(INT32 count) { if (!InDummy()) mOutBuffer.Consume(count); }
 	INT32 WriteGetSize() { return mOutBuffer.GetSize(); }
 	void WriteByte(UINT8 b);
-	void WriteByteByte(UINT8 b1,UINT8 b2);
-	void WriteByteWord(UINT8 b,UINT16 w);
-	void WriteBytes(UINT8* bp,INT32 count);
-	void WritePattern(UINT8 b,INT32 count);
+	void WriteByteByte(UINT8 b1, UINT8 b2);
+	void WriteByteWord(UINT8 b, UINT16 w);
+	void WriteBytes(UINT8* bp, INT32 count);
+	void WritePattern(UINT8 b, INT32 count);
 	bool SaveFile(const char* fileName);
 	bool FlushToFile(const char* fileName);
 	
 protected:
-	void CleanDirName(char* cleanName,const char* dirName);
+	void CleanDirName(char* cleanName, const char* dirName);
 	
 	Syntax mSyntax;
 	

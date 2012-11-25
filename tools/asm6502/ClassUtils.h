@@ -17,7 +17,7 @@ public:
 	{
 		mCount = 0;
 		mCapacity = capacity;
-		mArray = (T*)realloc(NULL,mCapacity * sizeof(T));
+		mArray = (T*)realloc(NULL, mCapacity * sizeof(T));
 	}
 	
 	~Array()
@@ -30,7 +30,7 @@ public:
 		if (mCount == mCapacity)
 		{
 			mCapacity += mCapacity ? mCapacity : 16;
-			mArray = (T*)realloc(mArray,mCapacity * sizeof(T));
+			mArray = (T*)realloc(mArray, mCapacity * sizeof(T));
 		}
 		mArray[mCount++] = object;
 	}
@@ -38,7 +38,7 @@ public:
 	void Trim()
 	{
 		mCapacity = mCount;
-		mArray = (T*)realloc(mArray,mCapacity * sizeof(T));
+		mArray = (T*)realloc(mArray, mCapacity * sizeof(T));
 	}
 	
 	void Clear()
@@ -80,7 +80,7 @@ public:
 	{
 		mDepth = 0;
 		mCapacity = capacity;
-		mStack = (T*)realloc(NULL,mCapacity * sizeof(T));
+		mStack = (T*)realloc(NULL, mCapacity * sizeof(T));
 	}
 	
 	~Stack()
@@ -93,7 +93,7 @@ public:
 		if (mDepth == mCapacity)
 		{
 			mCapacity += mCapacity ? mCapacity : 16;
-			mStack = (T*)realloc(mStack,mCapacity * sizeof(T));
+			mStack = (T*)realloc(mStack, mCapacity * sizeof(T));
 		}
 		mStack[mDepth++] = object;
 	}
@@ -138,7 +138,7 @@ public:
 	{
 		mAvailable = capacity;
 		mConsumed = 0;
-		mBuffer = (UINT8*)realloc(NULL,mConsumed + mAvailable);
+		mBuffer = (UINT8*)realloc(NULL, mConsumed + mAvailable);
 	}
 	
 	~GrowBuffer()
@@ -157,7 +157,7 @@ public:
 			if (mAvailable < count)
 				mAvailable = count;
 			
-			mBuffer = (UINT8*)realloc(mBuffer,mConsumed + mAvailable);
+			mBuffer = (UINT8*)realloc(mBuffer, mConsumed + mAvailable);
 		}
 		return mBuffer + mConsumed;
 	}
@@ -170,7 +170,7 @@ public:
 	
 	void Trim()
 	{
-		mBuffer = (UINT8*)realloc(mBuffer,mConsumed);
+		mBuffer = (UINT8*)realloc(mBuffer, mConsumed);
 		mAvailable = 0;
 	}
 	

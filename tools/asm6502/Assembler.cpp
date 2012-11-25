@@ -39,7 +39,7 @@ Assembler::~Assembler()
 //------------------------------------------------------------------------------
 
 bool
-Assembler::Assemble(const char* inName,const char* outName,const char* listName)
+Assembler::Assemble(const char* inName, const char* outName, const char* listName)
 {
 	FILE* listFile = NULL;
 	bool result = false;
@@ -47,10 +47,10 @@ Assembler::Assemble(const char* inName,const char* outName,const char* listName)
 	mError[0] = 0;
 	
 	if (outName)
-		strcpy(mOutFileName,outName);
+		strcpy(mOutFileName, outName);
 	else
 	{
-		BuildFullObjectPath(mOutFileName,inName);
+		BuildFullObjectPath(mOutFileName, inName);
 		INT32 len = strlen(mOutFileName);
 		if (len > 1)
 		{
@@ -61,17 +61,17 @@ Assembler::Assemble(const char* inName,const char* outName,const char* listName)
 				if (c == 'S' || c == 'A')
 					*(sp - 1) = 0;
 				else
-					strcat(mOutFileName,".bin");
+					strcat(mOutFileName, ".bin");
 			}
 		}
 	}
 	
 	if (listName)
 	{
-		listFile = fopen(listName,"wt+");
+		listFile = fopen(listName, "wt+");
 		if (!listFile)
 		{
-			SetError("Unable to open list file \"%s\"",listName);
+			SetError("Unable to open list file \"%s\"", listName);
 			goto exit;
 		}
 	}
@@ -90,7 +90,7 @@ Assembler::Assemble(const char* inName,const char* outName,const char* listName)
 	if (!IncludeFile(inName))
 		goto exit;
 	
-	printf("Assembling %s%s\n",mSourceDir,inName);
+	printf("Assembling %s%s\n", mSourceDir, inName);
 	
 	mInWritePhase = false;
 	SetOrg(0x8000);		// Merlin default
@@ -178,23 +178,23 @@ Assembler::Assemble(const char* inName,const char* outName,const char* listName)
 				UINT8* p = mOutBuffer.GetPtr() + writeOffset;
 				INT32 count = mOutBuffer.GetSize() - writeOffset;
 				if (count == 0)
-					fprintf(listFile,"              ");
+					fprintf(listFile, "              ");
 				else
 				{
-					fprintf(listFile,"%04X: ",statement->GetPC());
+					fprintf(listFile, "%04X: ", statement->GetPC());
 					
 					if (count == 1)
-						fprintf(listFile,"%02X      ",*p);
+						fprintf(listFile, "%02X      ", *p);
 					else if (count == 2)
-						fprintf(listFile,"%02X %02X   ",*p,*(p + 1));
+						fprintf(listFile, "%02X %02X   ", *p, *(p + 1));
 					else
-						fprintf(listFile,"%02X %02X %02X",*p,*(p + 1),*(p + 2));
+						fprintf(listFile, "%02X %02X %02X", *p, *(p + 1), *(p + 2));
 				}
 			}
 			else
-				fprintf(listFile,"              ");
+				fprintf(listFile, "              ");
 			
-			fprintf(listFile,"  %s\n",line);
+			fprintf(listFile, "  %s\n", line);
 		}
 	}
 	
@@ -265,7 +265,7 @@ bool
 Assembler::IncludeFile(const char* fileName)
 {
 	mReadStateStack.Push(mReadState);
-	mReadState.file = SourceFile::Create(this,fileName);
+	mReadState.file = SourceFile::Create(this, fileName);
 	if (!mReadState.file)
 		return false;
 	mReadState.fileIndex = mFileList.GetCount();
@@ -292,7 +292,7 @@ Assembler::StartMacroDef(const char* name)
 	mMacroDef->fileIndex = mReadState.fileIndex;
 	mMacroDef->startLineIndex = mReadState.curLineIndex;
 	mMacroDef->endLineIndex = -1;
-	mMacros->Add(name,mMacroDef);
+	mMacros->Add(name, mMacroDef);
 }
 
 
@@ -364,9 +364,9 @@ void
 Assembler::StartLoop(INT32 loopCount)
 {
 	mReadStateStack.Push(mReadState);
-	// mReadState.file,fileIndex remain the same
+	// mReadState.file, fileIndex remain the same
 	mReadState.startLineIndex = mReadState.curLineIndex;
-	// mReadState.curLineIndex,endLineIndex remain the same
+	// mReadState.curLineIndex, endLineIndex remain the same
 	mReadState.loopCount = loopCount;
 	mReadState.isMacro = false;
 }
@@ -381,20 +381,20 @@ Assembler::EndLoop()
 
 
 void
-Assembler::SetVar(const char* name,const char* value)
+Assembler::SetVar(const char* name, const char* value)
 {
 	Var* var = (Var*)mVars->Find(name);
 	if (!var)
 	{
 		var = new Var(value);
-		mVars->Add(name,var);
+		mVars->Add(name, var);
 	}
 	var->SetValue(value);
 }
 
 
 bool
-Assembler::GetVar(const char* name,const char** value)
+Assembler::GetVar(const char* name, const char** value)
 {
 	Var* var = (Var*)mVars->Find(name);
 	if (!var)
@@ -407,13 +407,13 @@ Assembler::GetVar(const char* name,const char** value)
 //------------------------------------------------------------------------------
 
 void
-Assembler::BuildFullSourcePath(char* fullPath,const char* fileName)
+Assembler::BuildFullSourcePath(char* fullPath, const char* fileName)
 {
-	strcpy(fullPath,mRootDir);
+	strcpy(fullPath, mRootDir);
 	if (fileName[0] != '\\' && fileName[0] != '/')
-		strcat(fullPath,mSourceDir);
+		strcat(fullPath, mSourceDir);
 	
-	strcat(fullPath,fileName);
+	strcat(fullPath, fileName);
 	
 	for (INT32 i = 0; i < sizeof(fullPath); ++i)
 	{
@@ -424,18 +424,18 @@ Assembler::BuildFullSourcePath(char* fullPath,const char* fileName)
 
 
 void
-Assembler::BuildFullObjectPath(char* fullPath,const char* fileName)
+Assembler::BuildFullObjectPath(char* fullPath, const char* fileName)
 {
-	strcpy(fullPath,mRootDir);
+	strcpy(fullPath, mRootDir);
 	if (fileName[0] != '\\' && fileName[0] != '/')
 	{
 		if (mObjectDir[0] != 0)
-			strcat(fullPath,mObjectDir);
+			strcat(fullPath, mObjectDir);
 		else
-			strcat(fullPath,mSourceDir);
+			strcat(fullPath, mSourceDir);
 	}
 	
-	strcat(fullPath,fileName);
+	strcat(fullPath, fileName);
 	
 	for (INT32 i = 0; i < sizeof(fullPath); ++i)
 	{
@@ -448,7 +448,7 @@ Assembler::BuildFullObjectPath(char* fullPath,const char* fileName)
 void
 Assembler::SetRootDir(const char* dirName)
 {
-	strcpy(mRootDir,dirName);
+	strcpy(mRootDir, dirName);
 	
 	// remove trailing slash
 	INT32 length = strlen(dirName);
@@ -462,17 +462,17 @@ Assembler::SetRootDir(const char* dirName)
 
 
 /*protected*/ void
-Assembler::CleanDirName(char* cleanName,const char* dirName)
+Assembler::CleanDirName(char* cleanName, const char* dirName)
 {
 	// must have leading slash
 	if (dirName[0] != '/' && dirName[0] != '\\')
 	{
 		cleanName[0] = '\\';
 		cleanName[1] = 0;
-		strcat(cleanName,dirName);
+		strcat(cleanName, dirName);
 	}
 	else
-		strcpy(cleanName,dirName);
+		strcpy(cleanName, dirName);
 	
 	// and must have trailing slash
 	INT32 length = strlen(cleanName);
@@ -482,31 +482,31 @@ Assembler::CleanDirName(char* cleanName,const char* dirName)
 		if (c == '/' || c == '\\')
 			return;
 	}
-	strcat(cleanName,"\\");
+	strcat(cleanName, "\\");
 }
 
 
 void
 Assembler::SetSourceDir(const char* dirName)
 {
-	CleanDirName(mSourceDir,dirName);
+	CleanDirName(mSourceDir, dirName);
 }
 
 
 void
 Assembler::SetObjectDir(const char* dirName)
 {
-	CleanDirName(mObjectDir,dirName);
+	CleanDirName(mObjectDir, dirName);
 }
 
 
 bool
 Assembler::FlushToFile(const char* fileName)
 {
-	FILE* file = fopen(fileName,"wb+");
+	FILE* file = fopen(fileName, "wb+");
 	if (!file)
 	{
-		SetError("Output file \"%s\" not found",mOutFileName);
+		SetError("Output file \"%s\" not found", mOutFileName);
 		return false;
 	}
 	
@@ -522,10 +522,10 @@ Assembler::FlushToFile(const char* fileName)
 		header[2] = (UINT8)length;
 		header[3] = (UINT8)(length >> 8);
 		
-		fwrite(header,1,sizeof(header),file);
+		fwrite(header, 1, sizeof(header), file);
 	}
 	
-	fwrite(mOutBuffer.GetPtr(),1,mOutBuffer.GetSize(),file);
+	fwrite(mOutBuffer.GetPtr(), 1, mOutBuffer.GetSize(), file);
 	fclose(file);
 	mOutBuffer.Clear();
 	return true;
@@ -540,7 +540,7 @@ Assembler::SetDiskFile(const char* fileName)
 	if (mOutBuffer.GetSize() != 0 && mOutFileName[0])
 		FlushToFile(mOutFileName);
 	
-	BuildFullObjectPath(mOutFileName,fileName);
+	BuildFullObjectPath(mOutFileName, fileName);
 }
 
 
@@ -548,7 +548,7 @@ bool
 Assembler::SaveFile(const char* fileName)
 {
 	char fullPath[1024];
-	BuildFullObjectPath(fullPath,fileName);
+	BuildFullObjectPath(fullPath, fileName);
 	return FlushToFile(fullPath);
 }
 
@@ -567,7 +567,7 @@ Assembler::WriteByte(UINT8 b)
 
 
 void
-Assembler::WriteByteByte(UINT8 b1,UINT8 b2)
+Assembler::WriteByteByte(UINT8 b1, UINT8 b2)
 {
 	if (InDummy())
 		return;
@@ -580,7 +580,7 @@ Assembler::WriteByteByte(UINT8 b1,UINT8 b2)
 
 
 void
-Assembler::WriteByteWord(UINT8 b,UINT16 w)
+Assembler::WriteByteWord(UINT8 b, UINT16 w)
 {
 	if (InDummy())
 		return;
@@ -594,26 +594,26 @@ Assembler::WriteByteWord(UINT8 b,UINT16 w)
 
 
 void
-Assembler::WriteBytes(UINT8* bp,INT32 count)
+Assembler::WriteBytes(UINT8* bp, INT32 count)
 {
 	if (InDummy())
 		return;
 	
 	UINT8* p = mOutBuffer.MakeAvailable(count);
-	memcpy(p,bp,count);
+	memcpy(p, bp, count);
 	p += count;
 	mOutBuffer.Consume(count);
 }
 
 
 void
-Assembler::WritePattern(UINT8 b,INT32 count)
+Assembler::WritePattern(UINT8 b, INT32 count)
 {
 	if (InDummy())
 		return;
 	
 	UINT8* p = mOutBuffer.MakeAvailable(count);
-	memset(p,b,count);
+	memset(p, b, count);
 	p += count;
 	mOutBuffer.Consume(count);
 }
@@ -621,7 +621,7 @@ Assembler::WritePattern(UINT8 b,INT32 count)
 //------------------------------------------------------------------------------
 
 bool
-Assembler::LocalToGlobal(const char* symbol,char* buffer,INT32 bufferSize)
+Assembler::LocalToGlobal(const char* symbol, char* buffer, INT32 bufferSize)
 {
 //	if (!mLocalBase[0])
 //	{
@@ -630,38 +630,38 @@ Assembler::LocalToGlobal(const char* symbol,char* buffer,INT32 bufferSize)
 //		return false;
 //	}
 	
-	_snprintf(buffer,bufferSize,"%s_%s__",mLocalBase,symbol);
+	_snprintf(buffer, bufferSize, "%s_%s__", mLocalBase, symbol);
 	buffer[bufferSize - 1] = 0;
 	return true;
 }
 
 
 bool
-Assembler::AddLabelSymbol(const char* label,bool local)
+Assembler::AddLabelSymbol(const char* label, bool local)
 {
 	char buffer[256];
 	if (local)
 	{
-		LocalToGlobal(label,buffer,sizeof(buffer));
+		LocalToGlobal(label, buffer, sizeof(buffer));
 		label = buffer;
 	}
 	
-	Symbol* symbol = new Symbol(mPC,false);
-	return mSymbols->Add(label,symbol);
+	Symbol* symbol = new Symbol(mPC, false);
+	return mSymbols->Add(label, symbol);
 }
 
 
 bool
-Assembler::AddEquateSymbol(const char* equate,INT32 value,bool forceLong)
+Assembler::AddEquateSymbol(const char* equate, INT32 value, bool forceLong)
 {
-	Symbol* symbol = new Symbol(value,forceLong);
-	if (!mSymbols->Add(equate,symbol))
+	Symbol* symbol = new Symbol(value, forceLong);
+	if (!mSymbols->Add(equate, symbol))
 	{
 		Symbol* dupe = (Symbol*)mSymbols->Find(equate);
 		if (dupe->GetValue() != value)
 			return false;
 		
-		printf("WARNING: Harmless duplicate equate \"%s\"\n",equate);
+		printf("WARNING: Harmless duplicate equate \"%s\"\n", equate);
 	}
 	return true;
 }
@@ -669,13 +669,13 @@ Assembler::AddEquateSymbol(const char* equate,INT32 value,bool forceLong)
 //------------------------------------------------------------------------------
 
 void
-Assembler::SetError(char* format,...)
+Assembler::SetError(char* format, ...)
 {
 	if (mError[0] == 0)
 	{
 		va_list args;
-		va_start(args,format);
-		_vsnprintf(mError,sizeof(mError),format,args);
+		va_start(args, format);
+		_vsnprintf(mError, sizeof(mError), format, args);
 		mError[sizeof(mError) - 1] = 0;
 	}
 }
@@ -686,13 +686,13 @@ Assembler::PrintError(LineRecord* lineRec)
 {
 	if (lineRec)
 	{
-		printf("\nERROR line %d, file \"%s\": %s\n",lineRec->lineIndex + 1,
+		printf("\nERROR line %d,  file \"%s\": %s\n", lineRec->lineIndex + 1,
 											mFileList[lineRec->fileIndex]->GetName(),
 											GetError());
-		printf("%s\n",mFileList[lineRec->fileIndex]->GetLine(lineRec->lineIndex));
+		printf("%s\n", mFileList[lineRec->fileIndex]->GetLine(lineRec->lineIndex));
 	}
 	else
-		printf("\nERROR: %s\n",GetError());
+		printf("\nERROR: %s\n", GetError());
 	ClearError();
 }
 

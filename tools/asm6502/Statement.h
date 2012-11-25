@@ -16,7 +16,7 @@ public:
 	Statement();
 	virtual ~Statement();
 	
-	virtual void Parse(Parser* p,const char* label) {}
+	virtual void Parse(Parser* p, const char* label) {}
 	virtual void Write(Assembler* assembler) {}
 	
 	void SetPC(INT32 pc) { mPC = pc; }
@@ -56,7 +56,7 @@ public:
 		mOpcode = opcode;
 	}
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 	
 protected:
@@ -74,7 +74,7 @@ public:
 	DataStatement(Token typeToken);
 	~DataStatement();
 
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 	
 protected:
@@ -92,7 +92,7 @@ public:
 		mByteCount = 0;
 	}
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 	
 protected:
@@ -110,7 +110,7 @@ public:
 		mByteCount = 0;
 	}
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 	
 protected:
@@ -127,7 +127,7 @@ public:
 	{
 	}
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 	
 protected:
@@ -144,7 +144,7 @@ public:
 		mPrependLength = prependLength;
 	}
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 	
 protected:
@@ -162,7 +162,7 @@ public:
 	{
 	}
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 };
 
 //------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ public:
 	{
 	}
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 	
 protected:
@@ -191,7 +191,7 @@ public:
 		mTypeToken = t;
 	}
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	
 protected:
 	Token mTypeToken;
@@ -205,7 +205,7 @@ public:
 	UsrStatement();
 	~UsrStatement();
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 
 protected:
@@ -222,7 +222,7 @@ public:
 	{
 	}
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 };
 
 //------------------------------------------------------------------------------
@@ -233,7 +233,7 @@ public:
 	SavStatement();
 	~SavStatement();
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 	
 protected:
@@ -248,7 +248,7 @@ public:
 	DskStatement();
 	~DskStatement();
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 	
 protected:
@@ -267,7 +267,7 @@ public:
 	
 	~ErrorStatement();
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 
 protected:
@@ -279,13 +279,13 @@ protected:
 class DummyStatement : public Statement
 {
 public:
-	DummyStatement(bool start,INT32 org) : Statement()
+	DummyStatement(bool start, INT32 org) : Statement()
 	{
 		mStart = start;
 		mOrg = org;
 	}
 	
-	void Parse(Parser* p,const char* label);
+	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 	
 protected:

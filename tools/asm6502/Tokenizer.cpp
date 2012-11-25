@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 #define OPCODE(_op)	#_op,
-#define OP(_mode,_hex)
+#define OP(_mode, _hex)
 #define OPEND()
 static const char* sOpcodeList[] = {
 #include "Opcodes.h"
@@ -28,7 +28,7 @@ struct KeywordEntry
 	UINT32 flags;
 };
 
-#define KEYWORD(_word,_flags)	{ #_word,_flags },
+#define KEYWORD(_word, _flags)	{ #_word, _flags },
 static const KeywordEntry sKeywordList[] = {
 #include "Keywords.h"
 };
@@ -48,25 +48,25 @@ Tokenizer::Tokenizer(UINT32 syntax)
 	
 	// add single character symbol tokens (must exclude '_')
 	const char* cp = "!@#$%^&*()-=+[{]}\\|;:\'\",<.>/?";
-	char str[2] = {0,0};
+	char str[2] = {0, 0};
 	while ((str[0] = *cp++) != 0)
-		mTokenHash->Add(str,(void*)str[0]);
+		mTokenHash->Add(str, (void*)str[0]);
 	
 	// add single letter tokens
-	mTokenHash->AddNoCase("A",(void*)'A');
-	mTokenHash->AddNoCase("X",(void*)'X');
-	mTokenHash->AddNoCase("Y",(void*)'Y');
+	mTokenHash->AddNoCase("A", (void*)'A');
+	mTokenHash->AddNoCase("X", (void*)'X');
+	mTokenHash->AddNoCase("Y", (void*)'Y');
 	if (syntax == SyntaxDASM || syntax == SyntaxIIGS)
 	{
-		mTokenHash->AddNoCase("B",(void*)'B');
-		mTokenHash->AddNoCase("W",(void*)'W');
+		mTokenHash->AddNoCase("B", (void*)'B');
+		mTokenHash->AddNoCase("W", (void*)'W');
 	}
 	if (syntax == SyntaxDASM)
-		mTokenHash->AddNoCase("U",(void*)'U');
+		mTokenHash->AddNoCase("U", (void*)'U');
 	
 	// add opcode tokens
 	for (i = 0; i < kOpcodeCount; ++i)
-		mTokenHash->AddNoCase(sOpcodeList[i],(void*)(kFirstOpcodeToken + i));
+		mTokenHash->AddNoCase(sOpcodeList[i], (void*)(kFirstOpcodeToken + i));
 	
 	// add keyword tokens
 	for (i = 0; i < kKeywordCount; ++i)
@@ -90,7 +90,7 @@ Tokenizer::~Tokenizer()
 void
 Tokenizer::SetString(const char* string)
 {
-	strncpy(mStringBuffer,string,sizeof(mStringBuffer));
+	strncpy(mStringBuffer, string, sizeof(mStringBuffer));
 	mStringBuffer[sizeof(mStringBuffer) - 1] = 0;
 	mTokenString[0] = 0;
 	mPosition = 0;
@@ -246,7 +246,7 @@ Tokenizer::NextFileName()
 
 
 bool
-Tokenizer::NextGroup(bool skipWhite,char terminator,bool mustFindTerm)
+Tokenizer::NextGroup(bool skipWhite, char terminator, bool mustFindTerm)
 {
 	char c;
 	INT32 i;

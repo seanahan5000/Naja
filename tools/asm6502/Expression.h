@@ -11,11 +11,11 @@ class Symbol;
 class Expression
 {
 public:
-	static Expression* Parse(Parser* p,Token t,bool recurse = true);
+	static Expression* Parse(Parser* p, Token t, bool recurse = true);
 	virtual ~Expression() {}
 	
 	virtual INT32 GetSize(Assembler* assembler) = 0;	//***
-	virtual bool Resolve(Assembler* assembler,INT32* value,bool setError = true) = 0;
+	virtual bool Resolve(Assembler* assembler, INT32* value, bool setError = true) = 0;
 };
 
 //------------------------------------------------------------------------------
@@ -23,10 +23,10 @@ public:
 class NumberExpression : public Expression
 {
 public:
-	NumberExpression(INT32 value,bool forceLong);
+	NumberExpression(INT32 value, bool forceLong);
 	
 	INT32 GetSize(Assembler* assembler);		//***
-	bool Resolve(Assembler* assembler,INT32* value,bool setError);
+	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 	
 protected:
 	INT32 mValue;
@@ -42,7 +42,7 @@ public:
 	~SymbolExpression();
 	
 	INT32 GetSize(Assembler* assembler);		//***
-	bool Resolve(Assembler* assembler,INT32* value,bool setError);
+	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 	
 protected:
 	char* mString;
@@ -54,11 +54,11 @@ protected:
 class UnaryExpression : public Expression
 {
 public:
-	UnaryExpression(Token op,Expression* arg);
+	UnaryExpression(Token op, Expression* arg);
 	~UnaryExpression();
 	
 	INT32 GetSize(Assembler* assembler);		//***
-	bool Resolve(Assembler* assembler,INT32* value,bool setError);
+	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 	
 protected:
 	Token mOperation;
@@ -70,11 +70,11 @@ protected:
 class BinaryExpression : public Expression
 {
 public:
-	BinaryExpression(Expression* arg1,Token op,Expression* arg2);
+	BinaryExpression(Expression* arg1, Token op, Expression* arg2);
 	~BinaryExpression();
 	
 	INT32 GetSize(Assembler* assembler);	//***
-	bool Resolve(Assembler* assembler,INT32* value,bool setError);
+	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 	
 protected:
 	Expression* mArg1;
@@ -90,7 +90,7 @@ public:
 	PcExpression() {}
 	
 	INT32 GetSize(Assembler* assembler);
-	bool Resolve(Assembler* assembler,INT32* value,bool setError);
+	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 };
 
 //------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ public:
 	~ParenExpression();
 	
 	INT32 GetSize(Assembler* assembler);		//***
-	bool Resolve(Assembler* assembler,INT32* value,bool setError);
+	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 	
 protected:
 	Expression* mArg;

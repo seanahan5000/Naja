@@ -37,8 +37,8 @@ public:
 	StringHash(UINT32 size = 1024);
 	~StringHash();
 	
-	bool Add(const char* string,void* object);
-	bool AddNoCase(const char* string,void* object);
+	bool Add(const char* string, void* object);
+	bool AddNoCase(const char* string, void* object);
 	void* Find(const char* string);
 	
 protected:

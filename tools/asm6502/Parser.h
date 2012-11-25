@@ -30,7 +30,7 @@ public:
 	__forceinline bool NextFileName() { return mTokenizer->NextFileName(); }
 	__forceinline bool NextStringGroup(char terminator)
 	{
-		return mTokenizer->NextGroup(false,terminator,true);
+		return mTokenizer->NextGroup(false, terminator, true);
 	}
 	__forceinline bool NextParenGroup() { return mTokenizer->NextParenGroup(); }
 	__forceinline char* GetString() { return mTokenizer->GetTokenString(); }
@@ -46,13 +46,13 @@ public:
 		return ParseExpression(Next());
 	}
 	
-	bool ParseAndResolveExpression(Token t,INT32* value);
+	bool ParseAndResolveExpression(Token t, INT32* value);
 	bool ParseAndResolveExpression(INT32* value)
 	{
-		return ParseAndResolveExpression(Next(),value);
+		return ParseAndResolveExpression(Next(), value);
 	}
 	
-	bool ExpandVars(const char* inString,char* outString,INT32 outSize);
+	bool ExpandVars(const char* inString, char* outString, INT32 outSize);
 	
 	bool ConditionalsComplete() { return mConditionalIndex == 0; }
 	
@@ -60,19 +60,19 @@ public:
 	{
 		if (expected == 0)
 		{
-			mAssembler->SetError("Unexpected token \"%s\"",mTokenizer->GetTokenString());
+			mAssembler->SetError("Unexpected token \"%s\"", mTokenizer->GetTokenString());
 		}
 		else
 		{
 			mAssembler->SetError("Expected token \"%c\", got \"%s\"",
-								expected,mTokenizer->GetTokenString());
+								expected, mTokenizer->GetTokenString());
 		}
 	}
 	
-	void SetTokenError(char expected1,char expected2)
+	void SetTokenError(char expected1, char expected2)
 	{
 		mAssembler->SetError("Expected \"%c\" or \"%c\", got \"%s\"",
-								expected1,expected2,mTokenizer->GetTokenString());
+								expected1, expected2, mTokenizer->GetTokenString());
 	}
 	
 	bool PushConditional();
@@ -83,7 +83,7 @@ public:
 	bool ConditionalSatisfied() { return mConditional.satisfied; }
 	
 protected:
-	bool ParseLabel(bool firstColumn,char* label,INT32 labelMax,bool* isLocal);
+	bool ParseLabel(bool firstColumn, char* label, INT32 labelMax, bool* isLocal);
 	
 	Assembler* mAssembler;
 	Tokenizer* mTokenizer;

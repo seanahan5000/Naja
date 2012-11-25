@@ -31,13 +31,13 @@ enum Token
 	
 	// (128 to 255) keyword tokens
 	_START_KEYWORD_TOKENS = kFirstKeywordToken - 1,
-#define KEYWORD(_word,_flags)	Token##_word,
+#define KEYWORD(_word, _flags)	Token##_word,
 #include "Keywords.h"
 	
 	// (256 and up) opcode tokens
 	_START_OP_TOKENS = kFirstOpcodeToken - 1,
 #define OPCODE(_op)	Token##_op,
-#define OP(_mode,_hex)
+#define OP(_mode, _hex)
 #define OPEND()
 #include "Opcodes.h"
 };

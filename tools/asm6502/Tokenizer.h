@@ -15,9 +15,9 @@ public:
 	void SetString(const char* string);
 	Token NextToken(bool hexHint = false);
 	bool NextFileName();
-	bool NextGroup(bool skipWhite,char terminator,bool mustFindTerm);
-	bool NextMacroArg() { return NextGroup(true,';',false); }
-	bool NextParenGroup() { return NextGroup(false,')',true); }
+	bool NextGroup(bool skipWhite, char terminator, bool mustFindTerm);
+	bool NextMacroArg() { return NextGroup(true, ';', false); }
+	bool NextParenGroup() { return NextGroup(false, ')', true); }
 	
 	char* GetTokenString() { return mTokenString; }
 	

@@ -5,38 +5,38 @@
 
 //------------------------------------------------------------------------------
 
-SourceFile::SourceFile(Assembler* assembler,const char* fileName)
+SourceFile::SourceFile(Assembler* assembler, const char* fileName)
 	: mOffsets(256)
 {
 	mFileName = _strdup(fileName);
 	mBuffer = NULL;
 	
 	char fullPath[1024];
-	assembler->BuildFullSourcePath(fullPath,fileName);
+	assembler->BuildFullSourcePath(fullPath, fileName);
 	
 	// must opened as binary, not text
-	strcat(fullPath,".S");
-	FILE* file = fopen(fullPath,"rb");
+	strcat(fullPath, ".S");
+	FILE* file = fopen(fullPath, "rb");
 	if (!file)
 	{
 		fullPath[strlen(fullPath) - 2] = 0;
-		file = fopen(fullPath,"rb");
+		file = fopen(fullPath, "rb");
 	}
 	
 	if (!file)
 	{
-		assembler->SetError("Input file \"%s\" not found",fullPath);
+		assembler->SetError("Input file \"%s\" not found", fullPath);
 		return;
 	}
 	
-	fseek(file,0,SEEK_END);
+	fseek(file, 0, SEEK_END);
 	long fileSize = ftell(file);
-	fseek(file,0,SEEK_SET);
+	fseek(file, 0, SEEK_SET);
 	
 	// Use fileSize + 1 to make room for last terminator
 	//	if file doesn't end with a '\r' or '\n'.
 	mBuffer = (char*)malloc(fileSize + 1);
-	fread(mBuffer,1,fileSize,file);
+	fread(mBuffer, 1, fileSize, file);
 	fclose(file);
 	
 	char* sp = mBuffer;
@@ -65,9 +65,9 @@ SourceFile::SourceFile(Assembler* assembler,const char* fileName)
 
 
 /*static*/ SourceFile*
-SourceFile::Create(Assembler* assembler,const char* fileName)
+SourceFile::Create(Assembler* assembler, const char* fileName)
 {
-	SourceFile* file = new SourceFile(assembler,fileName);
+	SourceFile* file = new SourceFile(assembler, fileName);
 	if (file->mBuffer == NULL)
 	{
 		delete file;

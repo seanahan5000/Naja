@@ -46,10 +46,10 @@ int main(int argc, char* argv[])
 						"D:\\Misc\\Asm6502\\games\\out.asm.lst");
 #else
 	
-	assembler->Assemble("test.s","test.bin","test.s.lst");	//***
-//	assembler->Assemble("test2.s","test2.bin","test2.s.lst");	//***
-//	assembler->Assemble("riddle-pal.asm","riddle-pal.bin","riddle-pal.asm.lst");	//***
-//	assembler->Assemble("dicombat.asm","dicombat.bin","dicombat.asm.lst");	//***
+	assembler->Assemble("test.s", "test.bin", "test.s.lst");	//***
+//	assembler->Assemble("test2.s", "test2.bin", "test2.s.lst");	//***
+//	assembler->Assemble("riddle-pal.asm", "riddle-pal.bin", "riddle-pal.asm.lst");	//***
+//	assembler->Assemble("dicombat.asm", "dicombat.bin", "dicombat.asm.lst");	//***
 
 #endif
 	
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 #endif
 
 
-int main(int argc,char* argv[])
+int main(int argc, char* argv[])
 {
 	bool setRoot = false;
 	bool setBase = false;
@@ -68,20 +68,20 @@ int main(int argc,char* argv[])
 	Assembler* assembler = new Assembler();
 	
 //	assembler->SetSyntax(SyntaxDASM);
-//	assembler->Assemble("riddle-pal.asm","riddle.bin","riddle.lst");
+//	assembler->Assemble("riddle-pal.asm", "riddle.bin", "riddle.lst");
 	
 //	assembler->SetSyntax(SyntaxDASM);
-//	assembler->Assemble("RiverRaid.asm","RiverRaid.bin","RiverRaid.lst");
+//	assembler->Assemble("RiverRaid.asm", "RiverRaid.bin", "RiverRaid.lst");
 	
 //	assembler->SetSyntax(SyntaxIIGS);
-//	assembler->Assemble("kaboom.a","kaboom.bin","kaboom.lst");
+//	assembler->Assemble("kaboom.a", "kaboom.bin", "kaboom.lst");
 	
 //	assembler->SetSyntax(SyntaxDASM);
-//	assembler->Assemble("test-dasm.s","test-dasm.bin","test-dasm.lst");
+//	assembler->Assemble("test-dasm.s", "test-dasm.bin", "test-dasm.lst");
 	
-//	assembler->Assemble("test.s","test.bin","test.s.lst");
-//	assembler->Assemble("test-merlin.s","test-merlin.bin","test-merlin.s.lst");
-//	assembler->Assemble("test3.s","test3.bin","test3.s.lst");
+//	assembler->Assemble("test.s", "test.bin", "test.s.lst");
+//	assembler->Assemble("test-merlin.s", "test-merlin.bin", "test-merlin.s.lst");
+//	assembler->Assemble("test3.s", "test3.bin", "test3.s.lst");
 //	return 0;
 	//***
 	
@@ -94,7 +94,7 @@ int main(int argc,char* argv[])
 	while (argc--)
 	{
 		char* str = *argv++;
-		if (_stricmp(str,"-root") == 0)
+		if (_stricmp(str, "-root") == 0)
 		{
 			if (argc == 0)
 			{
@@ -107,7 +107,7 @@ int main(int argc,char* argv[])
 			assembler->SetRootDir(str);
 			setRoot = true;
 		}
-		else if (_stricmp(str,"-srcbase") == 0 || _stricmp(str,"-base") == 0)
+		else if (_stricmp(str, "-srcbase") == 0 || _stricmp(str, "-base") == 0)
 		{
 			if (argc == 0)
 			{
@@ -120,7 +120,7 @@ int main(int argc,char* argv[])
 			assembler->SetSourceDir(str);
 			setBase = true;
 		}
-		else if (_stricmp(str,"-objbase") == 0)
+		else if (_stricmp(str, "-objbase") == 0)
 		{
 			if (argc == 0)
 			{
@@ -133,7 +133,7 @@ int main(int argc,char* argv[])
 			assembler->SetObjectDir(str);
 			setBase = true;
 		}
-		else if (_stricmp(str,"-list") == 0)
+		else if (_stricmp(str, "-list") == 0)
 		{
 			if (argc == 0)
 			{
@@ -145,7 +145,7 @@ int main(int argc,char* argv[])
 			--argc;
 			listName = str;
 		}
-		else if (_stricmp(str,"-bin") == 0)
+		else if (_stricmp(str, "-bin") == 0)
 		{
 			assembler->SetSaveAsBin(true);
 		}
@@ -171,7 +171,7 @@ int main(int argc,char* argv[])
 		goto usage;
 	}
 	
-	assembler->Assemble(fileName,NULL,listName);
+	assembler->Assemble(fileName, NULL, listName);
 	return 0;
 	
 usage:

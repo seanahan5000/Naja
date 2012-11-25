@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------
 
 /*static*/ Expression*
-Expression::Parse(Parser* p,Token t,bool recurse)
+Expression::Parse(Parser* p, Token t, bool recurse)
 {
 	Assembler* assembler = p->GetAssembler();
 	Expression* exp = NULL;
@@ -17,22 +17,22 @@ Expression::Parse(Parser* p,Token t,bool recurse)
 		t = p->NextHex();
 		if (t != TokenHexNumber && t != TokenDecNumber)
 		{
-			assembler->SetError("Invalid hex value \"%s\"",p->GetString());
+			assembler->SetError("Invalid hex value \"%s\"", p->GetString());
 			goto fail;
 		}
 		
-		exp = new NumberExpression(p->GetHexValue(),strlen(p->GetString()) > 2);
+		exp = new NumberExpression(p->GetHexValue(), strlen(p->GetString()) > 2);
 	}
 	else if (t == ':' || t == '@' || t == '.')
 	{
 		t = p->Next();
 		if (t != TokenSymbol && t != TokenDecNumber)
 		{
-			assembler->SetError("Invalid local label in expression \"%s\"",p->GetString());
+			assembler->SetError("Invalid local label in expression \"%s\"", p->GetString());
 			goto fail;
 		}
 		char buffer[256];
-		assembler->LocalToGlobal(p->GetString(),buffer,sizeof(buffer));
+		assembler->LocalToGlobal(p->GetString(), buffer, sizeof(buffer));
 		exp = new SymbolExpression(buffer);
 	}
 	else if (t == '%')
@@ -40,24 +40,24 @@ Expression::Parse(Parser* p,Token t,bool recurse)
 		t = p->Next();
 		if (t != TokenDecNumber)
 		{
-			assembler->SetError("Invalid binary value \"%s\"",p->GetString());
+			assembler->SetError("Invalid binary value \"%s\"", p->GetString());
 			goto fail;
 		}
 		
 		INT32 value = p->GetBinValue();
 		if (value == -1)
 		{
-			assembler->SetError("Invalid binary value \"%s\"",p->GetString());
+			assembler->SetError("Invalid binary value \"%s\"", p->GetString());
 			goto fail;
 		}
-		exp = new NumberExpression(value,strlen(p->GetString()) > 8);
+		exp = new NumberExpression(value, strlen(p->GetString()) > 8);
 	}
 	else if (t == '<' || t == '>' || t == '-')
 	{
-		exp = Expression::Parse(p,p->Next(),recurse);
+		exp = Expression::Parse(p, p->Next(), recurse);
 		if (exp == NULL)
 			goto fail;
-		exp = new UnaryExpression(t,exp);
+		exp = new UnaryExpression(t, exp);
 	}
 	else if (t == '*')
 	{
@@ -65,7 +65,7 @@ Expression::Parse(Parser* p,Token t,bool recurse)
 	}
 	else if (t == '(')
 	{
-		exp = Expression::Parse(p,p->Next(),recurse);
+		exp = Expression::Parse(p, p->Next(), recurse);
 		if (exp == NULL)
 			goto fail;
 		
@@ -95,11 +95,11 @@ Expression::Parse(Parser* p,Token t,bool recurse)
 		}
 		
 		INT32 value = p->GetString()[0] ^ highFlip;
-		exp = new NumberExpression(value,false);
+		exp = new NumberExpression(value, false);
 	}
 	else if (t == TokenDecNumber)
 	{
-		exp = new NumberExpression(p->GetDecValue(),false);
+		exp = new NumberExpression(p->GetDecValue(), false);
 	}
 	else if (t == TokenSymbol || TokenIsKeyword(t))
 	{
@@ -134,10 +134,10 @@ Expression::Parse(Parser* p,Token t,bool recurse)
 				break;
 			
 			t = p->Next();
-			Expression* exp2 = Expression::Parse(p,p->Next(),false);
+			Expression* exp2 = Expression::Parse(p, p->Next(), false);
 			if (exp2 == NULL)
 				goto fail;
-			exp = new BinaryExpression(exp,t,exp2);
+			exp = new BinaryExpression(exp, t, exp2);
 		}
 	}
 	
@@ -151,7 +151,7 @@ fail:
 
 //------------------------------------------------------------------------------
 
-NumberExpression::NumberExpression(INT32 value,bool forceLong) : Expression()
+NumberExpression::NumberExpression(INT32 value, bool forceLong) : Expression()
 {
 	mValue = value;
 	mForceLong = forceLong;
@@ -169,7 +169,7 @@ NumberExpression::GetSize(Assembler* assembler)
 
 
 bool
-NumberExpression::Resolve(Assembler* assembler,INT32* value,bool setError)
+NumberExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	*value = mValue;
 	return true;
@@ -201,13 +201,13 @@ SymbolExpression::GetSize(Assembler* assembler)
 
 
 bool
-SymbolExpression::Resolve(Assembler* assembler,INT32* value,bool setError)
+SymbolExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	Symbol* symbol = assembler->FindSymbol(mString);
 	if (!symbol)
 	{
 		if (setError)
-			assembler->SetError("Unresolved symbol \"%s\"",mString);
+			assembler->SetError("Unresolved symbol \"%s\"", mString);
 		return false;
 	}
 	
@@ -217,7 +217,7 @@ SymbolExpression::Resolve(Assembler* assembler,INT32* value,bool setError)
 
 //------------------------------------------------------------------------------
 
-UnaryExpression::UnaryExpression(Token op,Expression* arg) : Expression()
+UnaryExpression::UnaryExpression(Token op, Expression* arg) : Expression()
 {
 	mOperation = op;
 	mArg = arg;
@@ -241,9 +241,9 @@ UnaryExpression::GetSize(Assembler* assembler)
 
 
 bool
-UnaryExpression::Resolve(Assembler* assembler,INT32* value,bool setError)
+UnaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
-	if (!mArg->Resolve(assembler,value,setError))
+	if (!mArg->Resolve(assembler, value, setError))
 		return false;
 	
 	if (mOperation == '>')
@@ -263,7 +263,7 @@ UnaryExpression::Resolve(Assembler* assembler,INT32* value,bool setError)
 
 //------------------------------------------------------------------------------
 
-BinaryExpression::BinaryExpression(Expression* arg1,Token op,Expression* arg2) : Expression()
+BinaryExpression::BinaryExpression(Expression* arg1, Token op, Expression* arg2) : Expression()
 {
 	mArg1 = arg1;
 	mOperation = op;
@@ -289,15 +289,15 @@ BinaryExpression::GetSize(Assembler* assembler)
 
 
 bool
-BinaryExpression::Resolve(Assembler* assembler,INT32* value,bool setError)
+BinaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	INT32 value1;
 	INT32 value2;
 	
-	if (!mArg1->Resolve(assembler,&value1,setError))
+	if (!mArg1->Resolve(assembler, &value1, setError))
 		return false;
 	
-	if (!mArg2->Resolve(assembler,&value2,setError))
+	if (!mArg2->Resolve(assembler, &value2, setError))
 		return false;
 	
 	if (mOperation == '+')
@@ -335,7 +335,7 @@ PcExpression::GetSize(Assembler* assembler)
 
 
 bool
-PcExpression::Resolve(Assembler* assembler,INT32* value,bool setError)
+PcExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	*value = assembler->GetPC();
 	return true;
@@ -364,9 +364,9 @@ ParenExpression::GetSize(Assembler* assembler)
 
 
 bool
-ParenExpression::Resolve(Assembler* assembler,INT32* value,bool setError)
+ParenExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
-	if (!mArg->Resolve(assembler,value,setError))
+	if (!mArg->Resolve(assembler, value, setError))
 		return false;
 	
 	// cover for NAJATEXT check

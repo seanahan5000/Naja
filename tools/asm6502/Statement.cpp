@@ -29,13 +29,13 @@ struct OpcodeDef
 };
 
 #define OPCODE(_op)		OpcodeDef OpDef_##_op[] = {
-#define OP(_mode,_hex)	{ OpTarget_##_mode, _hex },
-#define OPEND()			{-1,0}};
+#define OP(_mode, _hex)	{ OpTarget_##_mode, _hex },
+#define OPEND()			{-1, 0}};
 
 #include "Opcodes.h"
 
 #define OPCODE(_op)		OpDef_##_op,
-#define OP(_mode,_hex)
+#define OP(_mode, _hex)
 #define OPEND()
 
 static OpcodeDef* sOpcodeDefs[] = {
@@ -68,7 +68,7 @@ static INT32 sOpSizeTable[] = {
 // EXPRESSION ',' 'Y'
 
 void
-OpStatement::Parse(Parser* p,const char* label)
+OpStatement::Parse(Parser* p, const char* label)
 {
 	Token t;
 	
@@ -133,7 +133,7 @@ OpStatement::Parse(Parser* p,const char* label)
 		}
 		else
 		{
-			p->SetTokenError('(',',');
+			p->SetTokenError('(', ',');
 			return;
 		}
 	}
@@ -155,7 +155,7 @@ OpStatement::Parse(Parser* p,const char* label)
 				mTarget = OpTarget_ZPY;
 			else
 			{
-				p->SetTokenError('X','Y');
+				p->SetTokenError('X', 'Y');
 				return;
 			}
 			
@@ -244,28 +244,28 @@ OpStatement::Write(Assembler* assembler)
 		case OpTarget_ZPY:
 		case OpTarget_INDX:
 		case OpTarget_INDY:
-			if (!mExpression->Resolve(assembler,&value))
+			if (!mExpression->Resolve(assembler, &value))
 				return;
 			if (value > 255 || value < -128)
 			{
-				assembler->SetError("Expression out of zpage range (%d)",value);
+				assembler->SetError("Expression out of zpage range (%d)", value);
 				return;
 			}
 			else
-				assembler->WriteByteByte(mOpcode,value);
+				assembler->WriteByteByte(mOpcode, value);
 			break;
 		
 		case OpTarget_ABS:
 		case OpTarget_ABSX:
 		case OpTarget_ABSY:
 		case OpTarget_IND:
-			if (!mExpression->Resolve(assembler,&value))
+			if (!mExpression->Resolve(assembler, &value))
 				return;
-			assembler->WriteByteWord(mOpcode,value);
+			assembler->WriteByteWord(mOpcode, value);
 			break;
 		
 		case OpTarget_BRAN:
-			if (!mExpression->Resolve(assembler,&value))
+			if (!mExpression->Resolve(assembler, &value))
 				return;
 			value = value - (mPC + 2);
 			if (value > 127 || value < -128)
@@ -273,7 +273,7 @@ OpStatement::Write(Assembler* assembler)
 				assembler->SetError("Branch out of range");
 				return;
 			}
-			assembler->WriteByteByte(mOpcode,value);
+			assembler->WriteByteByte(mOpcode, value);
 			break;
 	}
 }
@@ -294,7 +294,7 @@ DataStatement::~DataStatement()
 
 
 void
-DataStatement::Parse(Parser* p,const char* label)
+DataStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -320,7 +320,7 @@ DataStatement::Parse(Parser* p,const char* label)
 			mTypeToken = TokenDW;
 		else
 		{
-			p->SetTokenError('B','W');
+			p->SetTokenError('B', 'W');
 			return;
 		}
 	}
@@ -373,12 +373,12 @@ DataStatement::Write(Assembler* assembler)
 		
 		for (INT32 i = 0; i < expCount; ++i)
 		{
-			if (!mExpList[i]->Resolve(assembler,&value))
+			if (!mExpList[i]->Resolve(assembler, &value))
 				return;
 			
 			if (value < -128 || value > 255)
 			{
-				assembler->SetError("Expression value too large ($%x)",value);
+				assembler->SetError("Expression value too large ($%x)", value);
 				return;
 			}
 			
@@ -394,7 +394,7 @@ DataStatement::Write(Assembler* assembler)
 		bool isDDB = mTypeToken == TokenDDB;
 		for (INT32 i = 0; i < expCount; ++i)
 		{
-			if (!mExpList[i]->Resolve(assembler,&value))
+			if (!mExpList[i]->Resolve(assembler, &value))
 				return;
 			
 			if (isDDB)
@@ -416,7 +416,7 @@ DataStatement::Write(Assembler* assembler)
 //------------------------------------------------------------------------------
 
 void
-StorageStatement::Parse(Parser* p,const char* label)
+StorageStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -436,7 +436,7 @@ StorageStatement::Parse(Parser* p,const char* label)
 	}
 	else
 	{
-		if (!p->ParseAndResolveExpression(t,&value))
+		if (!p->ParseAndResolveExpression(t, &value))
 			return;
 		
 		if (value < 0)
@@ -469,13 +469,13 @@ StorageStatement::Parse(Parser* p,const char* label)
 void
 StorageStatement::Write(Assembler* assembler)
 {
-	assembler->WritePattern(mPattern,mByteCount);
+	assembler->WritePattern(mPattern, mByteCount);
 }
 
 //------------------------------------------------------------------------------
 
 void
-AlignStatement::Parse(Parser* p,const char* label)
+AlignStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -516,13 +516,13 @@ AlignStatement::Parse(Parser* p,const char* label)
 void
 AlignStatement::Write(Assembler* assembler)
 {
-	assembler->WritePattern(mPattern,mByteCount);
+	assembler->WritePattern(mPattern, mByteCount);
 }
 
 //------------------------------------------------------------------------------
 
 static bool
-ScanHex(Assembler* assembler,char* string,GrowBuffer* buffer)
+ScanHex(Assembler* assembler, char* string, GrowBuffer* buffer)
 {
 	INT32 length = strlen(string);
 	if (length & 1)
@@ -553,7 +553,7 @@ ScanHex(Assembler* assembler,char* string,GrowBuffer* buffer)
 
 
 void
-HexStatement::Parse(Parser* p,const char* label)
+HexStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -574,7 +574,7 @@ HexStatement::Parse(Parser* p,const char* label)
 			return;
 		}
 		
-		if (!ScanHex(assembler,p->GetString(),&mBuffer))
+		if (!ScanHex(assembler, p->GetString(), &mBuffer))
 			return;
 		
 		t = p->Next();
@@ -595,13 +595,13 @@ HexStatement::Parse(Parser* p,const char* label)
 void
 HexStatement::Write(Assembler* assembler)
 {
-	assembler->WriteBytes(mBuffer.GetPtr(),mBuffer.GetSize());
+	assembler->WriteBytes(mBuffer.GetPtr(), mBuffer.GetSize());
 }
 
 //------------------------------------------------------------------------------
 
 void
-AscStatement::Parse(Parser* p,const char* label)
+AscStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -631,7 +631,7 @@ AscStatement::Parse(Parser* p,const char* label)
 			*dp++ = *sp++ ^ 0x80;
 	}
 	else
-		memcpy(dp,string,length);
+		memcpy(dp, string, length);
 	mBuffer.Consume(length);
 	mBaseLength = (UINT8)length;
 	
@@ -644,7 +644,7 @@ AscStatement::Parse(Parser* p,const char* label)
 		if (t == ',')
 			t = p->NextHex();
 		
-		if (!ScanHex(assembler,p->GetString(),&mBuffer))
+		if (!ScanHex(assembler, p->GetString(), &mBuffer))
 			return;
 	}
 	
@@ -659,13 +659,13 @@ AscStatement::Write(Assembler* assembler)
 	if (mPrependLength)
 		assembler->WriteByte(mBaseLength);
 	
-	assembler->WriteBytes(mBuffer.GetPtr(),mBuffer.GetSize());
+	assembler->WriteBytes(mBuffer.GetPtr(), mBuffer.GetSize());
 }
 
 //------------------------------------------------------------------------------
 
 void
-EquStatement::Parse(Parser* p,const char* label)
+EquStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	
@@ -680,7 +680,7 @@ EquStatement::Parse(Parser* p,const char* label)
 		return;
 	
 	INT32 value;
-	if (!exp->Resolve(assembler,&value))
+	if (!exp->Resolve(assembler, &value))
 	{
 		delete exp;
 		return;
@@ -689,9 +689,9 @@ EquStatement::Parse(Parser* p,const char* label)
 	bool forceLong = (exp->GetSize(assembler) == 2);
 	delete exp;
 	
-	if (!assembler->AddEquateSymbol(label,value,forceLong))
+	if (!assembler->AddEquateSymbol(label, value, forceLong))
 	{
-		assembler->SetError("Duplicate equate \"%s\"",label);
+		assembler->SetError("Duplicate equate \"%s\"", label);
 		return;
 	}
 }
@@ -699,7 +699,7 @@ EquStatement::Parse(Parser* p,const char* label)
 //------------------------------------------------------------------------------
 
 void
-OrgStatement::Parse(Parser* p,const char* label)
+OrgStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	
@@ -733,7 +733,7 @@ OrgStatement::Write(Assembler* assembler)
 			return;
 		}
 		
-		assembler->WritePattern(0,mOrg - pc);
+		assembler->WritePattern(0, mOrg - pc);
 	}
 #endif
 }
@@ -741,7 +741,7 @@ OrgStatement::Write(Assembler* assembler)
 //------------------------------------------------------------------------------
 
 void
-ConditionalStatement::Parse(Parser* p,const char* label)
+ConditionalStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -852,7 +852,7 @@ UsrStatement::~UsrStatement()
 
 
 void
-UsrStatement::Parse(Parser* p,const char* label)
+UsrStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -900,7 +900,7 @@ UsrStatement::Parse(Parser* p,const char* label)
 				char x = *xp++;
 				if (x == 0)
 				{
-					assembler->SetError("Invalid USR character \"%c\"",c);
+					assembler->SetError("Invalid USR character \"%c\"", c);
 					break;
 				}
 				if (x == c)
@@ -930,7 +930,7 @@ UsrStatement::Parse(Parser* p,const char* label)
 	}
 	else if (t != '-')
 	{
-		assembler->SetError("Invalid token \"%c\"",t);
+		assembler->SetError("Invalid token \"%c\"", t);
 		return;
 	}
 	*dp = 0;
@@ -943,13 +943,13 @@ UsrStatement::Parse(Parser* p,const char* label)
 void
 UsrStatement::Write(Assembler* assembler)
 {
-	assembler->WriteBytes((UINT8*)mString,mLength);
+	assembler->WriteBytes((UINT8*)mString, mLength);
 }
 
 //------------------------------------------------------------------------------
 
 void
-IncludeStatement::Parse(Parser* p,const char* label)
+IncludeStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	
@@ -977,7 +977,7 @@ SavStatement::~SavStatement()
 
 
 void
-SavStatement::Parse(Parser* p,const char* label)
+SavStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	
@@ -1019,7 +1019,7 @@ DskStatement::~DskStatement()
 
 
 void
-DskStatement::Parse(Parser* p,const char* label)
+DskStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	
@@ -1056,7 +1056,7 @@ ErrorStatement::~ErrorStatement()
 
 
 void
-ErrorStatement::Parse(Parser* p,const char* label)
+ErrorStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	
@@ -1077,7 +1077,7 @@ ErrorStatement::Write(Assembler* assembler)
 	{
 		INT32 value;
 		
-		if (!mExpression->Resolve(assembler,&value))
+		if (!mExpression->Resolve(assembler, &value))
 			return;
 		
 		if (value != 0)
@@ -1088,7 +1088,7 @@ ErrorStatement::Write(Assembler* assembler)
 //------------------------------------------------------------------------------
 
 void
-DummyStatement::Parse(Parser* p,const char* label)
+DummyStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	

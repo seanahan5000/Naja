@@ -8,7 +8,7 @@ StringArray::StringArray(INT32 capacity)
 {
 	mCount = 0;
 	mCapacity = capacity;
-	mStrings = (char**)realloc(NULL,capacity * sizeof(char*));
+	mStrings = (char**)realloc(NULL, capacity * sizeof(char*));
 }
 
 
@@ -27,7 +27,7 @@ StringArray::Add(const char* string)
 		mCapacity += mCapacity;
 		if (mCapacity == 0)
 			mCapacity = 8;
-		mStrings = (char**)realloc(mStrings,mCapacity * sizeof(char*));
+		mStrings = (char**)realloc(mStrings, mCapacity * sizeof(char*));
 	}
 	mStrings[mCount++] = _strdup(string);
 	return mCount - 1;
@@ -40,7 +40,7 @@ StringHash::StringHash(UINT32 size)
 	mSize = size;
 	INT32 byteCount = sizeof(HashEntry*) * size;
 	mEntries = (HashEntry**)malloc(byteCount);
-	memset(mEntries,0,byteCount);
+	memset(mEntries, 0, byteCount);
 }
 
 
@@ -62,7 +62,7 @@ StringHash::~StringHash()
 
 
 bool
-StringHash::Add(const char* string,void* object)
+StringHash::Add(const char* string, void* object)
 {
 	UINT32 key = GenerateKey(string);
 	INT32 index = key % mSize;
@@ -73,7 +73,7 @@ StringHash::Add(const char* string,void* object)
 		if (entry->key == key)
 		{
 			// case sensitive
-			if (strcmp(entry->string,string) == 0)
+			if (strcmp(entry->string, string) == 0)
 				return false;
 		}
 		entry = entry->next;
@@ -82,7 +82,7 @@ StringHash::Add(const char* string,void* object)
 	entry = (HashEntry*)malloc(sizeof(HashEntry) + strlen(string));
 	entry->key = key;
 	entry->object = object;
-	strcpy(entry->string,string);
+	strcpy(entry->string, string);
 	entry->next = mEntries[index];
 	mEntries[index] = entry;
 	return true;
@@ -90,7 +90,7 @@ StringHash::Add(const char* string,void* object)
 
 
 bool
-StringHash::AddNoCase(const char* string,void* object)
+StringHash::AddNoCase(const char* string, void* object)
 {
 	char* sp = _strdup(string);
 	char* cp;
@@ -103,7 +103,7 @@ StringHash::AddNoCase(const char* string,void* object)
 		*cp++ = tolower(c);
 	} while (c != 0);
 	
-	result = Add(sp,object);
+	result = Add(sp, object);
 	
 	if (result)
 	{
@@ -113,7 +113,7 @@ StringHash::AddNoCase(const char* string,void* object)
 			*cp++ = toupper(c);
 		} while (c != 0);
 		
-		result = Add(sp,object);
+		result = Add(sp, object);
 	}
 	
 	free(sp);
@@ -133,7 +133,7 @@ StringHash::Find(const char* string)
 		if (entry->key == key)
 		{
 			// case sensitive
-			if (strcmp(entry->string,string) == 0)
+			if (strcmp(entry->string, string) == 0)
 				return entry->object;
 		}
 		entry = entry->next;
