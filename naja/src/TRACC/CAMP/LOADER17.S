@@ -129,6 +129,9 @@ NOREF			LDA	SCRATCH
 				JMP	RDKEY
 REFORM			JMP	REFORMAT
 
+			do	ORIGINAL
+
+; This only works for level 17 maps ***
 BEAMEUP			JSR	RNDMIZE
 				LDA	RANDOM1
 				AND	#$7F
@@ -200,5 +203,18 @@ ROWS			DB	$04,$0A
 				DB	$08,$0D
 				DB	$0A,$04
 				DB	$0E,$09
+
+			else
+				
+; hard-wired for level 15
+BEAMEUP			LDA #$0B
+				STA	XPOS
+				LDA	#$01
+				STA	YPOS
+				LDA	#$0F
+				STA	DIRECTN
+				RTS
+
+			fin
 
 TEMP_COUNT		DB	$00

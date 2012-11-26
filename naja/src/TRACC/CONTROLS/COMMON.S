@@ -460,13 +460,24 @@ CONTAG_TEXT		PLOTAT	64;37;(XXXXXXXXXX_IS_BEGINNING)
 
 				DS	\,$EE
 
-
+			do ORIGINAL
+				;*** these aren't right ***
+				DO	SHELLNUM-1
+				DO	SHELLNUM-2
+				DO	SHELLNUM-3
+				DEND
+				ORG	$A400
+				FIN
+				FIN
+				FIN
+			else
 				DO	SHELLNUM-1
 				DO	SHELLNUM-3
 				DEND
 				ORG	$A400
 				FIN
 				FIN
+			fin
 
 ENCODDS			DB	$1F				;$EE LATER ;$01 FOR NO ENCOUNTERS
 
@@ -485,6 +496,45 @@ COUNTOF			DB	$00,FACE2-FACE1/2,FACE3-FACE1/2
 				DB	FACE7-FACE1/2
 
 SHELL_INFO
+			do	ORIGINAL
+
+				DO	SHELLNUM-1
+				ELSE
+				DW	SHELL17
+				DB	5
+				DB	175				;5*(17*2+1)
+				FIN
+
+				DO	SHELLNUM-2
+				ELSE
+				DW	SHELL15
+				DB	4
+				DB	124				;4*(15*2+1)
+				FIN
+
+				DO	SHELLNUM-3
+				ELSE
+				DW	SHELL13
+				DB	4
+				DB	108				;4*(13*2+1)
+				FIN
+
+				DO	SHELLNUM-4
+				ELSE
+				DW	SHELL11
+				DB	3
+				DB	69				;3*(11*2+1)
+				FIN
+
+				DO	SHELLNUM-5
+				ELSE
+				DW	SHELL9
+				DB	3
+				DB	57				;3*(9*2+1)
+				FIN
+
+			else
+
 				DO	SHELLNUM-1
 				ELSE
 				DW	SHELL15
@@ -512,6 +562,8 @@ SHELL_INFO
 				DB	3
 				DB	57				;3*(9*2+1)
 				FIN
+
+			fin
 
 TEXTER			TYA
 				ASL

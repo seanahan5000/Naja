@@ -1,9 +1,8 @@
 
-- real boot
-
 - add FAKEGROUP to boot (some values are bad -- EL/PH)
 
-- remove floor lines
+- fix editor write/exit
+- test info seller
 
 
 Tools

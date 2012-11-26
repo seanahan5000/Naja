@@ -1,3 +1,6 @@
+
+ORIGINAL		=	1
+
 human			=	0
 orn				=	1
 stilicx			=	2

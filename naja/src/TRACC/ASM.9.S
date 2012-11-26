@@ -6,7 +6,6 @@
 *                        *
 *========================*
 
-SHELLNUM		=	5
 				LST	OFF
 				ERR	($310)-$AA
 				EXP	OFF
@@ -20,6 +19,8 @@ SHELLNUM		=	5
 				PUT	/NAJA/VARS/MISC.VARS
 				PUT	/NAJA/VARS/THALL.VARS
 				PUT	/NAJA/VARS/CAMP.VARS
+
+SHELLNUM		=	5
 
 				DUMMY	$A000
 				PUT	CONTROLS/COMMON

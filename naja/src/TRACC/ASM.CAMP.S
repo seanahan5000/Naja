@@ -221,9 +221,33 @@ SET_CAMPFILES	LDX	#<CAMP_FILES
 				LDY	#>CAMP_FILES
 				JMP	SET_FILE_TABL
 
-CAMP_FILES		DB	$A0				;CtrlCommon
+CAMP_FILES		DB	$A0				; cCtrlCommon
 				DW	$0110
 				DB	$04
+
+			do	ORIGINAL
+
+				DB	$A4				; cControl17
+				DW	$0114
+				DB	$0C
+
+				DB	$A4				; cControl15
+				DW	$0114			;*** change?
+				DB	$0C
+
+				DB	$A4				; cControl13
+				DW	$0120			;*** change?
+				DB	$0C
+
+				DB	$A4				; cControl11
+				DW	$0114			;*** change?
+				DB	$0C
+
+				DB	$A4				; cControl9
+				DW	$0120			;*** change?
+				DB	$0C
+
+			else
 
 				DB	$A4				;Ctrl15
 				DW	$0114
@@ -244,6 +268,8 @@ CAMP_FILES		DB	$A0				;CtrlCommon
 				DB	$FF				;UNUSED***
 				DW	$FFFF
 				DB	$FF
+
+			fin
 
 				DB	$98				;Findment
 				DW	$0150

@@ -4,6 +4,7 @@
 *
 *-------------------------------
 
+; loader17 calls this directly using JSR $9003
 SPRAY			LDX	#0
 				STX	LEFTCOL
 				INX
