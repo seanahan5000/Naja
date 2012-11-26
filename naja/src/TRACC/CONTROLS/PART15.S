@@ -65,7 +65,7 @@ LINES			DW	0
 *-------------------------------
 
 ELEVATOR_123	LDA	#3				;Flag down 3 floors
-				BEQ	ELEVATOR
+				BNE	ELEVATOR		; always
 ELEVATOR_12		LDA	#2				;Flag down 2 floors
 ELEVATOR		PHA
 				LDA	#2
