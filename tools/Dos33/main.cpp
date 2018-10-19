@@ -1,4 +1,6 @@
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <windows.h>
 #include <stdio.h>
 #include "Dos33.h"
@@ -47,7 +49,7 @@ int main(int argc,char* argv[])
 			continue;
 		}
 		
-		if (stricmp(str,"-d") == 0 || stricmp(str,"-disk") == 0)
+		if (_stricmp(str,"-d") == 0 || _stricmp(str,"-disk") == 0)
 		{
 			if (argc-- == 0)
 			{
@@ -64,7 +66,7 @@ int main(int argc,char* argv[])
 			
 			diskName = str;
 		}
-		else if (stricmp(str,"-create") == 0)
+		else if (_stricmp(str,"-create") == 0)
 		{
 			if (op != Nothing)
 			{
@@ -73,7 +75,7 @@ int main(int argc,char* argv[])
 			}
 			op = Create;
 		}
-		else if (stricmp(str,"-catalog") == 0)
+		else if (_stricmp(str,"-catalog") == 0)
 		{
 			if (op != Nothing)
 			{
@@ -82,7 +84,7 @@ int main(int argc,char* argv[])
 			}
 			op = Catalog;
 		}
-		else if (stricmp(str,"-delete") == 0)
+		else if (_stricmp(str,"-delete") == 0)
 		{
 			if (op != Nothing)
 			{
@@ -92,7 +94,7 @@ int main(int argc,char* argv[])
 			op = Delete;
 			fileNameNext = true;
 		}
-		else if (stricmp(str,"-bsave") == 0)
+		else if (_stricmp(str,"-bsave") == 0)
 		{
 			if (op != Nothing)
 			{
@@ -102,7 +104,7 @@ int main(int argc,char* argv[])
 			op = Bsave;
 			fileNameNext = true;
 		}
-		else if (stricmp(str,"-a") == 0 || stricmp(str,"-addr") == 0)
+		else if (_stricmp(str,"-a") == 0 || _stricmp(str,"-addr") == 0)
 		{
 			if (argc-- == 0)
 			{
@@ -153,7 +155,9 @@ int main(int argc,char* argv[])
 		goto usage;
 	}
 	
-	Dos33* diskImage = new Dos33();
+    Dos33* diskImage;
+    diskImage = new Dos33();
+
 	if (!diskImage->Open(diskName,(op == Create)))
 	{
 		printf("Unable to open/create disk image file\n");

@@ -1,4 +1,6 @@
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <windows.h>
 #include <stdio.h>
 #include "Dos33.h"
@@ -38,7 +40,7 @@ Dos33::Open(const char* fileName,bool create)
 		size_t fileSize = fread(mImage,1,kBytesPerDisk,mFile);
 		if (fileSize != kBytesPerDisk)
 		{
-			printf("Invalid file size (%d != %d)\n",fileSize,kBytesPerDisk);
+			printf("Invalid file size (%d != %d)\n", (int)fileSize, kBytesPerDisk);
 			return false;
 		}
 	}
@@ -345,7 +347,7 @@ Dos33::FindFileEntry(const char* fileName)
 void
 Dos33::PrepareFileName(UINT8* name30,const char* fileName)
 {
-	char* base = strrchr(fileName,'\\');
+	const char* base = strrchr(fileName,'\\');
 	if (base)
 		fileName = base + 1;
 	
