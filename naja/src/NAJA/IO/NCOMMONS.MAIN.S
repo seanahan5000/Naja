@@ -1,5 +1,3 @@
-NEW_TEXT		= 	1
-
 RPCOUNT			=	$00				;COUNT OF REPEATING BYTES
 SCRATCH			=	$06				;LOCATION TO TAKE OVER FLOW FROM SHIFT
 LETBUFL			=	$0D				;LOCATION OF LETTER DATA BUFFER (LOW)
@@ -166,14 +164,8 @@ KEYREAD			JSR	PULSE
 				JSR	CHAROUT			;ERASE CURSOR
 				JSR	CLEAR
 				PLA
-			do NEW_TEXT
 				JSR SET_LETTER		;DRAW_LETTER
 				JSR DRAW_SHAPE
-			else
-				TAX
-				JSR	LETTER			;DRAW LETTER
-				JSR	CHAROUT
-			fin
 				JSR	ADVANCE			;ADVANCE LETTER POSITION
 				JSR	CLEAR
 				JMP	KEYREAD			;JUMP TO KEY READER
@@ -191,14 +183,9 @@ KEYREAD			JSR	PULSE
 				PHA
 				LDA	TEXTBUF,X
 				JSR	CONVERT	
-			do NEW_TEXT
 				TXA
 				JSR SET_LETTER		;ERASE PREVIOUS LETTER
 				JSR DRAW_SHAPE
-			else
-				JSR	LETTER			;ERASE PREVIOUS LETTER
-				JSR	CHAROUT
-			fin
 				JSR	CLEAR
 				JMP	KEYREAD	
 :MAXZERO		TYA
@@ -221,13 +208,6 @@ KEYREAD			JSR	PULSE
 				NOP					;*
 				NOP					;*
 				NOP					;*
-			do NEW_TEXT
-			else
-				NOP					;*
-				NOP					;*
-			fin
-
-			do NEW_TEXT
 
 *-------------------------------------------------------------------------------
 * Choose a letter of the font and set it as the current tile.
@@ -361,90 +341,6 @@ LINE2			JSR	TABLER			;LETTER ROUTINE GIVING A LINE OF TEXT
 
 *-------------------------------------------------------------------------------
 
-			else
-LETTER			TXA
-				TAY
-LETTER2			LDA	#<LETTERS
-				STA	LETBUFL
-				LDA	#>LETTERS
-				STA	LETBUFH
-				LDX	#$00
-ANOTHER			LDA	(LETBUFL),Y
-				STA	CHARTAB,X
-				INX
-				CPX	#$07
-				BEQ	LOADED
-				LDA	LETBUFL
-				CLC
-				ADC	#$34
-				STA	LETBUFL
-				BCC	ANOTHER
-				INC	LETBUFH
-				JMP	ANOTHER
-LOADED			RTS	
-
-CHARTAB			DB	$00,$00
-				DB	$00,$00
-				DB	$00,$00
-				DB	$00
-CHAROUT			LDX	#$00			;CLEAR LINE NUMBER COUNT
-LINES			LDA	#$00
-				STA	SCRATCH
-				TAY
-				LDA	CHARTAB,X
-SLIDE			ASL					;SHIFT ACCORDING TO SHIFT
-				ROL	SCRATCH
-				INY
-				CPY	SHIFT
-				BCC	SLIDE
-				BEQ	SLIDE
-				LSR
-				PHA
-				TXA					;LOOK UP SCREENL,H USING TO LNCOUNT
-				ASL
-				TAY
-				LDA	TABLE,Y
-				STA	SCREENL
-				INY
-				LDA	TABLE,Y
-				STA	SCREENH
-				LDY	XCOORD
-				PLA
-				EOR	(SCREENL),Y
-				STA	(SCREENL),Y		;STORE THEM ONTO THE SCREEN 
-				INY	
-				LDA	SCRATCH
-				EOR	(SCREENL),Y
-				STA	(SCREENL),Y
-				INX	
-				CPX	#$07			;HAVE ALL SEVEN LINES BEEN DONE?
-				BNE	LINES			;NO, THEN EXIT
-				RTS					;EXIT
-
-				ERR	*-$0B33
-LINE			STA	XCOORD
-				STY	YCOORD
-				JSR	SHFTCLC			;LINE ROUTINE REPEATEDLY CALLS
-				ERR	*-$0B3A
-LINE2			JSR	TABLER			;LETTER ROUTINE GIVING A LINE OF TEXT
-				LDX	#$00
-NEXTLET			LDA	TEXTBUF,X
-				TAY
-				INX
-				CMP	#$8D
-				BEQ	FOUND	
-				CMP	#$EE
-				BEQ	NEXTLET
-				TXA
-				PHA
-				JSR	LETTER2	
-				JSR	CHAROUT
-				PLA
-				TAX
-				JSR	ADVANCE
-				BNE	NEXTLET			;Always
-			fin
-
 				ERR	*-$0B5B
 CONVERT			CMP	#$DB	
 				BCS	NONE
@@ -514,7 +410,6 @@ NOSIX			INC	SHIFT
 				DEC	XCOORD
 DONE2			RTS
 
-			do NEW_TEXT
 *-------------------------------------------------------------------------------
 * Input:
 *   YCOORD: current Y position
@@ -544,23 +439,6 @@ TABLER_L        DS  7
 TABLER_H        DS  7
 
 *-------------------------------------------------------------------------------
-			else
-TABLER			LDX	#$00
-				LDY	YCOORD
-AGAIN			LDA	LOBYTES,Y
-				STA	TABLE,X
-				INX
-				LDA	HIBYTES,Y
-				ORA	PAGE
-				STA	TABLE,X
-				INX
-				INY
-				CPX	#$0E
-				BNE	AGAIN
-				RTS
-
-TABLE			DS	14
-			fin
 
 PULSE			DEC	DELAYL			;DECREMENT DELAY COUNTER
 				LDA	DELAYL
@@ -997,140 +875,11 @@ SIDE_LETTERS	USR	(MTF)-
 MESSAGES		USR	(INSERT_SIDE_XX_)
 				USR	(WRITE_PROTECTED)
 
-				NOP
+				NOP					;*
 
 *-------------------------------
 
-			do NEW_TEXT
 				PUT NCOMMONS.FONT.S
-			else
-LETTERS			DB	$0E,$0C,$1F
-				DB	$1F,$1B,$1F
-				DB	$1F,$1F,$1F
-				DB	$1F,$00,$1F
-				DB	$0F,$1F,$0F
-				DB	$1F,$1F,$1F
-				DB	$1B,$1E,$18
-				DB	$1B,$03,$1B
-				DB	$0F,$1F,$1F
-				DB	$1F,$0F,$1F
-				DB	$1F,$1B,$1B
-				DB	$1B,$1B,$1B
-				DB	$1F,$0C,$1B
-				DB	$1B,$06,$00
-				DB	$00,$00,$00
-				DB	$00,$00,$00
-				DB	$18,$00,$03
-				DB	$1F
-				DB	$1B,$0E,$1B
-				DB	$18,$1B,$03
-				DB	$03,$18,$1B
-				DB	$1B,$00,$1B
-				DB	$1B,$1B,$1B
-				DB	$1B,$1B,$1B
-				DB	$1B,$0C,$18
-				DB	$1B,$03,$1F
-				DB	$1B,$1B,$1B
-				DB	$1B,$1B,$1B
-				DB	$0C,$1B,$1B
-				DB	$1B,$1B,$1B
-				DB	$18,$1E,$1B
-				DB	$1B,$06,$1B
-				DB	$0C,$00,$00
-				DB	$00,$00,$0C
-				DB	$0C,$00,$06
-				DB	$1B
-				DB	$1B,$0C,$18
-				DB	$18,$1B,$03
-				DB	$03,$18,$1B
-				DB	$1B,$00,$1B
-				DB	$1B,$03,$1B
-				DB	$03,$03,$03
-				DB	$1B,$0C,$18
-				DB	$1B,$03,$1F
-				DB	$1B,$1B,$1B
-				DB	$1B,$1B,$03
-				DB	$0C,$1B,$1B
-				DB	$1B,$1B,$1B
-				DB	$1C,$1E,$1B
-				DB	$18,$06,$0E
-				DB	$0C,$00,$00
-				DB	$00,$18,$0C
-				DB	$06,$1F,$0C
-				DB	$18
-				DB	$1B,$0C,$1F
-				DB	$0E,$1F,$1F
-				DB	$1F,$18,$0E
-				DB	$1F,$00,$1F
-				DB	$0F,$03,$1B
-				DB	$0F,$0F,$03
-				DB	$1F,$0C,$18
-				DB	$0F,$03,$1F
-				DB	$1B,$1B,$1F
-				DB	$1B,$0F,$1F
-				DB	$0C,$1B,$1B
-				DB	$1F,$0E,$1F
-				DB	$0E,$0C,$00
-				DB	$0E,$00,$1F
-				DB	$1F,$00,$1F
-				DB	$00,$0C,$00
-				DB	$03,$00,$18
-				DB	$1E
-				DB	$1B,$0C,$03
-				DB	$18,$18,$18
-				DB	$1B,$18,$1B
-				DB	$18,$00,$1B
-				DB	$1B,$03,$1B
-				DB	$03,$03,$1F
-				DB	$1B,$0C,$18
-				DB	$1B,$03,$1B
-				DB	$1B,$1B,$03
-				DB	$1B,$1B,$18
-				DB	$0C,$1B,$1B
-				DB	$1F,$1B,$18
-				DB	$07,$0C,$00
-				DB	$03,$00,$0E
-				DB	$0C,$00,$00
-				DB	$00,$06,$0C
-				DB	$06,$1F,$0C
-				DB	$06
-				DB	$1B,$0C,$03
-				DB	$18,$18,$1B
-				DB	$1B,$18,$1B
-				DB	$18,$00,$1B
-				DB	$1B,$1B,$1B
-				DB	$1B,$03,$1B
-				DB	$1B,$0C,$1B
-				DB	$1B,$03,$1B
-				DB	$1B,$1B,$03
-				DB	$0F,$1B,$1B
-				DB	$0C,$1B,$0E
-				DB	$1F,$1B,$1B
-				DB	$03,$00,$00
-				DB	$1B,$00,$1B
-				DB	$0C,$0C,$00
-				DB	$0C,$03,$0C
-				DB	$0C,$00,$06
-				DB	$00
-				DB	$0E,$1E,$1F
-				DB	$1F,$18,$1F
-				DB	$1F,$18,$1F
-				DB	$18,$00,$1B
-				DB	$0F,$1F,$0F
-				DB	$1F,$03,$1F
-				DB	$1B,$1E,$1F
-				DB	$1B,$1F,$1B
-				DB	$1B,$1F,$03
-				DB	$1C,$1B,$1F
-				DB	$0C,$1F,$0E
-				DB	$1B,$1B,$1F
-				DB	$1F,$0C,$00
-				DB	$1B,$00,$00
-				DB	$00,$06,$00
-				DB	$0C,$00,$00
-				DB	$18,$00,$03
-				DB	$06
-			fin
 
 HALLDAT			DB	$38,$00
 				DB  $00,$5F

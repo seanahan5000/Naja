@@ -1,24 +1,16 @@
-NEW_TEXT        =   1
-
 LINEOUT			=	$0980
 TEXTOUT			=	$09E0
 
 INPUT			=	$0A15
 INPUT2			=	$0A1C
 KEYREAD			=	$0A2A
-            do NEW_TEXT
+
 SET_SHAPE       =   $0AD1
 CHARTAB         =   $0AF2
 CHAROUT         =   $0AF9
 DRAW_SHAPE      =   $0B03
 LINE            =   $0B32
 LINE2           =   $0B39
-            else
-CHARTAB			=	$0AF4
-CHAROUT			=	$0AFB
-LINE            =   $0B33
-LINE2           =   $0B3A
-            fin
 
 CONVERT			=	$0B5B
 SHFTCLC			=	$0BA1
