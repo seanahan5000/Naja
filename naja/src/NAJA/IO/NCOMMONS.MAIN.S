@@ -25,6 +25,7 @@ RPCODE			=	$FE				;REPEAT CODE
 				ORG	$0980
 
 ***BEGINNING-OF-LINE-DRAWING-ROUTINE*** 
+				ERR	*-$0980
 LINEOUT			LDY	#$00			;CLEAR LINE OFFSET
 				JSR	PNTLOAD			;LOAD A POINT
 				LDA	TABEL+1			;PREPARE THE POINT FOR HPOSIONING
@@ -75,6 +76,7 @@ GOBACK			RTS					;LEAVE ROUTINE
 ***END-OF-LINE-DRAWING-ROUTINE***
 
 ***BEGINNING-OF-TEXT-LINE-DRAWING-ROUTINE***
+				ERR	*-$09E0
 TEXTOUT			LDY	#$00			;CLEAR LINE OFFSET
 				LDX	#$00			;CLEAR LINE BUFFER OFFSET
 				LDA	(POINTL),Y		;LOAD A BYTE
@@ -106,9 +108,11 @@ AGAINT			LDA	(POINTL),Y
 EXIT			RTS
 ***END-OF-TEXT-LINE-DRAWING-ROUTINE***
 
+				ERR	*-$0A15
 INPUT			STA	XCOORD
 				STY	YCOORD
 				JSR	SHFTCLC			;JSR TO SHIFT CALCULATING ROUTINE
+				ERR	*-$0A1C
 INPUT2			JSR	TABLER			;CREATE HIRES STORAGE LOCATION TABLE
 				LDX	#$00			;SET LETTER POINTER TO ZERO
 				TXA
@@ -116,26 +120,21 @@ INPUT2			JSR	TABLER			;CREATE HIRES STORAGE LOCATION TABLE
 				JSR	CLEAR
 				LDA	#$00
 				STA	COUNTS
+				ERR	*-$0A2A
 KEYREAD			JSR	PULSE
 				LDA	KEYBRD
 				BPL	KEYREAD
-				NOP					;*
-				NOP					;*
-				NOP					;*
-				NOP					;*
-				NOP					;*
 				BIT	UNSTROB
 				CMP	#$8D	
-				BNE	NORETRN			;BRANCH IF RETURN ENCOUNTERED
-				JMP	RETURN
-NORETRN			CMP	#$88	
-				BEQ	BACKSPC			;BRANCH IF BACK ARROW IS PRESSED
+				BNE	:NORETRN		;BRANCH IF RETURN ENCOUNTERED
+				JMP	:RETURN
+:NORETRN		CMP	#$88
+				BEQ	:BACKSPC		;BRANCH IF BACK ARROW IS PRESSED
 				CMP	#$FF			;DELETE
-				BEQ	BACKSPC
-				NOP					;*
+				BEQ	:BACKSPC
 				TAY
 				LDA	MAXTEXT
-				BEQ	MAXZERO
+				BEQ	:MAXZERO
 				CMP	COUNTS
 				BEQ	KEYREAD	
 				INC	COUNTS
@@ -146,15 +145,13 @@ NORETRN			CMP	#$88
 				TAX
 				TYA	
 				STA	TEXTBUF,X		;STORE LETTER PRESSED IN LINE BUFFER
-				NOP					;*
-				NOP					;*
 				INX
 				TXA
 				PHA					;PUSH X REGISTER
 				TYA	
 				JSR	CONVERT			;CONVERT ASCII TO USABLE FORM 
 				CPX	#$FF			;IS THE INPUT BAD?
-				BNE	GOODLET			;NO, THEN SKIP
+				BNE	:GOODLET		;NO, THEN SKIP
 				DEC	COUNTS
 				PLA
 				TAX
@@ -162,20 +159,19 @@ NORETRN			CMP	#$88
 				TXA
 				PHA					;MOVE X POINTER BACK ON LETTER
 				JMP	KEYREAD	
-GOODLET			TXA
+:GOODLET		TXA
 				PHA
 				JSR	CHAROUT			;ERASE CURSOR
 				JSR	CLEAR
 				PLA
-				TAX
-				JSR	LETTER			;DRAW LETTER
-				JSR	CHAROUT
+				JSR SET_LETTER		;DRAW_LETTER
+				JSR DRAW_SHAPE
 				JSR	ADVANCE			;ADVANCE LETTER POSITION
 				JSR	CLEAR
 				JMP	KEYREAD			;JUMP TO KEY READER
-BACKSPC			PLA
+:BACKSPC		PLA
 				PHA
-				BEQ	KEYREAD			;DON'T BACKSPACE IF BEGINNIG OF LINE
+				BEQ	KEYREAD			;DONT BACKSPACE IF BEGINNIG OF LINE
 				JSR	CHAROUT			;ERASE CURSOR
 				JSR	CLEAR
 				JSR	RETREAT			;DECREMENT LETTER POSITION
@@ -187,103 +183,165 @@ BACKSPC			PLA
 				PHA
 				LDA	TEXTBUF,X
 				JSR	CONVERT	
-				JSR	LETTER			;ERASE PREVIOUS LETTER
-				JSR	CHAROUT
+				TXA
+				JSR SET_LETTER		;ERASE PREVIOUS LETTER
+				JSR DRAW_SHAPE
 				JSR	CLEAR
 				JMP	KEYREAD	
-MAXZERO			TYA
+:MAXZERO		TYA
 				STA	TEXTBUF
 				LDA	#$8D
 				STA	TEXTBUF+1
 				PLA
 				STA	HOLDIT
 				RTS
-RETURN			JSR	CHAROUT	
+:RETURN			JSR	CHAROUT
 				PLA
 				TAX	
 				LDA	#$8D
 				STA	TEXTBUF,X		;STORE RETURN AT END OF LINE BUFFER
 				RTS
-LETTER			TXA
-				TAY
-LETTER2			LDA	#<LETTERS
-				STA	LETBUFL
-				LDA	#>LETTERS
-				STA	LETBUFH
-				LDX	#$00
-ANOTHER			LDA	(LETBUFL),Y
-				STA	CHARTAB,X
-				INX
-				CPX	#$07
-				BEQ	LOADED
-				LDA	LETBUFL
-				CLC
-				ADC	#$34
-				STA	LETBUFL
-				BCC	ANOTHER
-				INC	LETBUFH
-				JMP	ANOTHER
-LOADED			RTS	
 
-CHARTAB			DB	$00,$00
-				DB	$00,$00
-				DB	$00,$00
-				DB	$00
-CHAROUT			LDX	#$00			;CLEAR LINE NUMBER COUNT
-LINES			LDA	#$00
-				STA	SCRATCH
-				TAY
-				LDA	CHARTAB,X
-SLIDE			ASL					;SHIFT ACCORDING TO SHIFT
-				ROL	SCRATCH
-				INY
-				CPY	SHIFT
-				BCC	SLIDE
-				BEQ	SLIDE
-				LSR
-				PHA
-				TXA					;LOOK UP SCREENL,H USING TO LNCOUNT
-				ASL
-				TAY
-				LDA	TABLE,Y
-				STA	SCREENL
-				INY
-				LDA	TABLE,Y
-				STA	SCREENH
-				LDY	XCOORD
-				PLA
-				EOR	(SCREENL),Y
-				STA	(SCREENL),Y		;STORE THEM ONTO THE SCREEN 
-				INY	
-				LDA	SCRATCH
-				EOR	(SCREENL),Y
-				STA	(SCREENL),Y
-				INX	
-				CPX	#$07			;HAVE ALL SEVEN LINES BEEN DONE?
-				BNE	LINES			;NO, THEN EXIT
-				RTS					;EXIT
+				NOP					;*
+				NOP					;*
+				NOP					;*
+				NOP					;*
+				NOP					;*
+				NOP					;*
 
+*-------------------------------------------------------------------------------
+* Choose a letter of the font and set it as the current tile.
+*
+*   A: index of letter
+*-------------------------------------------------------------------------------
+
+SET_LETTER      LDX #<FONT
+                LDY #>FONT
+                ; fall through
+
+*-------------------------------------------------------------------------------
+* Compute pointer into indexed list of 7-byte tiles.
+*	Multiply by 7 using (index << 4) - index
+*
+* Input:
+*   X: low address of tile list
+*   Y: high address of tile list
+*   A: index of tile (assumed to be < #64)
+*
+* Output:
+*   SHAPE_SRC+1,2: pointer to selected tile
+*
+* Uses:
+*   SCRATCH, LETBUFL
+*-------------------------------------------------------------------------------
+
+				ERR	*-$0AD1
+SET_SHAPE       STX LETBUFL
+                STA SCRATCH
+                ASL
+                ASL                 ; (63 * 4 = 252)
+                ASL                 ; (63 * 8 > 255 ?)
+                BCC :SKIPA
+                INY
+                CLC
+:SKIPA          ADC LETBUFL
+                BCC :SKIPB
+                INY
+:SKIPB          SEC
+                SBC SCRATCH
+                STA SHAPE_SRC+1
+                BCS :SKIPC
+                DEY
+:SKIPC          STY SHAPE_SRC+2
+                RTS
+
+				NOP					;*
+				NOP					;*
+				NOP					;*
+				NOP					;*
+
+*-------------------------------------------------------------------------------
+
+				ERR	*-$0AF2
+CHARTAB         DS  7
+
+				ERR	*-$0AF9
+CHAROUT         LDA #<CHARTAB
+                STA SHAPE_SRC+1
+                LDA #>CHARTAB
+                STA SHAPE_SRC+2
+                ; fall through
+
+*-------------------------------------------------------------------------------
+* Draw the shape either previously set with by SET_SHAPE or in CHAROUT.
+*
+* Input:
+*   XCOORD: current X byte column position (0 to #39)
+*   SHIFT: current X right shift (0 to 6)
+*   TABLER_L,H: list of 7 hires line pointers
+*   SHAPE_SRC+1,2: pointer to source data
+*
+* Uses:
+*   SCREENL,H
+*   SCRATCH
+*-------------------------------------------------------------------------------
+
+				ERR	*-$0B03
+DRAW_SHAPE      LDX #6
+SLOOP1          LDA #0
+                STA SCRATCH
+                LDA TABLER_L,X
+                STA SCREENL
+                LDA TABLER_H,X
+                STA SCREENH
+SHAPE_SRC       LDA $FFFF,X         ; modified
+                LDY SHIFT
+:LOOP2          ASL
+                ROL SCRATCH         ; always zero the first time through
+                DEY
+                BPL :LOOP2
+                LSR                 ; undo first shift
+                LDY XCOORD
+                EOR (SCREENL),Y
+                STA (SCREENL),Y
+                LDA SCRATCH
+                BEQ :SKIPA
+                INY
+                EOR (SCREENL),Y
+                STA (SCREENL),Y
+:SKIPA          DEX
+                BPL SLOOP1
+                RTS
+
+*-------------------------------------------------------------------------------
+
+				ERR	*-$0B32
 LINE			STA	XCOORD
 				STY	YCOORD
 				JSR	SHFTCLC			;LINE ROUTINE REPEATEDLY CALLS
+				ERR	*-$0B39
 LINE2			JSR	TABLER			;LETTER ROUTINE GIVING A LINE OF TEXT
 				LDX	#$00
-NEXTLET			LDA	TEXTBUF,X
+:NEXTLET		LDA	TEXTBUF,X
 				TAY
 				INX
 				CMP	#$8D
-				BEQ	FOUND	
+				BEQ	FOUND
 				CMP	#$EE
-				BEQ	NEXTLET
+				BEQ	:NEXTLET
 				TXA
 				PHA
-				JSR	LETTER2	
-				JSR	CHAROUT
+				TYA
+				JSR SET_LETTER
+				JSR DRAW_SHAPE
 				PLA
 				TAX
 				JSR	ADVANCE
-				BNE	NEXTLET			;Always
+				BNE	:NEXTLET		;Always
 
+*-------------------------------------------------------------------------------
+
+				ERR	*-$0B5B
 CONVERT			CMP	#$DB	
 				BCS	NONE
 				CMP	#$C1
@@ -321,6 +379,7 @@ ASCII			DB	$08,$0B			;!,"
 				DB	$17,$16			;>,?
 				DB	$EA,$EA			;PLACE HOLDERS
 
+				ERR	*-$0BA1
 SHFTCLC			LDY	#$00			;CALCULATE XCOORD MOD 7
 				LDA	XCOORD
 REPEAT			CMP	#$07
@@ -351,21 +410,35 @@ NOSIX			INC	SHIFT
 				DEC	XCOORD
 DONE2			RTS
 
-TABLER			LDX	#$00
-				LDY	YCOORD
-AGAIN			LDA	LOBYTES,Y
-				STA	TABLE,X
-				INX
-				LDA	HIBYTES,Y
-				ORA	PAGE
-				STA	TABLE,X
-				INX
-				INY
-				CPX	#$0E
-				BNE	AGAIN
-				RTS
+*-------------------------------------------------------------------------------
+* Input:
+*   YCOORD: current Y position
+*   PAGE:   current hires page ($20 or $40)
+*
+* Output:
+*   TABLER_L,H: list of 7 hires line pointers
+*-------------------------------------------------------------------------------
 
-TABLE			DS	14
+				ERR	*-$0BD6
+TABLER          LDX #0
+                LDY YCOORD
+:LOOP1          LDA LOBYTES,Y
+                STA TABLER_L,X
+                LDA HIBYTES,Y
+                ORA PAGE
+                STA TABLER_H,X
+                INY
+                INX
+                CPX #7
+                BNE :LOOP1
+                RTS
+
+                NOP					;*
+
+TABLER_L        DS  7
+TABLER_H        DS  7
+
+*-------------------------------------------------------------------------------
 
 PULSE			DEC	DELAYL			;DECREMENT DELAY COUNTER
 				LDA	DELAYL
@@ -422,6 +495,7 @@ ERASE			STA	CHARTAB,X		;ERASE CHARACTER TABLE
 *
 *-------------------------------
 
+				ERR	*-$0C60
 EXPANDR			LDA	#$F0			;BEQ OPCODE
 				DB	$2C				; (skip next 2 bytes)
 EXPANDR2		LDA	#$24			;BIT OPCODE
@@ -491,7 +565,7 @@ EXPANDR2		LDA	#$24			;BIT OPCODE
 
 *-------------------------------
 
-				DS	$0D01-*,$EA		;FREE SPACE****
+				DS	$0D01-*,$EA		;* FREE SPACE (#49 bytes)
 
 *-------------------------------
 
@@ -515,7 +589,7 @@ HPOSN			STA	YCRD			;YCOORD IN ACC.
 				SEC
 HPOSN1			INY
 HPOSN2			SBC	#$07
-				BCS	HPOSN1
+				BCS	HPOSN1			; TODO: use div/mod 7 table here
 				STY	HNDX
 				TAX
 				LDA	MSKTBL-249,X
@@ -625,6 +699,7 @@ HLIN4			LDA	QDRNT
 				JMP	HCOUNT
 LINEND			LDA	#$00			;COMPLETE LINE DRAWN
 				RTS
+
 LFTRT			BPL	RIGHT1	
 				LDA	HMASK
 				LSR
@@ -634,7 +709,7 @@ LR1				STA	HMASK
 				RTS
 LEFT1			DEY
 				BPL	LEFT2
-				LDY	#$27
+				LDY	#$27			; wrap to byte column #0 to #39
 LEFT2			LDA	#$C0
 NEWNDX			STA	HMASK
 				STY	HNDX
@@ -652,13 +727,14 @@ RIGHT1			LDA	HMASK
 				BMI	LR1
 				LDA	#$81
 				INY
-				CPY	#$28
+				CPY	#$28			; wrap from byte column #40 to #0
 				BCC	NEWNDX
 				LDY	#$00
-				BCS	NEWNDX
+				BCS	NEWNDX			; always
+
 HLINE_UPDOWN	BPL	UP4				;called from fight shot sub
 				INC	YCRD
-				BNE	UPDWN4
+				BNE	UPDWN4			; always
 UP4				DEC	YCRD
 UPDWN4			TYA
 				PHA
@@ -799,241 +875,176 @@ SIDE_LETTERS	USR	(MTF)-
 MESSAGES		USR	(INSERT_SIDE_XX_)
 				USR	(WRITE_PROTECTED)
 
-				NOP
+				NOP					;*
 
 *-------------------------------
 
-LETTERS			DB	$0E,$0C,$1F
-				DB	$1F,$1B,$1F
-				DB	$1F,$1F,$1F
-				DB	$1F,$00,$1F
-				DB	$0F,$1F,$0F
-				DB	$1F,$1F,$1F
-				DB	$1B,$1E,$18
-				DB	$1B,$03,$1B
-				DB	$0F,$1F,$1F
-				DB	$1F,$0F,$1F
-				DB	$1F,$1B,$1B
-				DB	$1B,$1B,$1B
-				DB	$1F,$0C,$1B
-				DB	$1B,$06,$00
-				DB	$00,$00,$00
-				DB	$00,$00,$00
-				DB	$18,$00,$03
-				DB	$1F
-				DB	$1B,$0E,$1B
-				DB	$18,$1B,$03
-				DB	$03,$18,$1B
-				DB	$1B,$00,$1B
-				DB	$1B,$1B,$1B
-				DB	$1B,$1B,$1B
-				DB	$1B,$0C,$18
-				DB	$1B,$03,$1F
-				DB	$1B,$1B,$1B
-				DB	$1B,$1B,$1B
-				DB	$0C,$1B,$1B
-				DB	$1B,$1B,$1B
-				DB	$18,$1E,$1B
-				DB	$1B,$06,$1B
-				DB	$0C,$00,$00
-				DB	$00,$00,$0C
-				DB	$0C,$00,$06
-				DB	$1B
-				DB	$1B,$0C,$18
-				DB	$18,$1B,$03
-				DB	$03,$18,$1B
-				DB	$1B,$00,$1B
-				DB	$1B,$03,$1B
-				DB	$03,$03,$03
-				DB	$1B,$0C,$18
-				DB	$1B,$03,$1F
-				DB	$1B,$1B,$1B
-				DB	$1B,$1B,$03
-				DB	$0C,$1B,$1B
-				DB	$1B,$1B,$1B
-				DB	$1C,$1E,$1B
-				DB	$18,$06,$0E
-				DB	$0C,$00,$00
-				DB	$00,$18,$0C
-				DB	$06,$1F,$0C
-				DB	$18
-				DB	$1B,$0C,$1F
-				DB	$0E,$1F,$1F
-				DB	$1F,$18,$0E
-				DB	$1F,$00,$1F
-				DB	$0F,$03,$1B
-				DB	$0F,$0F,$03
-				DB	$1F,$0C,$18
-				DB	$0F,$03,$1F
-				DB	$1B,$1B,$1F
-				DB	$1B,$0F,$1F
-				DB	$0C,$1B,$1B
-				DB	$1F,$0E,$1F
-				DB	$0E,$0C,$00
-				DB	$0E,$00,$1F
-				DB	$1F,$00,$1F
-				DB	$00,$0C,$00
-				DB	$03,$00,$18
-				DB	$1E
-				DB	$1B,$0C,$03
-				DB	$18,$18,$18
-				DB	$1B,$18,$1B
-				DB	$18,$00,$1B
-				DB	$1B,$03,$1B
-				DB	$03,$03,$1F
-				DB	$1B,$0C,$18
-				DB	$1B,$03,$1B
-				DB	$1B,$1B,$03
-				DB	$1B,$1B,$18
-				DB	$0C,$1B,$1B
-				DB	$1F,$1B,$18
-				DB	$07,$0C,$00
-				DB	$03,$00,$0E
-				DB	$0C,$00,$00
-				DB	$00,$06,$0C
-				DB	$06,$1F,$0C
-				DB	$06
-				DB	$1B,$0C,$03
-				DB	$18,$18,$1B
-				DB	$1B,$18,$1B
-				DB	$18,$00,$1B
-				DB	$1B,$1B,$1B
-				DB	$1B,$03,$1B
-				DB	$1B,$0C,$1B
-				DB	$1B,$03,$1B
-				DB	$1B,$1B,$03
-				DB	$0F,$1B,$1B
-				DB	$0C,$1B,$0E
-				DB	$1F,$1B,$1B
-				DB	$03,$00,$00
-				DB	$1B,$00,$1B
-				DB	$0C,$0C,$00
-				DB	$0C,$03,$0C
-				DB	$0C,$00,$06
-				DB	$00
-				DB	$0E,$1E,$1F
-				DB	$1F,$18,$1F
-				DB	$1F,$18,$1F
-				DB	$18,$00,$1B
-				DB	$0F,$1F,$0F
-				DB	$1F,$03,$1F
-				DB	$1B,$1E,$1F
-				DB	$1B,$1F,$1B
-				DB	$1B,$1F,$03
-				DB	$1C,$1B,$1F
-				DB	$0C,$1F,$0E
-				DB	$1B,$1B,$1F
-				DB	$1F,$0C,$00
-				DB	$1B,$00,$00
-				DB	$00,$06,$00
-				DB	$0C,$00,$00
-				DB	$18,$00,$03
-				DB	$06
+				PUT NCOMMONS.FONT.S
 
-HALLDAT			DB	$38,$00,$00
-				DB	$5F,$38,$BE
-				DB	$38,$BE,$38
-				DB	$BD,$38,$01
-				DB	$38,$00,$00
-				DB	$00,$19,$00
-				DB	$2D,$18,$24
-				DB	$31,$24,$91
-				DB	$2D,$A7,$00
-				DB	$B7,$00,$00
-				DB	$38,$1C,$30
-				DB	$34,$30,$91
-				DB	$38,$A6,$45
-				DB	$16,$16,$65
-				DB	$45,$B4,$4F
-				DB	$AE,$60,$A3
-				DB	$60,$41,$4F
-				DB	$25,$38,$42
-				DB	$44,$34,$59
-				DB	$4D,$54,$59
-				DB	$54,$8C,$59
-				DB	$97,$44,$9F
-				DB	$38,$8F,$5F
-				DB	$4E,$5A,$5A
-				DB	$5A,$8C,$5F
-				DB	$97,$64,$47
-				DB	$49,$74,$64
-				DB	$A0,$67,$9E
-				DB	$6E,$9A,$6E
-				DB	$58,$67,$4C
-				DB	$5A,$5E,$61
-				DB	$55,$69,$5F
-				DB	$64,$67,$64
-				DB	$8A,$69,$92
-				DB	$61,$95,$5A
-				DB	$8B,$6C,$60
-				DB	$68,$68,$68
-				DB	$8A,$6C,$92
-				DB	$6F,$5A,$5D
-				DB	$79,$6F,$98
-				DB	$71,$97,$75
-				DB	$95,$75,$63
-				DB	$71,$5D,$68
-				DB	$6A,$6D,$64
-				DB	$71,$69,$6E
-				DB	$6F,$6E,$89
-				DB	$71,$8F,$6D
-				DB	$91,$68,$8A
-				DB	$75,$69,$72
-				DB	$6F,$72,$89
-				DB	$75,$8F,$76
-				DB	$65,$68,$7C
-				DB	$76,$94,$77
-				DB	$94,$79,$92
-				DB	$79,$6A,$77
-				DB	$66,$70,$70
-				DB	$73,$6B,$76
-				DB	$6F,$74,$74
-				DB	$74,$89,$76
-				DB	$8D,$73,$8E
-				DB	$70,$89,$78
-				DB	$6F,$76,$74
-				DB	$76,$89,$78
-				DB	$8D,$7A,$6B
-				DB	$6E,$7E,$7A
-				DB	$92,$7A,$91
-				DB	$7C,$90,$7C
-				DB	$6F,$7A,$6C
-				DB	$74,$75,$78
-				DB	$70,$7A,$73
-				DB	$76,$77,$76
-				DB	$88,$7A,$8C
-				DB	$78,$8D,$75
-				DB	$89,$7C,$73
-				DB	$7A,$77,$7A
-				DB	$88,$7C,$8C
-				DB	$7C,$6F,$73
-				DB	$80,$7C,$90
-				DB	$7D,$90,$7E
-				DB	$8F,$7E,$72
-				DB	$7D,$70,$78
-				DB	$77,$7B,$74
-				DB	$7C,$75,$7A
-				DB	$79,$7A,$88
-				DB	$7C,$8B,$7B
-				DB	$8C,$78,$88
-				DB	$7E,$76,$7C
-				DB	$79,$7C,$88
-				DB	$7E,$8B,$7E
-				DB	$73,$76,$81
-				DB	$7E,$8F,$7F
-				DB	$8E,$7F,$8E
-				DB	$7F,$75,$7F
-				DB	$73,$7A,$79
-				DB	$7D,$76,$7E
-				DB	$78,$7C,$7B
-				DB	$7C,$88,$7E
-				DB	$8B,$7D,$8B
-				DB	$7B,$88,$80
-				DB	$78,$7E,$7B
-				DB	$7E,$88,$80
-				DB	$8B,$80,$75
-				DB	$79,$81,$80
-				DB	$8E,$00,$00
+HALLDAT			DB	$38,$00
+				DB  $00,$5F
+				DB  $38,$BE
+				DB	$38,$BE
+				DB  $38,$BD
+				DB  $38,$01
+				DB	$38,$00
+				DB  $00,$00
+				DB  $19,$00
+				DB	$2D,$18
+				DB  $24,$31
+				DB  $24,$91
+				DB	$2D,$A7
+				DB  $00,$B7
+				DB  $00,$00
+				DB	$38,$1C
+				DB  $30,$34
+				DB  $30,$91
+				DB	$38,$A6
+
+				DB  $45,$16
+				DB  $16,$65
+				DB	$45,$B4
+				DB  $4F,$AE
+				DB  $60,$A3
+				DB	$60,$41
+				DB  $4F,$25
+				DB  $38,$42
+				DB	$44,$34
+				DB  $59,$4D
+				DB  $54,$59
+				DB	$54,$8C
+				DB  $59,$97
+				DB  $44,$9F
+				DB	$38,$8F
+				DB  $5F,$4E
+				DB  $5A,$5A
+				DB	$5A,$8C
+				DB  $5F,$97
+
+				DB  $64,$47
+				DB	$49,$74
+				DB  $64,$A0
+				DB  $67,$9E
+				DB	$6E,$9A
+				DB  $6E,$58
+				DB  $67,$4C
+				DB	$5A,$5E
+				DB  $61,$55
+				DB  $69,$5F
+				DB	$64,$67
+				DB  $64,$8A
+				DB  $69,$92
+				DB	$61,$95
+				DB  $5A,$8B
+				DB  $6C,$60
+				DB	$68,$68
+				DB  $68,$8A
+				DB  $6C,$92
+
+				DB	$6F,$5A
+				DB  $5D,$79
+				DB  $6F,$98
+				DB	$71,$97
+				DB  $75,$95
+				DB  $75,$63
+				DB	$71,$5D
+				DB  $68,$6A
+				DB  $6D,$64
+				DB	$71,$69
+				DB  $6E,$6F
+				DB  $6E,$89
+				DB	$71,$8F
+				DB  $6D,$91
+				DB  $68,$8A
+				DB	$75,$69
+				DB  $72,$6F
+				DB  $72,$89
+				DB	$75,$8F
+
+				DB  $76,$65
+				DB  $68,$7C
+				DB	$76,$94
+				DB  $77,$94
+				DB  $79,$92
+				DB	$79,$6A
+				DB  $77,$66
+				DB  $70,$70
+				DB	$73,$6B
+				DB  $76,$6F
+				DB  $74,$74
+				DB	$74,$89
+				DB  $76,$8D
+				DB  $73,$8E
+				DB	$70,$89
+				DB  $78,$6F
+				DB  $76,$74
+				DB	$76,$89
+				DB  $78,$8D
+
+				DB  $7A,$6B
+				DB	$6E,$7E
+				DB  $7A,$92
+				DB  $7A,$91
+				DB	$7C,$90
+				DB  $7C,$6F
+				DB  $7A,$6C
+				DB	$74,$75
+				DB  $78,$70
+				DB  $7A,$73
+				DB	$76,$77
+				DB  $76,$88
+				DB  $7A,$8C
+				DB	$78,$8D
+				DB  $75,$89
+				DB  $7C,$73
+				DB	$7A,$77
+				DB  $7A,$88
+				DB  $7C,$8C
+
+				DB	$7C,$6F
+				DB  $73,$80
+				DB  $7C,$90
+				DB	$7D,$90
+				DB  $7E,$8F
+				DB  $7E,$72
+				DB	$7D,$70
+				DB  $78,$77
+				DB  $7B,$74
+				DB	$7C,$75
+				DB  $7A,$79
+				DB  $7A,$88
+				DB	$7C,$8B
+				DB  $7B,$8C
+				DB  $78,$88
+				DB	$7E,$76
+				DB  $7C,$79
+				DB  $7C,$88
+				DB	$7E,$8B
+
+				DB  $7E,$73
+				DB  $76,$81
+				DB	$7E,$8F
+				DB  $7F,$8E
+				DB  $7F,$8E
+				DB	$7F,$75
+				DB  $7F,$73
+				DB  $7A,$79
+				DB	$7D,$76
+				DB  $7E,$78
+				DB  $7C,$7B
+				DB	$7C,$88
+				DB  $7E,$8B
+				DB  $7D,$8B
+				DB	$7B,$88
+				DB  $80,$78
+				DB  $7E,$7B
+				DB	$7E,$88
+				DB  $80,$8B
+
+				DB  $80,$75
+				DB	$79,$81
+				DB  $80,$8E
+				DB  $00,$00
 
 BUFFER			DS	38
 
