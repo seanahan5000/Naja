@@ -191,16 +191,16 @@ FIND_ENCOUNTR	JSR	RNDMIZE
 				LDA	RANDOM1
 				AND	#$7F
 				CMP	ENCODDS
-*BCS FIND_ENCOUNTR
-*CMP #$01
-*BNE FIND_EQUIPMNT
-				BIT	$C061			;TEMP ***
-				BPL	FIND_EQUIPMNT	;TEMP ***
-				NOP					;TEMP ***
+				BCS FIND_ENCOUNTR
+				CMP #$01
+				BNE FIND_EQUIPMNT
 				JSR	PICK_HALLTYPE
+			do ORIGINAL
+			else
 				LDA	DISK_SIDE
 				EOR	#%00000110
 				STA	DISK_SIDE
+			fin
 				JSR	SET_FGHTFILES
 				LDX	#fLoader1
 				JSR	SLOADER_FILE
@@ -215,12 +215,10 @@ FIND_EQUIPMNT	LDA	BUFFER+4		;Can't find equipment if
 				BEQ	NORMAL_MOVE
 
 				JSR	RNDMIZE			;   or if the random number
-*LDA RANDOM1 ;   isn't right...
+				LDA RANDOM1 		;   isn't right...
 				AND	#$3F			;????????
 				CMP	#$13			;temp?
-*BNE NORMAL_MOVE
-				BIT	$C062			;TEMP ***
-				BPL	NORMAL_MOVE		;TEMP ***
+				BNE NORMAL_MOVE
 
 				JSR	RESET_CHRLIST	;   or if they have no room
 				JSR	CSCAN_PUTABLE	;   for equipment.
@@ -491,8 +489,12 @@ FACERS			DW	FACE1
 				DW	FACE6
 				DW	FACE7
 
-COUNTOF			DB	$00,FACE2-FACE1/2,FACE3-FACE1/2
-				DB	FACE4-FACE1/2,FACE5-FACE1/2,FACE6-FACE1/2
+COUNTOF			DB	$00
+				DB	FACE2-FACE1/2
+				DB	FACE3-FACE1/2
+				DB	FACE4-FACE1/2
+				DB	FACE5-FACE1/2
+				DB	FACE6-FACE1/2
 				DB	FACE7-FACE1/2
 
 SHELL_INFO

@@ -58,14 +58,14 @@ GOTUNL			JSR	NOSCAN
 				PLA
 				ASL
 				TAY
-				LDA	PICT_BUFR+0,Y
+				LDA	PICT_BUFR+1,Y	; offset high byte (sector offset)
 				STA	TEMP
 				CLC
 				ADC	#<S_PICDATA
 				TAX
-				LDA	PICT_BUFR+1,Y
+				LDA	PICT_BUFR+0,Y	; offset low byte (byte offset in sector)
 				PHA
-				LDA	PICT_BUFR+2,Y
+				LDA	PICT_BUFR+3,Y	; offset high byte of next picture to compute size
 				PHA
 				LDY	#>S_PICDATA
 				BCC	:SKIPA

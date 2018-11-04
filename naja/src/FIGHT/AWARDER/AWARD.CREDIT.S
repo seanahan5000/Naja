@@ -51,10 +51,13 @@ TOTALS_OUT		JSR	RESET_CHLIST
 :SKIPB
 
 				JSR	SET_CAMPFILES
+			do ORIGINAL
+			else
 				LDA	DISK_SIDE
 				SEC
 				SBC	#2
 				STA	DISK_SIDE
+			fin
 				LDX	#cCtrlCommon
 				JSR	FLOADER_FILE
 				LDX	SHELL

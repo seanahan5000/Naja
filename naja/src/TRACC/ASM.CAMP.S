@@ -221,33 +221,74 @@ SET_CAMPFILES	LDX	#<CAMP_FILES
 				LDY	#>CAMP_FILES
 				JMP	SET_FILE_TABL
 
-CAMP_FILES		DB	$A0				; cCtrlCommon
-				DW	$0110
-				DB	$04
-
+CAMP_FILES
 			do	ORIGINAL
 
+				DB	$A0				; cCtrlCommon
+				DW	$01B0
+				DB	$04
+
 				DB	$A4				; cControl17
-				DW	$0114
+				DW	$01B4
 				DB	$0C
 
 				DB	$A4				; cControl15
-				DW	$0114			;*** change?
+				DW	$01B4			;*** change?
 				DB	$0C
 
 				DB	$A4				; cControl13
-				DW	$0120			;*** change?
+				DW	$01B4			;*** change?
 				DB	$0C
 
 				DB	$A4				; cControl11
-				DW	$0114			;*** change?
+				DW	$01B4			;*** change?
 				DB	$0C
 
 				DB	$A4				; cControl9
-				DW	$0120			;*** change?
+				DW	$01B0			;*** change?
 				DB	$0C
 
+				DB	$98				; Findment
+				DW	$0160
+				DB	$08
+
+				DB	$90				; Elevator
+				DW	$0170
+				DB	$0C
+
+				DB	$78				; Reformat/Regenerate/Compress
+				DW	$01C0
+				DB	$0E
+
+				DB	$86				; Diagnose
+				DW	$01CE
+				DB	$11
+
+				DB	$FF				;*** UNUSED ***
+				DW	$FFFF
+				DB	$FF
+
+				DB	$60				; Tunnels
+				DW	$01F0
+				DB	$18
+
+				DB	$D9				; Tracc Camp A (cTraccCampA)
+				DW	$0222
+				DB	$07
+
+				DB	$DC				; Tracc Camp B (cTraccCampB)
+				DW	$0229
+				DB	$04
+
+				DB	$B0				; Tracc Camp C (cCampCommons)
+				DW	$01E0
+				DB	$0B
+
 			else
+
+				DB	$A0				; cCtrlCommon
+				DW	$0110
+				DB	$04
 
 				DB	$A4				;Ctrl15
 				DW	$0114
@@ -268,8 +309,6 @@ CAMP_FILES		DB	$A0				; cCtrlCommon
 				DB	$FF				;UNUSED***
 				DW	$FFFF
 				DB	$FF
-
-			fin
 
 				DB	$98				;Findment
 				DW	$0150
@@ -306,6 +345,8 @@ CAMP_FILES		DB	$A0				; cCtrlCommon
 				DB	$B0				;Tracc Camp C
 				DW	$0130
 				DB	$0B
+
+			fin
 
 SPECIALS_DATA						;Was TRACER
 DCARDS_FOUND	DB	0,0,0

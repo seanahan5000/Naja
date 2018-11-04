@@ -39,10 +39,14 @@ SPECIAL_LOAD	STX	OPTIONS1		;Calling routine must clear
 				JSR	GETNSEW
 				JSR	NOSCAN
 				STA	PRIMARY
+			do ORIGINAL
+			else
 				LDA	DISK_SIDE
 				EOR	#side_T1!side_F1			;! means XOR
 				STA	DISK_SIDE
+			fin
 				JMP	RDKEY
+
 NOEXIT			JSR	DRIVE_ON
 NOSPECIAL		LDX	#fLoader2
 				JSR	FLOADER_FILE

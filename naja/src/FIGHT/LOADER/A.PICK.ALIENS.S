@@ -41,6 +41,7 @@ NOTPOS			LDA	COUNT
 				LDY	POSCNT
 				LDA	#$FF
 				STA	POSSIBL,Y
+
 				JSR	RARESUB
 RERAND			JSR	RNDMIZE
 				LDY	RANDOM1
@@ -188,7 +189,15 @@ RLOOP1			LDY	COUNT
 RLOOP2			LDY	RAREPNT
 				TXA
 				STA	RARITY,Y
+
+			do 0
 				INC	RAREPNT
+			else
+				INY
+				BEQ RAROUT		; prevent RAREPNT from wrapping to zero and causing hang
+				STY RAREPNT
+			fin
+
 				LDA	RARECNT
 				SEC
 				SED
@@ -238,10 +247,10 @@ DATA_SECTH		DB	>S_DATA17
 
 POINTEM			LDA	#<DATA_BUFR
 				CLC
-				ADC	DATA_BUFR+1		;Rarity offset low
+				ADC	DATA_BUFR+3		;Rarity offset low
 				STA	DATPNTL
 				LDA	#>DATA_BUFR
-				ADC	DATA_BUFR+2		;Rarity offset high
+				ADC	DATA_BUFR+4		;Rarity offset high
 				STA	DATPNTH
 				TYA
 				TAX
