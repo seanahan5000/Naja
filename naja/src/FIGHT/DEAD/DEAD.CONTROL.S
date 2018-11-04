@@ -108,9 +108,9 @@ DEAD_DONE		LDA	#side_MS
 				STA	DISK_SIDE
 				LDA	#$90
 				STA	SSTOREH
-				LDX	#<$0010
-				LDY	#>$0010
-				LDA	#3
+				LDX	#<$00F0			; MTESSINFO
+				LDY	#>$00F0
+				LDA	#6
 				JSR	SLOADER
 				JMP	$9000
 

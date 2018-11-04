@@ -224,31 +224,31 @@ PRBOTM			DB	$18,$70
 
 FIGHT_FILES
 				DB	$78				;fLoader1
-				DW	$0120
-				DB	4
+				DW	$00A0
+				DB	$04
 
 				DB	$60				;fLoader2
-				DW	$0124
-				DB	11
+				DW	$00A4
+				DB	$0D
 
 				DB	$63				;fCommand
-				DW	$0150
+				DW	$00B1
 				DB	$3D
 
 				DB	$63				;fNarrate
-				DW	$01A0
+				DW	$00F0
 				DB	$4D
 
 				DB	$90				;fAwarder
-				DW	$0200
-				DB	$10				;(THIS MAY CHANGE)
+				DW	$0140
+				DB	$0E				;(THIS MAY CHANGE)
 
 				DB	$80				;fDeadGroup
-				DW	$0210
+				DW	$0150
 				DB	$10
 
 				DB	$63				;fReNarrate
-				DW	$01A0
+				DW	$00F0
 				DB	$3D				;Whatever fCommand is
 
 				DS	4*3				;FREE SPACE****

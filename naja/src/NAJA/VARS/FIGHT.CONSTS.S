@@ -141,6 +141,17 @@ timeTESSERACT	=	upTime
 
 *-------------------------------
 
+			do ORIGINAL
+S_PICDATA		=	$0020
+
+S_DATA12		=	$0000
+S_DATA17		=	$0000
+S_DATA13		=	$0000
+S_DATA15		=	$0000
+S_DATA11		=	$0000
+S_DATA9			=	$0000
+S_SCODE12		=	$0140			;TEMP/GARBAGE VALUE
+			else
 S_PICDATA		=	$0000
 
 S_DATA12		=	$00F0
@@ -151,6 +162,7 @@ S_DATA11		=	S_DATA13+$10
 S_DATA9			=	S_DATA13+$21
 
 S_SCODE12		=	$0140			;TEMP VALUE
+			fin
 
 Xmonsprd		=	%10000000
 Xchrsprd		=	%01000000

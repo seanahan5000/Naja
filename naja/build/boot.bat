@@ -32,13 +32,17 @@ if not exist %BIN% mkdir %BIN%
 %ASM% FIGHT\AWARDER			ASM.AWARDER.S
 %ASM% FIGHT\DEAD			ASM.DEAD.S
 
-%ASM% ALIENS				ASM.DATA.S	-list ALIEN.DATA.LST
-%ASM% ALIENS				ASM.PICS.S	-list ALIEN.PICS.LST
+rem %ASM% ALIENS				ASM.DATA.S	-list ALIEN.DATA.LST
+rem %ASM% ALIENS                ASM.PICS.S  -list ALIEN.PICS.LST
+
+%ASM% ALIENS                ASM.DATA.17.S -list ALIEN.DATA.17.LST
+%ASM% ALIENS				ASM.PICS.17.S -list ALIEN.PICS.17.LST
 
 %ASM% TRACC					ASM.17.S
 %ASM% TRACC					ASM.15.S
-%ASM% TRACC					ASM.13.S
+%ASM% TRACC                 ASM.13.S
 %ASM% TRACC					ASM.11.S
+rem %ASM% TRACC					ASM.9.S
 
 %ASM% TRACC					ASM.CAMP.S
 %ASM% TRACC					ASM.TUNNELS.S
@@ -50,39 +54,51 @@ if not exist %BIN% mkdir %BIN%
 set A2NIB=a2nib -disk %BIN%\boot.nib
 %A2NIB% -create -volume 0
 
-%A2NIB% %OBJ%\NDOS.BOOT1		-t 00 -s 00
-%A2NIB% %OBJ%\PR.INFO			-t 00 -s 02
-%A2NIB% %OBJ%\SCREEN.III		-t 00 -s 03
-%A2NIB% %OBJ%\NDOS.525			-t 00 -s 04
-%A2NIB% %OBJ%\NCOMMONS			-t 00 -s 08
-%A2NIB% %OBJ%\CAMP.B000			-t 02 -s 00
-%A2NIB% %OBJ%\CAMP.E000			-t 03 -s 00
-%A2NIB% %OBJ%\CAMP.D000.M2		-t 05 -s 00
-%A2NIB% %OBJ%\CAMP.D000.M1		-t 06 -s 00
-%A2NIB% %OBJ%\TITLE.PAGE		-t 07 -s 00
-%A2NIB% %OBJ%\MTUNNELS			-t 0C -s 00
-%A2NIB% %OBJ%\MCONTROL			-t 0E -s 00
-%A2NIB% %OBJ%\MTESSINFO			-t 0F -s 00
-%A2NIB% %OBJ%\CHAR.DATA			-t 10 -s 00
-%A2NIB% %OBJ%\NDOS.525W			-t 10 -s 0E
-%A2NIB% %OBJ%\GROUP.ASSEMBLY	-t 11 -s 00
-%A2NIB% %OBJ%\ENROLL.TEST		-t 13 -s 00
-%A2NIB% %OBJ%\INFIRMARY			-t 17 -s 00
-%A2NIB% %OBJ%\ENERGY.CENTER		-t 18 -s 08
-%A2NIB% %OBJ%\ARSENAL			-t 1B -s 00
-%A2NIB% %OBJ%\ROBOT.REPAIR		-t 1F -s 00
+%A2NIB% %OBJ%\NDOS.BOOT1		-t 00 -s 00 -c 02
+%A2NIB% %OBJ%\PR.INFO           -t 00 -s 02 -c 01
+%A2NIB% %OBJ%\SCREEN.III        -t 00 -s 03 -c 01
+%A2NIB% %OBJ%\NDOS.525          -t 00 -s 04 -c 04
+%A2NIB% %OBJ%\NCOMMONS          -t 00 -s 08 -c 18
+%A2NIB% %OBJ%\CAMP.B000         -t 02 -s 00 -c 10
+%A2NIB% %OBJ%\CAMP.E000         -t 03 -s 00 -c 20
+%A2NIB% %OBJ%\CAMP.D000.M2      -t 05 -s 00 -c 10
+%A2NIB% %OBJ%\CAMP.D000.M1      -t 06 -s 00 -c 10
+%A2NIB% %OBJ%\TITLE.PAGE        -t 07 -s 00
+%A2NIB% %OBJ%\MTUNNELS          -t 0C -s 00
+%A2NIB% %OBJ%\MCONTROL          -t 0E -s 00
+%A2NIB% %OBJ%\MTESSINFO         -t 0F -s 00
+%A2NIB% %OBJ%\CHAR.DATA         -t 10 -s 00
+%A2NIB% %OBJ%\NDOS.525W         -t 10 -s 0E
+%A2NIB% %OBJ%\GROUP.ASSEMBLY    -t 11 -s 00
+%A2NIB% %OBJ%\ENROLL.TEST       -t 13 -s 00
+%A2NIB% %OBJ%\INFIRMARY         -t 17 -s 00
+%A2NIB% %OBJ%\ENERGY.CENTER     -t 18 -s 08
+%A2NIB% %OBJ%\ARSENAL           -t 1B -s 00
+%A2NIB% %OBJ%\ROBOT.REPAIR      -t 1F -s 00
 
 set A2NIB=a2nib -disk %BIN%\tracc1.nib
 %A2NIB% -create -volume 2
 
-%A2NIB% %OBJ%\CONTROL17		-t 11 -s 00
-REM %A2NIB% %OBJ%\CONTROL15		-t 11 -s 00
+%A2NIB% %OBJ%\ALIEN.DATA.17     -t 00 -s 00 -c 1C
+%A2NIB% %OBJ%\ALIEN.PICS.17     -t 02 -s 00 -c 7B
 
-%A2NIB% %OBJ%\ELEVATOR		-t 14 -s 00
-%A2NIB% %OBJ%\FINDMENT		-t 15 -s 00
-%A2NIB% %OBJ%\CAMP.7800		-t 16 -s 00
-%A2NIB% %OBJ%\CAMP.B000		-t 18 -s 00
-%A2NIB% %OBJ%\TUNNELS		-t 19 -s 00
-%A2NIB% %OBJ%\ALIEN.EDITOR	-t 20 -s 08
-%A2NIB% %OBJ%\LOADER17		-t 22 -s 00
-%A2NIB% %OBJ%\SELECT.OPTION	-t 22 -s 0D
+%A2NIB% %OBJ%\FIGHT.LOADER      -t 0A -s 00 -c 11
+%A2NIB% %OBJ%\FIGHT.COMMAND     -t 0B -s 01 -c 3D
+%A2NIB% %OBJ%\FIGHT.NARRATOR    -t 0F -s 00 -c 4D
+%A2NIB% %OBJ%\AWARDER           -t 14 -s 00 -c 0E
+%A2NIB% %OBJ%\DEAD.GROUP        -t 15 -s 00 -c 10
+%A2NIB% %OBJ%\FINDMENT          -t 16 -s 00 -c 08
+%A2NIB% %OBJ%\ELEVATOR          -t 17 -s 00 -c 0C
+
+%A2NIB% %OBJ%\CONTROL17         -t 1B -s 00 -c 10
+%A2NIB% %OBJ%\CAMP.7800         -t 1C -s 00 -c 1F
+%A2NIB% %OBJ%\CAMP.B000         -t 1E -s 00 -c 0B
+%A2NIB% %OBJ%\TUNNELS           -t 1F -s 00 -c 18
+%A2NIB% %OBJ%\ALIEN.EDITOR      -t 20 -s 08 -c 18
+%A2NIB% %OBJ%\LOADER17          -t 22 -s 00 -c 0D
+%A2NIB% %OBJ%\SELECT.OPTION     -t 22 -s 0D -c 03
+
+
+
+
+REM %A2NIB% %OBJ%\CONTROL15     -t 11 -s 00

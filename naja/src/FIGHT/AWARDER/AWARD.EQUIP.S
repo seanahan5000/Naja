@@ -4,18 +4,40 @@
 
 PICK_EQUIPMNT	JSR	FIND_ROOM
 				JSR	ANY_LEGAL
+
+			do 0
+				; TODO: implement this for real
+			else
+				; It looks like odds of finding equipment and what equipment
+				;	can be found was in the middle of being changed but not
+				;	finished.  This temporary code makes it at least work.
+				LDY	#aFindingOdds
+				LDA	(ALIEN_PTR),Y
+				STA FINDODD_ALIEN
+				LDY #aFindingGroup
+				STA FINDGRP_ALIEN
+			fin
+
 				LDA	#2
 				STA	COUNT
 :LOOP1			LDX	COUNT
 				LDA	ATOTAL1,X
 				BEQ	:SKIPC
 				STA	YCOUNT
+
+			do 0
+				; TODO: re-enable once implemented for real
+				;	This appears to multiply by 6 while PICK_ITEM
+				;	multiplies by 8.
 				TXA
 				ASL
 				STA	TEMP
 				ASL
 				ADC	TEMP			;Carry assumed clear
 				TAY
+			else
+				LDY #0
+			fin
 				LDA	FINDGRP_ALIEN,Y
 				AND	MASTER_MASK
 				BEQ	:SKIPC
@@ -71,13 +93,19 @@ PICK_EQUIPMNT	JSR	FIND_ROOM
 
 PICK_ITEM		JSR	RNDMIZE
 				LDA	RANDOM1
-				AND	#%00001111
+				AND	#%00000111
 				TAX
 				LDA	COUNT
+			do 0
+				; TODO: re-enable once implemented for real
+				;	PICK_EQUIPMNT appears to multiply by 6, not 8
 				ASL
 				ASL
 				ASL
 				TAY
+			else
+				LDY #0
+			fin
 				LDA	GROUP_MASKS,X
 				AND	FINDGRP_ALIEN,Y
 				AND	MASTER_MASK
@@ -197,8 +225,8 @@ PER_GROUP		DB	GROUP_B-GROUP_A/6
 				DB	GROUP_E-GROUP_D/6
 				DB	GROUP_F-GROUP_E/6
 				DB	GROUP_G-GROUP_F/6
-				DB	GROUP_H-GROUP_END/6		; bug in original code
-											; should be GROUP_END-GROUP_H/6
+				DB	GROUP_H-GROUP_G/6
+				DB	GROUP_END-GROUP_H/6
 
 GROUP_MASKS		DB	%10000000
 				DB	%01000000
