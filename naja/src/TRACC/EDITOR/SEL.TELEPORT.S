@@ -146,8 +146,17 @@ DO_TPORT		JSR	SET_CAMPFILES
 				STA	FACE
 				JMP	LEAVE
 
-DISK_SIDES		DB	side_T1,side_T1,side_T2
+DISK_SIDES
+			do ORIGINAL
+				DB  side_T1		; 17
+				DB  side_T2		; 15
+				DB  side_T3		; 13
+				DB  side_T4		; 11
+				DB  side_T5     ;  9
+			else
+				DB	side_T1,side_T1,side_T2
 				DB	side_T2,side_T2
+			fin
 
 *-------------------------------
 

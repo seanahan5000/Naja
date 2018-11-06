@@ -5,19 +5,6 @@
 PICK_EQUIPMNT	JSR	FIND_ROOM
 				JSR	ANY_LEGAL
 
-			do 0
-				; TODO: implement this for real
-			else
-				; It looks like odds of finding equipment and what equipment
-				;	can be found was in the middle of being changed but not
-				;	finished.  This temporary code makes it at least work.
-				LDY	#aFindingOdds
-				LDA	(ALIEN_PTR),Y
-				STA FINDODD_ALIEN
-				LDY #aFindingGroup
-				STA FINDGRP_ALIEN
-			fin
-
 				LDA	#2
 				STA	COUNT
 :LOOP1			LDX	COUNT
@@ -119,8 +106,12 @@ PICK_ITEM		JSR	RNDMIZE
 				CMP	ITEM
 				BCS	:LOOP1
 				STA	ITEM
+			do 0
+				; TODO: This is prone to hanging, where no items found are
+				;	ever considered to be legal.
 				JSR	ITEM_LEGAL
 				BCC	PICK_ITEM
+			fin
 				RTS
 
 *-------------------------------

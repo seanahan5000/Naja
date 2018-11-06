@@ -37,8 +37,6 @@ PCOMMON			STA	FLAG12			;through door/face change
 
 				LDY	FACE
 				DEY
-				LDA	COUNTOF,Y
-				STA	COUNT
 				TYA
 				ASL
 				TAY
@@ -187,13 +185,21 @@ TAKE_DAMAGE		LDA	#$00
 				CMP	GRPNUMB
 				BNE	:LOOP1
 
-FIND_ENCOUNTR	JSR	RNDMIZE
+FIND_ENCOUNTR
+				BIT	$C061				;TEMP *** left-option/alt
+				BMI	:FORCE_ENCOUNTER	;TEMP ***
+				BIT	$C062				;TEMP *** right-option/alt
+				BMI	:FORCE_EQUIPMENT	;TEMP ***
+
+				JSR	RNDMIZE
 				LDA	RANDOM1
 				AND	#$7F
 				CMP	ENCODDS
 				BCS FIND_ENCOUNTR
 				CMP #$01
-				BNE FIND_EQUIPMNT
+				BNE :FIND_EQUIPMNT
+
+:FORCE_ENCOUNTER
 				JSR	PICK_HALLTYPE
 			do ORIGINAL
 			else
@@ -206,19 +212,21 @@ FIND_ENCOUNTR	JSR	RNDMIZE
 				JSR	SLOADER_FILE
 				JMP	FIGHT_LOADER
 
-FIND_EQUIPMNT	LDA	BUFFER+4		;Can't find equipment if
-				CMP	#$FF			;   they're facing a wall...
+:FIND_EQUIPMNT
+				JSR	RNDMIZE			;Can't find equipment if
+				LDA RANDOM1 		;   the random number isn't right...
+				AND	#$3F			;????????
+				CMP	#$13			;temp?
+				BNE NORMAL_MOVE
+
+:FORCE_EQUIPMENT
+				LDA	BUFFER+4		;   or they're facing a wall...
+				CMP	#$FF
 				BEQ	NORMAL_MOVE
 
 				LDX	FLAG12			;   or if they just turned
 				DEX					;   left, right or around...
 				BEQ	NORMAL_MOVE
-
-				JSR	RNDMIZE			;   or if the random number
-				LDA RANDOM1 		;   isn't right...
-				AND	#$3F			;????????
-				CMP	#$13			;temp?
-				BNE NORMAL_MOVE
 
 				JSR	RESET_CHRLIST	;   or if they have no room
 				JSR	CSCAN_PUTABLE	;   for equipment.
@@ -344,6 +352,7 @@ HALL_UPDATED	DB	$00
 GONE_CRITICAL	LDA	#$00
 				BEQ	OC_COM1			;Always
 
+				ERR	*-$A24C
 OUT_OF_ENERGY	LDA	#$01
 OC_COM1			LDX	#RED
 OC_COM2			STX	MESSAGE_COLOR
@@ -489,14 +498,7 @@ FACERS			DW	FACE1
 				DW	FACE6
 				DW	FACE7
 
-COUNTOF			DB	$00
-				DB	FACE2-FACE1/2
-				DB	FACE3-FACE1/2
-				DB	FACE4-FACE1/2
-				DB	FACE5-FACE1/2
-				DB	FACE6-FACE1/2
-				DB	FACE7-FACE1/2
-
+				ERR	*-$A410
 SHELL_INFO
 			do	ORIGINAL
 

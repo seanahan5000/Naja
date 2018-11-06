@@ -56,6 +56,21 @@ AWARDER			LDA	#$40
 				DEX
 				BPL	:LOOP1
 
+			do 0
+			else
+				; It looks like odds of finding equipment and what equipment
+				;	can be found was in the middle of being changed but not
+				;	finished.  This temporary code makes it at least work.
+				;	(It must be done before other files are loaded and ALIEN_HEAP
+				;	is overwritten.)
+				LDY	#aFindingOdds
+				LDA	(ALIEN_PTR),Y
+				STA FINDODD_ALIEN
+				LDY #aFindingGroup
+				LDA	(ALIEN_PTR),Y
+				STA FINDGRP_ALIEN
+			fin
+
 				JSR	TOTALS_OUT
 				LDY	#$0D			;"...nothing to scan..."
 				BIT	GROUP_STATUS

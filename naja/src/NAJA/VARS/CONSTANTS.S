@@ -166,11 +166,19 @@ BLUE			=	$D5
 WHITE2			=	$FF
 
 side_MS			=	0
+            do ORIGINAL
+side_T1         =   1
+side_T2         =   2
+side_T3         =   3
+side_T4         =   4
+side_T5         =   5
+            else
 side_XX			=	1
 side_T1			=	2
 side_T2			=	3
 side_F1			=	4
 side_F2			=	5
+            fin
 
 *** File numbers for camp
 cCtrlCommon		=	0

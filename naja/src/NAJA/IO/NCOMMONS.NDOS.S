@@ -10,7 +10,17 @@ EXTRA_64K		=	$3C0			;???
 
 REMOVE_WTAB		SEC
 				BCS	MESS_COM		;Always
-ASK_FOR_SIDE	LSR
+
+ASK_FOR_SIDE
+			do ORIGINAL
+				LDX SIDE_LETTERS+0
+				TAY
+				BEQ :SKIPA
+                LDX SIDE_LETTERS+1
+:SKIPA      	STX	MESSAGES+12
+				STY	MESSAGES+13
+			else
+				LSR
 				TAX
 				LDA	SIDE_LETTERS,X
 				STA	MESSAGES+12
@@ -18,7 +28,9 @@ ASK_FOR_SIDE	LSR
 				BCC	:SKIPA
 				INX
 :SKIPA			STX	MESSAGES+13
+			fin
 				CLC
+
 MESS_COM		PHP
 				JSR	CLEAR_HOLES
 				JSR	SWAP_HOLES
@@ -57,7 +69,6 @@ MESS_COM		PHP
 				RTS
 
 *-------------------------------
-
 
 RAM_FILE		BIT	EXTRA_64K
 				BMI	:SKIPA
