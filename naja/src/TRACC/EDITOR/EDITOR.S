@@ -62,10 +62,17 @@ GET_SHELL		JSR	CLEAR1
 
 :SKIPA			INX
 				STX	SHELL_NUMBER
+			do ORIGINAL
+				TXA
+				CLC
+				ADC #side_T1-1
+				TAY
+			else
 				LDY	#side_F1
 				CPX	#3
 				BCC	:SKIPB
 				INY
+			fin
 :SKIPB			STY	DISK_SIDE
 				JSR	LOADSUB
 				JMP	GOT_SHELL

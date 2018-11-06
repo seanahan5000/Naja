@@ -169,8 +169,20 @@ UPPER			CMP	#-2
 :EXIT			RTS
 
 
-DISK_SIDES		DFB	side_T1,side_T1,side_T2
-				DFB	side_T2,side_T2
+DISK_SIDES
+			do ORIGINAL
+				DB  side_T1		; 17
+				DB  side_T2		; 15
+				DB  side_T3		; 13
+				DB  side_T4		; 11
+				DB  side_T5     ;  9
+			else
+				DB  side_T1		; 17
+				DB  side_T1		; 15
+				DB  side_T2		; 13
+				DB  side_T2		; 11
+				DB  side_T2     ;  9
+			fin
 
 DEST_SHELL		DFB	$00
 FLAG_345		DFB	$00
