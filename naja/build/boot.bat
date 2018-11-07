@@ -10,10 +10,10 @@ set ASM=asm6502 -root %SRC% -objbase ..\obj -base
 if not exist %OBJ% mkdir %OBJ%
 if not exist %BIN% mkdir %BIN%
 
-%ASM% FIGHT\LOADER			ASM.LOADER.S
+%ASM% FIGHT\LOADER			ASM.LOADER.S   -list FIGHT.LOADER.LST
 %ASM% FIGHT\COMMAND			ASM.COMMAND.S
 %ASM% FIGHT\NARRATOR		ASM.NARRATOR.S
-%ASM% FIGHT\AWARDER			ASM.AWARDER.S   -list FIGHT.AWARDER.LST -sym %BIN%\awarder.sym
+%ASM% FIGHT\AWARDER			ASM.AWARDER.S
 %ASM% FIGHT\DEAD			ASM.DEAD.S
 
 %ASM% TRACC                 ASM.13.S
@@ -82,7 +82,7 @@ REM ---------------------------------------
 %ASM% ALIENS                    ASM.DATA.17.S
 %ASM% ALIENS                    ASM.PICS.17.S
 
-%ASM% TRACC                     ASM.17.S -list CONTROL17.LST
+%ASM% TRACC                     ASM.17.S
 
 set A2NIB=a2nib -disk %BIN%\tracc1.nib
 %A2NIB% -create -volume 1
@@ -99,10 +99,10 @@ REM ---------------------------------------
 REM TRACC shell 15
 REM ---------------------------------------
 
-%ASM% ALIENS                    ASM.DATA.15.S -list ALIEN.DATA.15.LST
-%ASM% ALIENS                    ASM.PICS.15.S -list ALIEN.PICS.15.LST
+%ASM% ALIENS                    ASM.DATA.15.S
+%ASM% ALIENS                    ASM.PICS.15.S
 
-%ASM% TRACC                     ASM.15.S -list CONTROL15.LST
+%ASM% TRACC                     ASM.15.S
 
 set A2NIB=a2nib -disk %BIN%\tracc2.nib
 %A2NIB% -create -volume 2
@@ -111,6 +111,25 @@ set A2NIB=a2nib -disk %BIN%\tracc2.nib
 %A2NIB% %OBJ%\ALIEN.PICS.15     -t 02 -s 00 -c 6E
 
 %A2NIB% %OBJ%\CONTROL15         -t 1B -s 00 -c 10
+
+call :TRACC_COMMON
+
+REM ---------------------------------------
+REM TRACC shell 13
+REM ---------------------------------------
+
+%ASM% ALIENS                    ASM.DATA.13.S -list ALIEN.DATA.13.LST
+%ASM% ALIENS                    ASM.PICS.13.S -list ALIEN.PICS.13.LST
+
+%ASM% TRACC                     ASM.13.S -list CONTROL13.LST
+
+set A2NIB=a2nib -disk %BIN%\tracc3.nib
+%A2NIB% -create -volume 3
+
+%A2NIB% %OBJ%\ALIEN.DATA.13     -t 00 -s 00 -c 10
+%A2NIB% %OBJ%\ALIEN.PICS.13     -t 02 -s 00 -c 49
+
+%A2NIB% %OBJ%\CONTROL13         -t 1B -s 00 -c 10
 
 call :TRACC_COMMON
 

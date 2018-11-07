@@ -4,15 +4,15 @@
 - fix editor write/exit
 - test info seller
 
+- Tesseract to TRACC hangs if tracc1.nib not in drive
+
 
 Tools
 -----
 
 	Level Editor
 	
-		- Create it
-		- Support copying/pasting text form of levels
-			(like ScreenEditor)
+		- Fix flickering issues while drawing
 	
 	Emulator/Debugger
 	
