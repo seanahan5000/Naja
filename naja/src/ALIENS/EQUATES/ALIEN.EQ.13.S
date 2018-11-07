@@ -12,7 +12,7 @@ pEXPLODE        DS  1
 pFAKER          DS  1
 pGLASS_GUY      DS  1
 pGREEN_PUDDLE   DS  1
-pINSECT2        DS  1               ;Duplicated
+pINSECT         DS  1
 pLITTLE_MEN     DS  1
 pMAGNET         DS  1
 pMISER          DS  1

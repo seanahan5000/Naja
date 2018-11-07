@@ -468,15 +468,6 @@ CONTAG_TEXT		PLOTAT	64;37;(XXXXXXXXXX_IS_BEGINNING)
 				DS	\,$EE
 
 			do ORIGINAL
-				;*** these aren't right ***
-				DO	SHELLNUM-1
-				DO	SHELLNUM-2
-				DO	SHELLNUM-3
-				DEND
-				ORG	$A400
-				FIN
-				FIN
-				FIN
 			else
 				DO	SHELLNUM-1
 				DO	SHELLNUM-3

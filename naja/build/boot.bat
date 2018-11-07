@@ -10,15 +10,11 @@ set ASM=asm6502 -root %SRC% -objbase ..\obj -base
 if not exist %OBJ% mkdir %OBJ%
 if not exist %BIN% mkdir %BIN%
 
-%ASM% FIGHT\LOADER			ASM.LOADER.S   -list FIGHT.LOADER.LST
+%ASM% FIGHT\LOADER			ASM.LOADER.S
 %ASM% FIGHT\COMMAND			ASM.COMMAND.S
 %ASM% FIGHT\NARRATOR		ASM.NARRATOR.S
 %ASM% FIGHT\AWARDER			ASM.AWARDER.S
 %ASM% FIGHT\DEAD			ASM.DEAD.S
-
-%ASM% TRACC                 ASM.13.S
-%ASM% TRACC					ASM.11.S
-REM %ASM% TRACC				ASM.9.S
 
 %ASM% TRACC					ASM.CAMP.S
 %ASM% TRACC					ASM.TUNNELS.S
@@ -40,7 +36,7 @@ REM ---------------------------------------
 %ASM% TRACC                 ASM.CAMP.S      -sym %BIN%\camp.sym
 %ASM% NAJA\IO               ASM.CHAR.DATA.S
 %ASM% NAJA\BOOT             ASM.TITLE.S
-%ASM% MOTHER\GROUP.ASSEMBLY ASM.GROUP.S     -sym %BIN%\group.sym
+%ASM% MOTHER\GROUP.ASSEMBLY ASM.GROUP.S
 %ASM% MOTHER\ENROLLTEST     ASM.ENTEST.S
 %ASM% MOTHER\ENERGY         ASM.ENERGY.S
 %ASM% MOTHER\ARSENAL        ASM.ARSENAL.S
@@ -118,10 +114,10 @@ REM ---------------------------------------
 REM TRACC shell 13
 REM ---------------------------------------
 
-%ASM% ALIENS                    ASM.DATA.13.S -list ALIEN.DATA.13.LST
-%ASM% ALIENS                    ASM.PICS.13.S -list ALIEN.PICS.13.LST
+%ASM% ALIENS                    ASM.DATA.13.S
+%ASM% ALIENS                    ASM.PICS.13.S
 
-%ASM% TRACC                     ASM.13.S -list CONTROL13.LST
+%ASM% TRACC                     ASM.13.S
 
 set A2NIB=a2nib -disk %BIN%\tracc3.nib
 %A2NIB% -create -volume 3
@@ -132,6 +128,31 @@ set A2NIB=a2nib -disk %BIN%\tracc3.nib
 %A2NIB% %OBJ%\CONTROL13         -t 1B -s 00 -c 10
 
 call :TRACC_COMMON
+
+REM ---------------------------------------
+REM TRACC shell 11
+REM ---------------------------------------
+
+%ASM% ALIENS                    ASM.DATA.11.S -list ALIEN.DATA.11.LST
+%ASM% ALIENS                    ASM.PICS.11.S -list ALIEN.PICS.11.LST
+
+%ASM% TRACC                     ASM.11.S -list CONTROL11.LST
+
+set A2NIB=a2nib -disk %BIN%\tracc4.nib
+%A2NIB% -create -volume 4
+
+%A2NIB% %OBJ%\ALIEN.DATA.11     -t 00 -s 00 -c 11
+%A2NIB% %OBJ%\ALIEN.PICS.11     -t 02 -s 00 -c 57
+
+%A2NIB% %OBJ%\CONTROL11         -t 1B -s 00 -c 10
+
+call :TRACC_COMMON
+
+REM ---------------------------------------
+REM TRACC shell 9
+REM ---------------------------------------
+
+REM %ASM% TRACC             ASM.9.S
 
 REM ---------------------------------------
 REM Write common TRACC files

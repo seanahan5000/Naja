@@ -5,6 +5,7 @@
 - test info seller
 
 - Tesseract to TRACC hangs if tracc1.nib not in drive
+- Topviews on shell 11 are too low vertically
 
 
 Tools
