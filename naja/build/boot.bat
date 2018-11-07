@@ -10,7 +10,7 @@ set ASM=asm6502 -root %SRC% -objbase ..\obj -base
 if not exist %OBJ% mkdir %OBJ%
 if not exist %BIN% mkdir %BIN%
 
-%ASM% FIGHT\LOADER			ASM.LOADER.S
+%ASM% FIGHT\LOADER			ASM.LOADER.S   -list FIGHT.LOADER.LST
 %ASM% FIGHT\COMMAND			ASM.COMMAND.S
 %ASM% FIGHT\NARRATOR		ASM.NARRATOR.S
 %ASM% FIGHT\AWARDER			ASM.AWARDER.S
@@ -20,7 +20,7 @@ if not exist %BIN% mkdir %BIN%
 %ASM% TRACC					ASM.TUNNELS.S
 %ASM% TRACC\EDITOR			SELECT.OPTION.S
 %ASM% TRACC\EDITOR			EDITOR.S
-%ASM% SPECIALS\ELEVATOR		THE.ELEVATOR.S
+%ASM% SPECIALS\ELEVATOR		THE.ELEVATOR.S   -list ELEVATOR.LST
 %ASM% SPECIALS\FINDMENT		FINDMENT.S
 
 REM ---------------------------------------
@@ -133,10 +133,10 @@ REM ---------------------------------------
 REM TRACC shell 11
 REM ---------------------------------------
 
-%ASM% ALIENS                    ASM.DATA.11.S -list ALIEN.DATA.11.LST
-%ASM% ALIENS                    ASM.PICS.11.S -list ALIEN.PICS.11.LST
+%ASM% ALIENS                    ASM.DATA.11.S
+%ASM% ALIENS                    ASM.PICS.11.S
 
-%ASM% TRACC                     ASM.11.S -list CONTROL11.LST
+%ASM% TRACC                     ASM.11.S
 
 set A2NIB=a2nib -disk %BIN%\tracc4.nib
 %A2NIB% -create -volume 4
@@ -152,7 +152,20 @@ REM ---------------------------------------
 REM TRACC shell 9
 REM ---------------------------------------
 
-REM %ASM% TRACC             ASM.9.S
+%ASM% ALIENS                    ASM.DATA.9.S -list ALIEN.DATA.9.LST
+%ASM% ALIENS                    ASM.PICS.9.S -list ALIEN.PICS.9.LST
+
+%ASM% TRACC                     ASM.9.S -list CONTROL9.LST
+
+set A2NIB=a2nib -disk %BIN%\tracc5.nib
+%A2NIB% -create -volume 5
+
+%A2NIB% %OBJ%\ALIEN.DATA.9      -t 00 -s 00 -c 0c
+%A2NIB% %OBJ%\ALIEN.PICS.9      -t 02 -s 00 -c 52
+
+%A2NIB% %OBJ%\CONTROL9          -t 1B -s 00 -c 10
+
+call :TRACC_COMMON
 
 REM ---------------------------------------
 REM Write common TRACC files

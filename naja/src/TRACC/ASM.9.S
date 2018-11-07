@@ -22,7 +22,12 @@
 
 SHELLNUM		=	5
 
+			do	ORIGINAL
+				ORG	$A000
+			else
 				DUMMY	$A000
+			fin
+
 				PUT	CONTROLS/COMMON
 				PUT	CONTROLS/PART9
 				SAV	CONTROL9
