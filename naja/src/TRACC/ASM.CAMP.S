@@ -233,19 +233,19 @@ CAMP_FILES
 				DB	$0C
 
 				DB	$A4				; cControl15
-				DW	$01B4			;*** change?
+				DW	$01B4
 				DB	$0C
 
 				DB	$A4				; cControl13
-				DW	$01B4			;*** change?
+				DW	$01B4
 				DB	$0C
 
 				DB	$A4				; cControl11
-				DW	$01B4			;*** change?
+				DW	$01B4
 				DB	$0C
 
 				DB	$A4				; cControl9
-				DW	$01B0			;*** change?
+				DW	$01B4
 				DB	$0C
 
 				DB	$98				; Findment
