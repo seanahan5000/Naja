@@ -1,0 +1,3 @@
+Bad Files:
+CAT.STEP2.PIC		T$1A,S$04
+WALL.PIC		T$1B,S$0E
