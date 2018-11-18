@@ -1,0 +1,2 @@
+Bad Files:
+ASSM	T$03,S$04
