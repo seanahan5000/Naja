@@ -25,8 +25,7 @@ INIT_LIST		STX	LIST_PTR
 				LDX	#0
 :1				LDA	(PTR),Y
 				BMI	:2
-				TAY
-				JSR	ADVANCE_PTR
+				JSR	ADVANCE_ENTRY
 				LDA	ENTRY_YCRD
 				STA	YCRD_TABLE,X
 				CLC
@@ -57,15 +56,12 @@ FIND_ENTRY		LDA	YCRD_TABLE,X
 				TXA
 				BEQ	:2
 				PHA
-:1				LDA	(PTR),Y
-				TAY
-				JSR	ADVANCE_PTR
+:1				JSR	ADVANCE_ENTRY
 				DEX
 				BNE	:1
 				PLA
 				TAX
-:2				INY
-				LDA	(PTR),Y
+:2				LDA	(PTR),Y
 				STA	ENTRY_TYPE
 				INY
 				LDA	(PTR),Y
@@ -78,6 +74,19 @@ FIND_ENTRY		LDA	YCRD_TABLE,X
 				INX
 				RTS
 
+*-------------------------------
+*
+*-------------------------------
+
+ADVANCE_ENTRY	INY					; must not change X register
+				INY
+				INY
+:1				LDA	(PTR),Y
+				BMI	:2
+				INY
+				BNE	:1				; always
+:2				INY
+									; fall through
 *-------------------------------
 *
 *-------------------------------
