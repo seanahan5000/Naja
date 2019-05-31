@@ -396,17 +396,24 @@ Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
 		}
 		
 		const char* start = sp;
-		
-		while (true)
+
+		// special-case macro parameter variables
+		c = *sp;
+		if (c >= '1' && c <= '8')
 		{
-			c = *sp;
-			
-			if (!isalpha(c) && !isdigit(c) && c != '_')
-				break;
-			
 			++sp;
 		}
-		
+		else
+		{
+			while (true)
+			{
+				if (!isalpha(c) && !isdigit(c) && c != '_')
+					break;
+
+				c = *++sp;
+			}
+		}
+
 		char name[256];
 		INT32 len = sp - start;
 		if (len >= sizeof(name))

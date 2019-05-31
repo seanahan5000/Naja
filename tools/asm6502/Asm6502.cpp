@@ -1,63 +1,6 @@
 
 #include "precomp.h"
-
 #include "Assembler.h"
-
-#if 0
-int main(int argc, char* argv[])
-{
-	Assembler* assembler = new Assembler();
-	
-#if 1
-	char* curdir;
-	char* file;
-
-//	curdir = "MOTHER\\HALL";
-//	file = "ASM.HALL.S";
-	
-//	curdir = "MOTHER\\ARSENAL";
-//	file = "ASM.ARSENAL.S";
-	
-//	curdir = "MOTHER\\ROBOT.REPAIR";
-//	file = "ASM.REPAIR.S";
-	
-	curdir = "TRACC";
-	file = "ASM.CAMP.S";
-	
-//	curdir = "FIGHT\\NARRATOR";
-//	file = "ASM.NARRATOR.S";
-	
-//	curdir = "FIGHT\\COMMAND";
-//	file = "ASM.COMMAND.S";
-	
-//	curdir = "FIGHT\\LOADER";
-//	file = "ASM.LOADER.S";
-	
-//	curdir = "ALIENS";
-//	file = "ASM.DATA.S";
-	
-//	curdir = "ALIENS";
-//	file = "ASM.PICS.S";
-	
-	assembler->SetRootDir("D:\\Misc\\Apple_II\\NAJA_SRC");
-	assembler->SetCurrentDir(curdir);
-	assembler->Assemble(file,
-						"D:\\Misc\\Asm6502\\games\\out.bin",
-						"D:\\Misc\\Asm6502\\games\\out.asm.lst");
-#else
-	
-	assembler->Assemble("test.s", "test.bin", "test.s.lst");	//***
-//	assembler->Assemble("test2.s", "test2.bin", "test2.s.lst");	//***
-//	assembler->Assemble("riddle-pal.asm", "riddle-pal.bin", "riddle-pal.asm.lst");	//***
-//	assembler->Assemble("dicombat.asm", "dicombat.bin", "dicombat.asm.lst");	//***
-
-#endif
-	
-	delete assembler;
-	return 0;
-}
-#endif
-
 
 int main(int argc, char* argv[])
 {
@@ -67,25 +10,7 @@ int main(int argc, char* argv[])
 	char* symName = NULL;
 	char* fileName = NULL;
 	Assembler* assembler = new Assembler();
-	
-//	assembler->SetSyntax(SyntaxDASM);
-//	assembler->Assemble("riddle-pal.asm", "riddle.bin", "riddle.lst");
-	
-//	assembler->SetSyntax(SyntaxDASM);
-//	assembler->Assemble("RiverRaid.asm", "RiverRaid.bin", "RiverRaid.lst");
-	
-//	assembler->SetSyntax(SyntaxIIGS);
-//	assembler->Assemble("kaboom.a", "kaboom.bin", "kaboom.lst");
-	
-//	assembler->SetSyntax(SyntaxDASM);
-//	assembler->Assemble("test-dasm.s", "test-dasm.bin", "test-dasm.lst");
-	
-//	assembler->Assemble("test.s", "test.bin", "test.s.lst");
-//	assembler->Assemble("test-merlin.s", "test-merlin.bin", "test-merlin.s.lst");
-//	assembler->Assemble("test3.s", "test3.bin", "test3.s.lst");
-//	return 0;
-	//***
-	
+
 	argc -= 1;
 	argv += 1;
 	

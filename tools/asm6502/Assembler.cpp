@@ -9,6 +9,19 @@
 
 //------------------------------------------------------------------------------
 
+static bool EndsWith(const char* string, const char* endsWith)
+{
+	size_t strLength = strlen(string);
+	size_t endsLength = strlen(endsWith);
+
+	if (endsLength > strLength)
+		return false;
+
+	return strcmp(string + strLength - endsLength, endsWith) == 0;
+}
+
+//------------------------------------------------------------------------------
+
 Assembler::Assembler()
 	: mLineList(8192), mOutBuffer(16384)
 {
@@ -253,11 +266,20 @@ Assembler::Assemble(const char* inName,
             Symbol* symbol = (Symbol*)(entries[i]->object);
             if (symbol->GetValue() >= 0x100)
             {
+#if 0
                 INT32 len = strlen(entries[i]->string);
                 fprintf(symFile, "%s", entries[i]->string);
                 for (INT32 j = 0; j < 22 - len; ++j)
                     fprintf(symFile, " ");
                 fprintf(symFile, "= $%04X\n", symbol->GetValue());
+#else
+                // skip local symbols
+                if (EndsWith(entries[i]->string, "__"))
+                    continue;
+
+                // print symbols in AppleWin format
+                fprintf(symFile, "%04X %s\n", symbol->GetValue(), entries[i]->string);
+#endif
             }
         }
     }
