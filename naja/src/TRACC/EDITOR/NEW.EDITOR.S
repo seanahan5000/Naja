@@ -104,7 +104,12 @@ GET_SHELL		JSR	CLEAR_PAGE
 
 *-------------------------------
 
-GETSHELL_DEF	DB	$04
+GETSHELL_DEF
+            do ORIGINAL
+				DB	$05
+            else
+				DB	$04
+			fin
 				DB	$80
 				DW	:SHELL_CURS
 
@@ -114,6 +119,9 @@ GETSHELL_DEF	DB	$04
 				JMP	ARROWER
 :YPNTS			DB	76,84,92
 				DB	100,108
+			do ORIGINAL
+				DB	116
+			fin
 
 *-------------------------------
 
