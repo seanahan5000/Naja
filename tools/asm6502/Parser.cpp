@@ -59,9 +59,13 @@ Parser::ParseLine(const char* string)
 
 	mTokenizer->SetString(string);
 
-	bool labelIsLocal = false;
-	bool doAddLabelSymbol = true;
-	bool hasLabel = *string != ' ' && *string != '\t';
+    bool labelIsLocal;
+    bool doAddLabelSymbol;
+    bool hasLabel;
+
+	labelIsLocal = false;
+	doAddLabelSymbol = true;
+	hasLabel = *string != ' ' && *string != '\t';
 
 	if (!mConditional.IsEnabled())
 	{
@@ -487,7 +491,8 @@ Parser::ParseLabel(bool firstColumn, char* label, INT32 labelMax, bool* isLocal)
 	strncpy(label, mTokenizer->GetTokenString(), labelMax - 1);
 	label[labelMax - 1] = 0;
 
-	INT32 colonMark = mTokenizer->GetPosition();
+    INT32 colonMark;
+    colonMark = mTokenizer->GetPosition();
 	t = Next();
 	if (t != ':')
 	{

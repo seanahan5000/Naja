@@ -140,7 +140,7 @@ public:
 	void SetVar(const char* name, const char* value);
 	bool GetVar(const char* name, const char** value);
 
-	void SetError(char* format, ...);
+	void SetError(const char* format, ...);
 	bool HasError() { return mError[0] != 0; }
 	char* GetError() { return mError; }
 	void ClearError() { mError[0] = 0; }

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\Asm6502.cpp" />
+    <ClCompile Include="..\precomp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\precomp.h" />
+  </ItemGroup>
+</Project>

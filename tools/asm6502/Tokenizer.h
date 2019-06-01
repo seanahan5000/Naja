@@ -1,8 +1,9 @@
 
 #pragma once
 
+#include "Tokens.h"
+
 class StringHash;
-enum Token;
 
 //------------------------------------------------------------------------------
 

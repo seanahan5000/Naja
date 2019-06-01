@@ -74,7 +74,7 @@ Assembler::Assemble(const char* inName,
 			char* sp = mOutFileName + len - 2;
 			if (*sp++ == '.')
 			{
-				char c = toupper(*sp);
+				char c = (char)toupper(*sp);
 				if (c == 'S' || c == 'A')
 					*(sp - 1) = 0;
 				else
@@ -122,7 +122,8 @@ Assembler::Assemble(const char* inName,
 	mInWritePhase = false;
 	SetOrg(0x8000);		// Merlin default
 
-	INT32 errorCount = 0;
+	INT32 errorCount;
+    errorCount = 0;
 	while (mReadState.file != NULL)
 	{
 		do {
@@ -748,7 +749,7 @@ Assembler::AddEquateSymbol(const char* equate, INT32 value, bool forceLong)
 //------------------------------------------------------------------------------
 
 void
-Assembler::SetError(char* format, ...)
+Assembler::SetError(const char* format, ...)
 {
 	if (mError[0] == 0)
 	{

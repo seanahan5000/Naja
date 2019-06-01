@@ -235,7 +235,7 @@ OpStatement::Write(Assembler* assembler)
 	{
 		case OpTarget_NONE:
 		case OpTarget_A:
-			assembler->WriteByte(mOpcode);
+			assembler->WriteByte((UINT8)mOpcode);
 			break;
 
 		case OpTarget_IMM:
@@ -252,7 +252,7 @@ OpStatement::Write(Assembler* assembler)
 				return;
 			}
 			else
-				assembler->WriteByteByte(mOpcode, value);
+				assembler->WriteByteByte((UINT8)mOpcode, (UINT8)value);
 			break;
 
 		case OpTarget_ABS:
@@ -261,7 +261,7 @@ OpStatement::Write(Assembler* assembler)
 		case OpTarget_IND:
 			if (!mExpression->Resolve(assembler, &value))
 				return;
-			assembler->WriteByteWord(mOpcode, value);
+			assembler->WriteByteWord((UINT8)mOpcode, (UINT16)value);
 			break;
 
 		case OpTarget_BRAN:
@@ -273,7 +273,7 @@ OpStatement::Write(Assembler* assembler)
 				assembler->SetError("Branch out of range");
 				return;
 			}
-			assembler->WriteByteByte(mOpcode, value);
+			assembler->WriteByteByte((UINT8)mOpcode, (UINT8)value);
 			break;
 	}
 }
@@ -469,7 +469,7 @@ StorageStatement::Parse(Parser* p, const char* label)
 void
 StorageStatement::Write(Assembler* assembler)
 {
-	assembler->WritePattern(mPattern, mByteCount);
+	assembler->WritePattern((UINT8)mPattern, mByteCount);
 }
 
 //------------------------------------------------------------------------------
@@ -516,7 +516,7 @@ AlignStatement::Parse(Parser* p, const char* label)
 void
 AlignStatement::Write(Assembler* assembler)
 {
-	assembler->WritePattern(mPattern, mByteCount);
+	assembler->WritePattern((UINT8)mPattern, mByteCount);
 }
 
 //------------------------------------------------------------------------------
@@ -544,7 +544,7 @@ ScanHex(Assembler* assembler, char* string, GrowBuffer* buffer)
 		else
 			v += tolower(c) - 'a' + 10;
 		if ((phase ^= 1) == 0)
-			*ptr++ = v;
+			*ptr++ = (UINT8)v;
 	}
 
 	buffer->Consume(length);
@@ -888,7 +888,7 @@ UsrStatement::Parse(Parser* p, const char* label)
 		if (isdigit(c))
 			c -= '0';
 		else if (isalpha(c))
-			c = 0x0B + toupper(c) - 'A';
+			c = 0x0B + (char)toupper(c) - 'A';
 		else if (c == '_')
 			c = 0x0A;
 		else
@@ -905,7 +905,7 @@ UsrStatement::Parse(Parser* p, const char* label)
 				}
 				if (x == c)
 				{
-					c = 37 + xp - symbols - 1;
+					c = (char)(37 + xp - symbols - 1);
 					break;
 				}
 			}

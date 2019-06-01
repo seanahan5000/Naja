@@ -2,11 +2,11 @@
 #pragma once
 
 #include "ClassUtils.h"
+#include "Tokens.h"
 
 class Assembler;
 class Expression;
 class Parser;
-enum Token;
 
 //------------------------------------------------------------------------------
 

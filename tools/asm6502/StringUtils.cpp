@@ -102,7 +102,7 @@ StringHash::AddNoCase(const char* string, void* object)
 	cp = sp;
 	do {
 		c = *cp;
-		*cp++ = tolower(c);
+		*cp++ = (char)tolower(c);
 	} while (c != 0);
 
 	result = Add(sp, object);
@@ -112,7 +112,7 @@ StringHash::AddNoCase(const char* string, void* object)
 		cp = sp;
 		do {
 			c = *cp;
-			*cp++ = toupper(c);
+			*cp++ = (char)toupper(c);
 		} while (c != 0);
 
 		result = Add(sp, object);

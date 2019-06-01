@@ -1,7 +1,8 @@
 
 #pragma once
 
-enum Token;
+#include "Tokens.h"
+
 class Assembler;
 class Parser;
 class Symbol;
