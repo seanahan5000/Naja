@@ -15,13 +15,13 @@ class Statement
 public:
 	Statement();
 	virtual ~Statement();
-	
+
 	virtual void Parse(Parser* p, const char* label) {}
 	virtual void Write(Assembler* assembler) {}
-	
+
 	void SetPC(INT32 pc) { mPC = pc; }
 	INT32 GetPC() { return mPC; }
-	
+
 protected:
 	INT32 mPC;
 	Expression* mExpression;
@@ -55,13 +55,13 @@ public:
 	{
 		mOpcode = opcode;
 	}
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
-	
+
 protected:
 	void ChooseAddressMode(Assembler* assembler);
-	
+
 	INT32 mOpcode;		// holds token during early parse, then hex opcode
 	OpTarget mTarget;
 };
@@ -76,7 +76,7 @@ public:
 
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
-	
+
 protected:
 	Token mTypeToken;
 	Array<Expression*> mExpList;
@@ -91,10 +91,10 @@ public:
 	{
 		mByteCount = 0;
 	}
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
-	
+
 protected:
 	INT32 mPattern;
 	INT32 mByteCount;
@@ -109,10 +109,10 @@ public:
 	{
 		mByteCount = 0;
 	}
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
-	
+
 protected:
 	INT32 mPattern;
 	INT32 mByteCount;
@@ -126,10 +126,10 @@ public:
 	HexStatement() : Statement()
 	{
 	}
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
-	
+
 protected:
 	GrowBuffer mBuffer;
 };
@@ -143,10 +143,10 @@ public:
 	{
 		mPrependLength = prependLength;
 	}
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
-	
+
 protected:
 	bool mPrependLength;
 	UINT8 mBaseLength;
@@ -161,7 +161,7 @@ public:
 	EquStatement() : Statement()
 	{
 	}
-	
+
 	void Parse(Parser* p, const char* label);
 };
 
@@ -173,10 +173,10 @@ public:
 	OrgStatement() : Statement()
 	{
 	}
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
-	
+
 protected:
 	INT32 mOrg;
 };
@@ -190,9 +190,9 @@ public:
 	{
 		mTypeToken = t;
 	}
-	
+
 	void Parse(Parser* p, const char* label);
-	
+
 protected:
 	Token mTypeToken;
 };
@@ -204,7 +204,7 @@ class UsrStatement : public Statement
 public:
 	UsrStatement();
 	~UsrStatement();
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 
@@ -221,7 +221,7 @@ public:
 	IncludeStatement() : Statement()
 	{
 	}
-	
+
 	void Parse(Parser* p, const char* label);
 };
 
@@ -232,10 +232,10 @@ class SavStatement : public Statement
 public:
 	SavStatement();
 	~SavStatement();
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
-	
+
 protected:
 	char* mString;
 };
@@ -247,10 +247,10 @@ class DskStatement : public Statement
 public:
 	DskStatement();
 	~DskStatement();
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
-	
+
 protected:
 	char* mString;
 };
@@ -264,9 +264,9 @@ public:
 	{
 		mExpression = NULL;
 	}
-	
+
 	~ErrorStatement();
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 
@@ -284,10 +284,10 @@ public:
 		mStart = start;
 		mOrg = org;
 	}
-	
+
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
-	
+
 protected:
 	bool mStart;
 	INT32 mOrg;

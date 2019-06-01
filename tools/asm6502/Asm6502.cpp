@@ -13,10 +13,10 @@ int main(int argc, char* argv[])
 
 	argc -= 1;
 	argv += 1;
-	
+
 	if (argc == 0)
 		goto usage;
-	
+
 	while (argc--)
 	{
 		char* str = *argv++;
@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 				printf("Missing root directory\n");
 				return -1;
 			}
-			
+
 			str = *argv++;
 			--argc;
 			assembler->SetRootDir(str);
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 				printf("Missing srcbase directory\n");
 				return -1;
 			}
-			
+
 			str = *argv++;
 			--argc;
 			assembler->SetSourceDir(str);
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 				printf("Missing objbase directory\n");
 				return -1;
 			}
-			
+
 			str = *argv++;
 			--argc;
 			assembler->SetObjectDir(str);
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 				printf("Missing list directory\n");
 				return -1;
 			}
-			
+
 			str = *argv++;
 			--argc;
 			listName = str;
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 				printf("Missing sym directory\n");
 				return -1;
 			}
-			
+
 			str = *argv++;
 			--argc;
 			symName = str;
@@ -102,16 +102,16 @@ int main(int argc, char* argv[])
 			return -1;
 		}
 	}
-	
+
 	if (/*!setRoot || !setBase ||*/ !fileName)
 	{
 		printf("\nMissing parameter\n");
 		goto usage;
 	}
-	
+
 	assembler->Assemble(fileName, NULL, listName, symName);
 	return 0;
-	
+
 usage:
 	printf("\nasm6502 [-bin] [-list <filename>] [-sym <filename>] [-root <directory> -srcbase <directory> [-objbase <directory>]] <filename>\n\n");
 	return -1;

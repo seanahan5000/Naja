@@ -40,11 +40,11 @@ Assembler::~Assembler()
 	ASSERT(mLineList.GetCount() == 0);
 	ASSERT(mFileList.GetCount() == 0);
 	ASSERT(mMacroDef == NULL);
-	
+
 	//*** clear out macro hash table objects ***
 	//*** delete mSymbols ***
 	//*** delete mVars ***
-	
+
 	if (mParser)
 		delete mParser;
 }
@@ -60,9 +60,9 @@ Assembler::Assemble(const char* inName,
 	FILE* listFile = NULL;
 	FILE* symFile = NULL;
 	bool result = false;
-	
+
 	mError[0] = 0;
-	
+
 	if (outName)
 		strcpy(mOutFileName, outName);
 	else
@@ -82,7 +82,7 @@ Assembler::Assemble(const char* inName,
 			}
 		}
 	}
-	
+
 	if (listName)
 	{
 		listFile = fopen(listName, "wt+");
@@ -92,7 +92,7 @@ Assembler::Assemble(const char* inName,
 			goto exit;
 		}
 	}
-	
+
 	if (symName)
 	{
 		symFile = fopen(symName, "wt+");
@@ -102,26 +102,26 @@ Assembler::Assemble(const char* inName,
 			goto exit;
 		}
 	}
-	
+
 	mParser = new Parser(this);
 	mVars = new StringHash();
 	mSymbols = new StringHash();
 	mLocalBase[0] = 0;
-	
+
 	mInDummy = false;
-	
+
 	mMacroDef = NULL;
 	mMacros = new StringHash();
-	
+
 	mReadState.file = NULL;
 	if (!IncludeFile(inName))
 		goto exit;
-	
+
 	printf("Assembling %s%s\n", mSourceDir, inName);
-	
+
 	mInWritePhase = false;
 	SetOrg(0x8000);		// Merlin default
-	
+
 	INT32 errorCount = 0;
 	while (mReadState.file != NULL)
 	{
@@ -133,61 +133,61 @@ Assembler::Assemble(const char* inName,
 				lineRec.lineIndex = mReadState.curLineIndex;
 				lineRec.statement = NULL;
 				mLineList.Add(lineRec);
-				
+
 				const char* line = mReadState.file->GetLine(mReadState.curLineIndex++);
 				mParser->ParseLine(line);
-				
+
 				if (HasError())
 				{
 					PrintError(&lineRec);
 					if (++errorCount >= 64)
 						goto exit;
-					
+
 					if (!mReadState.file)
 						break;
 				}
 			}
-			
+
 			mReadState.curLineIndex = mReadState.startLineIndex;
-			
+
 		} while (--mReadState.loopCount > 0);
-		
+
 		mReadState = mReadStateStack.Pull();
 	}
-	
+
 	if (!mParser->ConditionalsComplete())
 	{
 		SetError("Incomplete conditional");
 		goto exit;
 	}
-	
+
 	if (InMacroDef())
 	{
 		SetError("Incomplete macro definition");
 		goto exit;
 	}
-	
+
 	if (InDummy())
 	{
 		SetError("Incomplete DUMMY section definition");
 		goto exit;
 	}
-	
+
 	mInWritePhase = true;
 	SetOrg(0x8000);			// Merlin default
-	
+
 	mOutBuffer.Clear();
 	for (INT32 i = 0; i < mLineList.GetCount(); ++i)
 	{
 		Statement* statement = mLineList[i].statement;
 		INT32 writeOffset = mOutBuffer.GetSize();
-		
+
 		if (statement)
 		{
 			mPC = statement->GetPC();
-			
+
 			statement->Write(this);
-			
+
 			if (HasError())
 			{
 				PrintError(&mLineList[i]);
@@ -195,7 +195,7 @@ Assembler::Assemble(const char* inName,
 					break;
 			}
 		}
-		
+
 		if (listFile)
 		{
 			SourceFile* file = mFileList[mLineList[i].fileIndex];
@@ -209,7 +209,7 @@ Assembler::Assemble(const char* inName,
 				else
 				{
 					fprintf(listFile, "%04X: ", statement->GetPC());
-					
+
 					if (count == 1)
 						fprintf(listFile, "%02X      ", *p);
 					else if (count == 2)
@@ -220,20 +220,20 @@ Assembler::Assemble(const char* inName,
 			}
 			else
 				fprintf(listFile, "              ");
-			
+
 			fprintf(listFile, "  %s\n", line);
 		}
 	}
-	
+
 	if (HasError())
 		goto exit;
-	
+
 	if (mOutBuffer.GetSize() != 0 && mOutFileName[0])
 	{
 		if (!FlushToFile(mOutFileName))
 			goto exit;
 	}
-	
+
     // dump symbols to file for use in debuggers
     if (symFile)
     {
@@ -285,28 +285,28 @@ Assembler::Assemble(const char* inName,
     }
 
 	result = true;
-	
+
 exit:
 	if (HasError())
 		PrintError(NULL);
-	
+
 	for (INT32 i = 0; i < mLineList.GetCount(); ++i)
 	{
 		if (mLineList[i].statement)
 			delete mLineList[i].statement;
 	}
 	mLineList.Clear();
-	
+
 	for (INT32 i = 0; i < mFileList.GetCount(); ++i)
 		delete mFileList[i];
 	mFileList.Clear();
-	
+
 	if (mMacroDef)
 	{
 		delete mMacroDef;
 		mMacroDef = NULL;
 	}
-	
+
 	if (listFile)
 		fclose(listFile);
 	if (symFile)
@@ -366,7 +366,7 @@ Assembler::StartMacroDef(const char* name)
 		SetError("Nested macro definitions not allowed");
 		return;
 	}
-	
+
 	mMacroDef = new MacroDef();
 	mMacroDef->fileIndex = mReadState.fileIndex;
 	mMacroDef->startLineIndex = mReadState.curLineIndex;
@@ -383,7 +383,7 @@ Assembler::EndMacroDef()
 		SetError("End of macro without start");
 		return;
 	}
-	
+
 	mMacroDef->endLineIndex = mReadState.curLineIndex - 1;
 	mMacroDef = NULL;
 }
@@ -395,7 +395,7 @@ Assembler::StartMacroExpand(const char* name)
 	MacroDef* macroDef = (MacroDef*)mMacros->Find(name);
 	if (!macroDef)
 		return false;
-	
+
 	mReadStateStack.Push(mReadState);
 	mReadState.file = mFileList[macroDef->fileIndex];
 	mReadState.fileIndex = macroDef->fileIndex;
@@ -416,7 +416,7 @@ Assembler::StartDummy(INT32 org)
 		SetError("Nested DUMMY sections not allowed");
 		return;
 	}
-	
+
 	mInDummy = true;
 	mDummySaveOrg = mPC;
 	mPC = org;
@@ -432,7 +432,7 @@ Assembler::EndDummy()
 			SetError("DEND without DUMMY section");
 		return;
 	}
-	
+
 	mInDummy = false;
 	mPC = mDummySaveOrg;
 	mDummySaveOrg = -1;
@@ -478,7 +478,7 @@ Assembler::GetVar(const char* name, const char** value)
 	Var* var = (Var*)mVars->Find(name);
 	if (!var)
 		return false;
-	
+
 	*value = var->GetValue();
 	return true;
 }
@@ -491,9 +491,9 @@ Assembler::BuildFullSourcePath(char* fullPath, const char* fileName)
 	strcpy(fullPath, mRootDir);
 	if (fileName[0] != '\\' && fileName[0] != '/')
 		strcat(fullPath, mSourceDir);
-	
+
 	strcat(fullPath, fileName);
-	
+
 	for (INT32 i = 0; i < sizeof(fullPath); ++i)
 	{
 		if (fullPath[i] == '/')
@@ -513,9 +513,9 @@ Assembler::BuildFullObjectPath(char* fullPath, const char* fileName)
 		else
 			strcat(fullPath, mSourceDir);
 	}
-	
+
 	strcat(fullPath, fileName);
-	
+
 	for (INT32 i = 0; i < sizeof(fullPath); ++i)
 	{
 		if (fullPath[i] == '/')
@@ -528,7 +528,7 @@ void
 Assembler::SetRootDir(const char* dirName)
 {
 	strcpy(mRootDir, dirName);
-	
+
 	// remove trailing slash
 	INT32 length = strlen(dirName);
 	if (length > 0)
@@ -552,7 +552,7 @@ Assembler::CleanDirName(char* cleanName, const char* dirName)
 	}
 	else
 		strcpy(cleanName, dirName);
-	
+
 	// and must have trailing slash
 	INT32 length = strlen(cleanName);
 	if (length)
@@ -588,22 +588,22 @@ Assembler::FlushToFile(const char* fileName)
 		SetError("Output file \"%s\" not found", mOutFileName);
 		return false;
 	}
-	
+
 	// Add DOS 3.3 BIN header
 	if (mWriteAsBin)
 	{
 		UINT8 header[4];
-		
+
 		header[0] = (UINT8)mWriteOrg;
 		header[1] = (UINT8)(mWriteOrg >> 8);
-		
+
 		INT32 length = mOutBuffer.GetSize();
 		header[2] = (UINT8)length;
 		header[3] = (UINT8)(length >> 8);
-		
+
 		fwrite(header, 1, sizeof(header), file);
 	}
-	
+
 	fwrite(mOutBuffer.GetPtr(), 1, mOutBuffer.GetSize(), file);
 	fclose(file);
 	mOutBuffer.Clear();
@@ -618,7 +618,7 @@ Assembler::SetDiskFile(const char* fileName)
 	//	save it using the previous file name
 	if (mOutBuffer.GetSize() != 0 && mOutFileName[0])
 		FlushToFile(mOutFileName);
-	
+
 	BuildFullObjectPath(mOutFileName, fileName);
 }
 
@@ -638,7 +638,7 @@ Assembler::WriteByte(UINT8 b)
 {
 	if (InDummy())
 		return;
-	
+
 	UINT8* p = mOutBuffer.MakeAvailable(1);
 	*p++ = b;
 	mOutBuffer.Consume(1);
@@ -650,7 +650,7 @@ Assembler::WriteByteByte(UINT8 b1, UINT8 b2)
 {
 	if (InDummy())
 		return;
-	
+
 	UINT8* p = mOutBuffer.MakeAvailable(2);
 	*p++ = b1;
 	*p++ = b2;
@@ -663,7 +663,7 @@ Assembler::WriteByteWord(UINT8 b, UINT16 w)
 {
 	if (InDummy())
 		return;
-	
+
 	UINT8* p = mOutBuffer.MakeAvailable(3);
 	*p++ = b;
 	*p++ = w & 255;
@@ -677,7 +677,7 @@ Assembler::WriteBytes(UINT8* bp, INT32 count)
 {
 	if (InDummy())
 		return;
-	
+
 	UINT8* p = mOutBuffer.MakeAvailable(count);
 	memcpy(p, bp, count);
 	p += count;
@@ -690,7 +690,7 @@ Assembler::WritePattern(UINT8 b, INT32 count)
 {
 	if (InDummy())
 		return;
-	
+
 	UINT8* p = mOutBuffer.MakeAvailable(count);
 	memset(p, b, count);
 	p += count;
@@ -708,7 +708,7 @@ Assembler::LocalToGlobal(const char* symbol, char* buffer, INT32 bufferSize)
 //		SetError("Local label found before any non-local");
 //		return false;
 //	}
-	
+
 	_snprintf(buffer, bufferSize, "%s_%s__", mLocalBase, symbol);
 	buffer[bufferSize - 1] = 0;
 	return true;
@@ -724,7 +724,7 @@ Assembler::AddLabelSymbol(const char* label, bool local)
 		LocalToGlobal(label, buffer, sizeof(buffer));
 		label = buffer;
 	}
-	
+
 	Symbol* symbol = new Symbol(mPC, false);
 	return mSymbols->Add(label, symbol);
 }
@@ -739,7 +739,7 @@ Assembler::AddEquateSymbol(const char* equate, INT32 value, bool forceLong)
 		Symbol* dupe = (Symbol*)mSymbols->Find(equate);
 		if (dupe->GetValue() != value)
 			return false;
-		
+
 		printf("WARNING: Harmless duplicate equate \"%s\"\n", equate);
 	}
 	return true;

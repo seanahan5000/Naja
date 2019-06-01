@@ -10,10 +10,10 @@ SourceFile::SourceFile(Assembler* assembler, const char* fileName)
 {
 	mFileName = _strdup(fileName);
 	mBuffer = NULL;
-	
+
 	char fullPath[1024];
 	assembler->BuildFullSourcePath(fullPath, fileName);
-	
+
 	// must opened as binary, not text
 	strcat(fullPath, ".S");
 	FILE* file = fopen(fullPath, "rb");
@@ -22,23 +22,23 @@ SourceFile::SourceFile(Assembler* assembler, const char* fileName)
 		fullPath[strlen(fullPath) - 2] = 0;
 		file = fopen(fullPath, "rb");
 	}
-	
+
 	if (!file)
 	{
 		assembler->SetError("Input file \"%s\" not found", fullPath);
 		return;
 	}
-	
+
 	fseek(file, 0, SEEK_END);
 	long fileSize = ftell(file);
 	fseek(file, 0, SEEK_SET);
-	
+
 	// Use fileSize + 1 to make room for last terminator
 	//	if file doesn't end with a '\r' or '\n'.
 	mBuffer = (char*)malloc(fileSize + 1);
 	fread(mBuffer, 1, fileSize, file);
 	fclose(file);
-	
+
 	char* sp = mBuffer;
 	char* ep = mBuffer + fileSize;
 	char* start = sp;
@@ -59,7 +59,7 @@ SourceFile::SourceFile(Assembler* assembler, const char* fileName)
 		mOffsets.Add(start - mBuffer);
 		*sp = 0;
 	}
-	
+
 	mOffsets.Trim();
 }
 

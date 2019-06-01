@@ -11,7 +11,7 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 {
 	Assembler* assembler = p->GetAssembler();
 	Expression* exp = NULL;
-	
+
 	if (t == '$')
 	{
 		t = p->NextHex();
@@ -20,7 +20,7 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 			assembler->SetError("Invalid hex value \"%s\"", p->GetString());
 			goto fail;
 		}
-		
+
 		exp = new NumberExpression(p->GetHexValue(), strlen(p->GetString()) > 2);
 	}
 	else if (t == ':' || t == '@' || t == '.')
@@ -43,7 +43,7 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 			assembler->SetError("Invalid binary value \"%s\"", p->GetString());
 			goto fail;
 		}
-		
+
 		INT32 value = p->GetBinValue();
 		if (value == -1)
 		{
@@ -68,32 +68,32 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 		exp = Expression::Parse(p, p->Next(), recurse);
 		if (exp == NULL)
 			goto fail;
-		
+
 		t = p->Next();
 		if (t != ')')
 		{
 			assembler->SetError("Missing \')\'");
 			goto fail;
 		}
-		
+
 		exp = new ParenExpression(exp);
 	}
 	else if (t == '\"' || t == '\'')
 	{
 		INT32 highFlip = (t == '\"') ? 0x80 : 0x00;
-		
+
 		if (!p->NextStringGroup((char)t))
 		{
 			assembler->SetError("Invalid ASCII expression");
 			goto fail;
 		}
-		
+
 		if (strlen(p->GetString()) != 1)
 		{
 			assembler->SetError("Invalid ASCII expression");
 			goto fail;
 		}
-		
+
 		INT32 value = p->GetString()[0] ^ highFlip;
 		exp = new NumberExpression(value, false);
 	}
@@ -110,7 +110,7 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 		assembler->SetError("Invalid expression");
 		goto fail;
 	}
-	
+
 	if (recurse)
 	{
 		while (true)
@@ -132,7 +132,7 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 			}
 			else
 				break;
-			
+
 			t = p->Next();
 			Expression* exp2 = Expression::Parse(p, p->Next(), false);
 			if (exp2 == NULL)
@@ -140,9 +140,9 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 			exp = new BinaryExpression(exp, t, exp2);
 		}
 	}
-	
+
 	return exp;
-	
+
 fail:
 	if (exp)
 		delete exp;
@@ -210,7 +210,7 @@ SymbolExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 			assembler->SetError("Unresolved symbol \"%s\"", mString);
 		return false;
 	}
-	
+
 	*value = symbol->GetValue();
 	return true;
 }
@@ -245,7 +245,7 @@ UnaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	if (!mArg->Resolve(assembler, value, setError))
 		return false;
-	
+
 	if (mOperation == '>')
 		*value = (*value >> 8) & 255;
 	else if (mOperation == '<')
@@ -257,7 +257,7 @@ UnaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 		ASSERT(!"Unsupported UnaryExpression operation");
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -293,13 +293,13 @@ BinaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	INT32 value1;
 	INT32 value2;
-	
+
 	if (!mArg1->Resolve(assembler, &value1, setError))
 		return false;
-	
+
 	if (!mArg2->Resolve(assembler, &value2, setError))
 		return false;
-	
+
 	if (mOperation == '+')
 		*value = value1 + value2;
 	else if (mOperation == '-')
@@ -321,7 +321,7 @@ BinaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 		ASSERT(!"Unsupported BinaryExpression operation");
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -368,11 +368,11 @@ ParenExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	if (!mArg->Resolve(assembler, value, setError))
 		return false;
-	
+
 	// cover for NAJATEXT check
 	if (*value == 0x310)
 		*value = 0xAA;
-	
+
 	return true;
 }
 

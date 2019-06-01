@@ -71,9 +71,9 @@ void
 OpStatement::Parse(Parser* p, const char* label)
 {
 	Token t;
-	
+
 	t = p->Next();
-	
+
 	if (t == 0)
 		mTarget = OpTarget_NONE;
 	else if (t == 'A')
@@ -90,7 +90,7 @@ OpStatement::Parse(Parser* p, const char* label)
 		mExpression = p->ParseExpression();
 		if (mExpression == NULL)
 			return;
-		
+
 		t = p->Next();
 		if (t == ')')
 		{
@@ -142,7 +142,7 @@ OpStatement::Parse(Parser* p, const char* label)
 		mExpression = p->ParseExpression(t);
 		if (mExpression == NULL)
 			return;
-		
+
 		t = p->Next();
 		if (t == 0)
 			mTarget = OpTarget_ZP;
@@ -158,7 +158,7 @@ OpStatement::Parse(Parser* p, const char* label)
 				p->SetTokenError('X', 'Y');
 				return;
 			}
-			
+
 			t = p->Next();
 			if (t != 0)
 			{
@@ -172,7 +172,7 @@ OpStatement::Parse(Parser* p, const char* label)
 			return;
 		}
 	}
-	
+
 	ChooseAddressMode(p->GetAssembler());
 }
 
@@ -181,18 +181,18 @@ void
 OpStatement::ChooseAddressMode(Assembler* assembler)
 {
 	OpcodeDef* opdef;
-	
+
 	while (true)
 	{
 		opdef = sOpcodeDefs[mOpcode - kFirstOpcodeToken];
-		
+
 		while (opdef->mode != -1)
 		{
 			if (opdef->mode == mTarget)
 				break;
 			++opdef;
 		}
-		
+
 		if (mTarget == OpTarget_ZP ||
 			mTarget == OpTarget_ZPX ||
 			mTarget == OpTarget_ZPY)
@@ -203,25 +203,25 @@ OpStatement::ChooseAddressMode(Assembler* assembler)
 				continue;
 			}
 		}
-		
+
 		if (opdef->mode != -1)
 			break;
-		
+
 		if (mTarget == OpTarget_ABS)
 		{
 			mTarget = OpTarget_BRAN;
 			continue;
 		}
-		
+
 		break;
 	}
-	
+
 	if (opdef->mode == -1)
 	{
 		assembler->SetError("Invalid address mode for opcode");
 		return;
 	}
-	
+
 	mOpcode = opdef->hex;
 	assembler->AdvancePC(sOpSizeTable[opdef->mode]);
 }
@@ -237,7 +237,7 @@ OpStatement::Write(Assembler* assembler)
 		case OpTarget_A:
 			assembler->WriteByte(mOpcode);
 			break;
-		
+
 		case OpTarget_IMM:
 		case OpTarget_ZP:
 		case OpTarget_ZPX:
@@ -254,7 +254,7 @@ OpStatement::Write(Assembler* assembler)
 			else
 				assembler->WriteByteByte(mOpcode, value);
 			break;
-		
+
 		case OpTarget_ABS:
 		case OpTarget_ABSX:
 		case OpTarget_ABSY:
@@ -263,7 +263,7 @@ OpStatement::Write(Assembler* assembler)
 				return;
 			assembler->WriteByteWord(mOpcode, value);
 			break;
-		
+
 		case OpTarget_BRAN:
 			if (!mExpression->Resolve(assembler, &value))
 				return;
@@ -298,12 +298,12 @@ DataStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
-	
+
 	if (mTypeToken == TokenDFB)
 		mTypeToken = TokenDB;
 	else if (mTypeToken == TokenDA)
 		mTypeToken = TokenDW;
-	
+
 	if (mTypeToken == TokenDC)
 	{
 		t = p->Next();
@@ -312,7 +312,7 @@ DataStatement::Parse(Parser* p, const char* label)
 			p->SetTokenError('.');
 			return;
 		}
-		
+
 		t = p->Next();
 		if (t == 'B')
 			mTypeToken = TokenDB;
@@ -324,37 +324,37 @@ DataStatement::Parse(Parser* p, const char* label)
 			return;
 		}
 	}
-	
+
 	// at this pointer, type is either DB, DDB, or DW
 	INT32 needed = (mTypeToken == TokenDB ? 1 : 2);
-	
+
 	while (true)
 	{
 		t = p->Next();
-		
+
 		// DASM allows ".byte #<MYLABEL", for example
 		if (t == '#')
 			t = p->Next();
-		
+
 		Expression* exp = p->ParseExpression(t);
 		if (!exp)
 			return;
-		
+
 		mExpList.Add(exp);
-		
+
 		t = p->Next();
 		if (t == ',')
 			continue;
-		
+
 		if (t != 0)
 		{
 			assembler->SetError("Invalid expression");
 			return;
 		}
-		
+
 		break;
 	}
-	
+
 	assembler->AdvancePC(mExpList.GetCount() * needed);
 }
 
@@ -365,38 +365,38 @@ DataStatement::Write(Assembler* assembler)
 	UINT8* bp;
 	INT32 value;
 	INT32 expCount = mExpList.GetCount();
-	
+
 	// at this pointer, type is either DB, DDB, or DW
 	if (mTypeToken == TokenDB)
 	{
 		bp = assembler->WriteMakeAvailable(expCount * 1);
-		
+
 		for (INT32 i = 0; i < expCount; ++i)
 		{
 			if (!mExpList[i]->Resolve(assembler, &value))
 				return;
-			
+
 			if (value < -128 || value > 255)
 			{
 				assembler->SetError("Expression value too large ($%x)", value);
 				return;
 			}
-			
+
 			*bp++ = (UINT8)value;
 		}
-		
+
 		assembler->WriteConsume(expCount * 1);
 	}
 	else
 	{
 		bp = assembler->WriteMakeAvailable(expCount * 2);
-		
+
 		bool isDDB = mTypeToken == TokenDDB;
 		for (INT32 i = 0; i < expCount; ++i)
 		{
 			if (!mExpList[i]->Resolve(assembler, &value))
 				return;
-			
+
 			if (isDDB)
 			{
 				*bp++ = (UINT8)(value >> 8);
@@ -408,7 +408,7 @@ DataStatement::Write(Assembler* assembler)
 				*bp++ = (UINT8)(value >> 8);
 			}
 		}
-		
+
 		assembler->WriteConsume(expCount * 2);
 	}
 }
@@ -421,7 +421,7 @@ StorageStatement::Parse(Parser* p, const char* label)
 	Assembler* assembler = p->GetAssembler();
 	Token t;
 	INT32 value;
-	
+
 	t = p->Next();
 	if (t == '\\')
 	{
@@ -438,7 +438,7 @@ StorageStatement::Parse(Parser* p, const char* label)
 	{
 		if (!p->ParseAndResolveExpression(t, &value))
 			return;
-		
+
 		if (value < 0)
 		{
 			assembler->SetError("Invalid DS count");
@@ -446,13 +446,13 @@ StorageStatement::Parse(Parser* p, const char* label)
 		}
 	}
 	mByteCount = value;
-	
+
 	t = p->Next();
 	if (t == ',')
 	{
 		if (!p->ParseAndResolveExpression(&mPattern))
 			return;
-		
+
 		if (mPattern < -128 || mPattern > 255)
 		{
 			assembler->SetError("Invalid DS value (out of range)");
@@ -461,7 +461,7 @@ StorageStatement::Parse(Parser* p, const char* label)
 	}
 	else
 		mPattern = 0;
-	
+
 	assembler->AdvancePC(mByteCount);
 }
 
@@ -480,26 +480,26 @@ AlignStatement::Parse(Parser* p, const char* label)
 	Assembler* assembler = p->GetAssembler();
 	Token t;
 	INT32 value;
-	
+
 	if (!p->ParseAndResolveExpression(&value))
 		return;
-	
+
 	if (value < 0)
 	{
 		assembler->SetError("Invalid ALIGN count");
 		return;
 	}
-	
+
 	mByteCount = assembler->GetPC() % value;
 	if (mByteCount)
 		mByteCount = value - mByteCount;
-	
+
 	t = p->Next();
 	if (t == ',')
 	{
 		if (!p->ParseAndResolveExpression(&mPattern))
 			return;
-		
+
 		if (mPattern < -128 || mPattern > 255)
 		{
 			assembler->SetError("Invalid ALIGN value (out of range)");
@@ -508,7 +508,7 @@ AlignStatement::Parse(Parser* p, const char* label)
 	}
 	else
 		mPattern = 0;
-	
+
 	assembler->AdvancePC(mByteCount);
 }
 
@@ -531,7 +531,7 @@ ScanHex(Assembler* assembler, char* string, GrowBuffer* buffer)
 		return false;
 	}
 	length /= 2;
-	
+
 	UINT8* ptr = buffer->MakeAvailable(length);
 	INT32 v = 0;
 	INT32 phase = 0;
@@ -546,7 +546,7 @@ ScanHex(Assembler* assembler, char* string, GrowBuffer* buffer)
 		if ((phase ^= 1) == 0)
 			*ptr++ = v;
 	}
-	
+
 	buffer->Consume(length);
 	return true;
 }
@@ -557,26 +557,26 @@ HexStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
-	
+
 	while (true)
 	{
 		t = p->NextHex();
-		
+
 		if (t == '$')
 		{
 			assembler->SetError("\'$\' not allowed in hex statements");
 			return;
 		}
-		
+
 		if (t != TokenHexNumber)
 		{
 			assembler->SetError("Invalid hex data");
 			return;
 		}
-		
+
 		if (!ScanHex(assembler, p->GetString(), &mBuffer))
 			return;
-		
+
 		t = p->Next();
 		if (t == 0)
 			break;
@@ -586,7 +586,7 @@ HexStatement::Parse(Parser* p, const char* label)
 			return;
 		}
 	}
-	
+
 	p->GetAssembler()->AdvancePC(mBuffer.GetSize());
 	mBuffer.Trim();
 }
@@ -606,7 +606,7 @@ AscStatement::Parse(Parser* p, const char* label)
 	Assembler* assembler = p->GetAssembler();
 	Token t;
 	bool flipHigh;
-	
+
 	t = p->Next();
 	if (t == '\"')
 		flipHigh = true;
@@ -617,10 +617,10 @@ AscStatement::Parse(Parser* p, const char* label)
 		assembler->SetError("Invalid string");
 		return;
 	}
-	
+
 	if (!p->NextStringGroup((char)t))
 		return;
-	
+
 	char* string = p->GetString();
 	INT32 length = strlen(string);
 	UINT8* dp = mBuffer.MakeAvailable(length);
@@ -634,20 +634,20 @@ AscStatement::Parse(Parser* p, const char* label)
 		memcpy(dp, string, length);
 	mBuffer.Consume(length);
 	mBaseLength = (UINT8)length;
-	
+
 	while (true)
 	{
 		t = p->NextHex();
 		if (t == 0)
 			break;
-		
+
 		if (t == ',')
 			t = p->NextHex();
-		
+
 		if (!ScanHex(assembler, p->GetString(), &mBuffer))
 			return;
 	}
-	
+
 	assembler->AdvancePC((mPrependLength ? 1 : 0) + mBuffer.GetSize());
 	mBuffer.Trim();
 }
@@ -658,7 +658,7 @@ AscStatement::Write(Assembler* assembler)
 {
 	if (mPrependLength)
 		assembler->WriteByte(mBaseLength);
-	
+
 	assembler->WriteBytes(mBuffer.GetPtr(), mBuffer.GetSize());
 }
 
@@ -668,27 +668,27 @@ void
 EquStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
-	
+
 	if (!label)
 	{
 		assembler->SetError("Missing label");
 		return;
 	}
-	
+
 	Expression* exp = p->ParseExpression();
 	if (!exp)
 		return;
-	
+
 	INT32 value;
 	if (!exp->Resolve(assembler, &value))
 	{
 		delete exp;
 		return;
 	}
-	
+
 	bool forceLong = (exp->GetSize(assembler) == 2);
 	delete exp;
-	
+
 	if (!assembler->AddEquateSymbol(label, value, forceLong))
 	{
 		assembler->SetError("Duplicate equate \"%s\"", label);
@@ -702,17 +702,17 @@ void
 OrgStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
-	
+
 	if (label)
 	{
 		assembler->SetError("Label not allowed");
 		return;
 	}
-	
+
 	INT32 value;
 	if (!p->ParseAndResolveExpression(&value))
 		return;
-	
+
 	mOrg = value;
 	assembler->SetOrg(mOrg);
 }
@@ -722,7 +722,7 @@ void
 OrgStatement::Write(Assembler* assembler)
 {
 	assembler->SetOrg(mOrg);
-	
+
 #if 0
 	if (assembler->WriteGetSize() != 0)
 	{
@@ -732,7 +732,7 @@ OrgStatement::Write(Assembler* assembler)
 			assembler->SetError("Invalid org -- must be >= current pc");
 			return;
 		}
-		
+
 		assembler->WritePattern(0, mOrg - pc);
 	}
 #endif
@@ -745,19 +745,19 @@ ConditionalStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
-	
+
 	if (label)
 	{
 		assembler->SetError("Label not allowed");
 		return;
 	}
-	
+
 	if (mTypeToken == TokenIF || mTypeToken == TokenDO || mTypeToken == TokenELIF)
 	{
 		INT32 value;
 		if (!p->ParseAndResolveExpression(&value))
 			return;
-		
+
 		t = p->Next();
 		if (t != 0)
 		{
@@ -767,7 +767,7 @@ ConditionalStatement::Parse(Parser* p, const char* label)
 				return;
 			}
 		}
-		
+
 		if (mTypeToken == TokenIF || mTypeToken == TokenDO)
 		{
 			if (!p->PushConditional())
@@ -775,7 +775,7 @@ ConditionalStatement::Parse(Parser* p, const char* label)
 				assembler->SetError("Exceeded nested conditionals maximum");
 				return;
 			}
-			
+
 			if (value != 0)
 			{
 				p->SetConditionalSatisfied(true);
@@ -789,7 +789,7 @@ ConditionalStatement::Parse(Parser* p, const char* label)
 				assembler->SetError("Unexpected ELIF without IF");
 				return;
 			}
-			
+
 			if (!p->ConditionalSatisfied() && value != 0)
 			{
 				p->SetConditionalSatisfied(true);
@@ -806,13 +806,13 @@ ConditionalStatement::Parse(Parser* p, const char* label)
 			assembler->SetError("Unexpected token after ELSE");
 			return;
 		}
-		
+
 		if (p->ConditionalsComplete())
 		{
 			assembler->SetError("Unexpected ELSE without IF");
 			return;
 		}
-		
+
 		if (!p->ConditionalSatisfied())
 		{
 			p->SetConditionalSatisfied(true);
@@ -828,7 +828,7 @@ ConditionalStatement::Parse(Parser* p, const char* label)
 			assembler->SetError("Unexpected token after FIN/ENDIF");
 			return;
 		}
-		
+
 		if (!p->PullConditional())
 		{
 			assembler->SetError("Unexpected FIN/ENDIF");
@@ -857,32 +857,32 @@ UsrStatement::Parse(Parser* p, const char* label)
 	Assembler* assembler = p->GetAssembler();
 	Token t;
 	char c;
-	
+
 	mLength = 0;
-	
+
 	t = p->Next();
 	if (t != '(')
 	{
 		p->SetTokenError('(');
 		return;
 	}
-	
+
 	if (!p->NextParenGroup())
 	{
 		assembler->SetError("Bad USR argument");
 		return;
 	}
-	
+
 	// (TEXT)	T,E,X,T,$8D
 	// (TEXT)+	T,E,X,T,$8D,$FF
 	// (TEXT)-	T,E,X,T
 	// (TEXT)=	T,E,X,T^$80
-	
+
 	char* sp = p->GetString();
 	char* dp;
 	mString = (char*)malloc(strlen(sp) + 3);
 	dp = mString;
-	
+
 	while ((c = *sp++) != 0)
 	{
 		if (isdigit(c))
@@ -910,10 +910,10 @@ UsrStatement::Parse(Parser* p, const char* label)
 				}
 			}
 		}
-		
+
 		*dp++ = c;
 	}
-	
+
 	t = p->Next();
 	if (t == 0)
 	{
@@ -934,7 +934,7 @@ UsrStatement::Parse(Parser* p, const char* label)
 		return;
 	}
 	*dp = 0;
-	
+
 	mLength = dp - mString;
 	assembler->AdvancePC(mLength);
 }
@@ -952,13 +952,13 @@ void
 IncludeStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
-	
+
 	if (!p->NextFileName())
 	{
 		assembler->SetError("Invalid file name");
 		return;
 	}
-	
+
 	assembler->IncludeFile(p->GetString());
 }
 
@@ -980,19 +980,19 @@ void
 SavStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
-	
+
 	if (label)
 	{
 		assembler->SetError("Label not allowed");
 		return;
 	}
-	
+
 	if (!p->NextFileName())
 	{
 		assembler->SetError("Invalid file name");
 		return;
 	}
-	
+
 	mString = _strdup(p->GetString());
 }
 
@@ -1022,19 +1022,19 @@ void
 DskStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
-	
+
 	if (label)
 	{
 		assembler->SetError("Label not allowed");
 		return;
 	}
-	
+
 	if (!p->NextFileName())
 	{
 		assembler->SetError("Invalid file name");
 		return;
 	}
-	
+
 	mString = _strdup(p->GetString());
 }
 
@@ -1059,13 +1059,13 @@ void
 ErrorStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
-	
+
 	if (label)
 	{
 		assembler->SetError("Label not allowed");
 		return;
 	}
-	
+
 	mExpression = p->ParseExpression();
 }
 
@@ -1076,10 +1076,10 @@ ErrorStatement::Write(Assembler* assembler)
 	if (mExpression)
 	{
 		INT32 value;
-		
+
 		if (!mExpression->Resolve(assembler, &value))
 			return;
-		
+
 		if (value != 0)
 			assembler->SetError("ERR check failed");
 	}
@@ -1091,13 +1091,13 @@ void
 DummyStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
-	
+
 	if (label)
 	{
 		assembler->SetError("Label not allowed");
 		return;
 	}
-	
+
 	if (mStart)
 		assembler->StartDummy(mOrg);
 	else

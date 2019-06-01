@@ -67,7 +67,7 @@ StringHash::Add(const char* string, void* object)
 {
 	UINT32 key = GenerateKey(string);
 	INT32 index = key % mSize;
-	
+
 	HashEntry* entry = mEntries[index];
 	while (entry)
 	{
@@ -79,7 +79,7 @@ StringHash::Add(const char* string, void* object)
 		}
 		entry = entry->next;
 	}
-	
+
 	entry = (HashEntry*)malloc(sizeof(HashEntry) + strlen(string));
 	entry->key = key;
 	entry->object = object;
@@ -98,15 +98,15 @@ StringHash::AddNoCase(const char* string, void* object)
 	char* cp;
 	char c;
 	bool result;
-	
+
 	cp = sp;
 	do {
 		c = *cp;
 		*cp++ = tolower(c);
 	} while (c != 0);
-	
+
 	result = Add(sp, object);
-	
+
 	if (result)
 	{
 		cp = sp;
@@ -114,10 +114,10 @@ StringHash::AddNoCase(const char* string, void* object)
 			c = *cp;
 			*cp++ = toupper(c);
 		} while (c != 0);
-		
+
 		result = Add(sp, object);
 	}
-	
+
 	free(sp);
 	return result;
 }
@@ -128,7 +128,7 @@ StringHash::Find(const char* string)
 {
 	UINT32 key = GenerateKey(string);
 	INT32 index = key % mSize;
-	
+
 	HashEntry* entry = mEntries[index];
 	while (entry)
 	{
@@ -140,7 +140,7 @@ StringHash::Find(const char* string)
 		}
 		entry = entry->next;
 	}
-	
+
 	return NULL;
 }
 

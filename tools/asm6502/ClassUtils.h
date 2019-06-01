@@ -19,12 +19,12 @@ public:
 		mCapacity = capacity;
 		mArray = (T*)realloc(NULL, mCapacity * sizeof(T));
 	}
-	
+
 	~Array()
 	{
 		free(mArray);
 	}
-	
+
 	void Add(T object)
 	{
 		if (mCount == mCapacity)
@@ -34,30 +34,30 @@ public:
 		}
 		mArray[mCount++] = object;
 	}
-	
+
 	void Trim()
 	{
 		mCapacity = mCount;
 		mArray = (T*)realloc(mArray, mCapacity * sizeof(T));
 	}
-	
+
 	void Clear()
 	{
 		mCount = 0;
 	}
-	
+
 	void DeleteAll()
 	{
 		for (INT32 i = 0; i < mCount; ++i)
 			delete mArray[i];
-		
+
 		Clear();
 	}
-	
+
 	INT32 GetCount() { return mCount; }
-	
+
 	T& operator[](size_t index) const { return mArray[index]; }
-	
+
 protected:
 	T* mArray;
 	INT32 mCount;
@@ -82,12 +82,12 @@ public:
 		mCapacity = capacity;
 		mStack = (T*)realloc(NULL, mCapacity * sizeof(T));
 	}
-	
+
 	~Stack()
 	{
 		free(mStack);
 	}
-	
+
 	void Push(T object)
 	{
 		if (mDepth == mCapacity)
@@ -97,32 +97,32 @@ public:
 		}
 		mStack[mDepth++] = object;
 	}
-	
+
 	T& Pull()
 	{
 		return mStack[--mDepth];
 	}
-	
+
 	T& Top()
 	{
 		return mStack[mDepth - 1];
 	}
-	
+
 	void Clear()
 	{
 		mDepth = 0;
 	}
-	
+
 	void DeleteAll()
 	{
 		for (INT32 i = 0; i < mDepth; ++i)
 			delete mStack[i];
-		
+
 		Clear();
 	}
-	
+
 	INT32 GetDepth() { return mDepth; }
-	
+
 protected:
 	T* mStack;
 	INT32 mDepth;
@@ -140,15 +140,15 @@ public:
 		mConsumed = 0;
 		mBuffer = (UINT8*)realloc(NULL, mConsumed + mAvailable);
 	}
-	
+
 	~GrowBuffer()
 	{
 		free(mBuffer);
 	}
-	
+
 	UINT8* GetPtr() { return mBuffer; }
 	INT32 GetSize() { return mConsumed; }
-	
+
 	UINT8* MakeAvailable(INT32 count)
 	{
 		if (count > mAvailable)
@@ -156,30 +156,30 @@ public:
 			mAvailable += mConsumed;
 			if (mAvailable < count)
 				mAvailable = count;
-			
+
 			mBuffer = (UINT8*)realloc(mBuffer, mConsumed + mAvailable);
 		}
 		return mBuffer + mConsumed;
 	}
-	
+
 	void Consume(INT32 count)
 	{
 		mConsumed += count;
 		mAvailable -= count;
 	}
-	
+
 	void Trim()
 	{
 		mBuffer = (UINT8*)realloc(mBuffer, mConsumed);
 		mAvailable = 0;
 	}
-	
+
 	void Clear()
 	{
 		mAvailable += mConsumed;
 		mConsumed = 0;
 	}
-	
+
 protected:
 	UINT8* mBuffer;
 	INT32 mAvailable;
