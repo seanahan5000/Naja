@@ -116,10 +116,20 @@ public:
 	void BuildFullSourcePath(char* fullPath, const char* fileName);
 	void BuildFullObjectPath(char* fullPath, const char* fileName);
 
-	bool Assemble(const char* inName,
-                  const char* outName,
-                  const char* listName,
-                  const char* symName);
+	bool Assemble(
+		const char* inName,
+		const char* outName,
+		const char* listName,
+		const char* symName);
+
+	void AssembleBegin();
+	bool AssembleParse(const char* inName);
+	bool AssembleWrite(
+		const char* outName,
+		const char* listName,
+		const char* symName);
+	void AssembleEnd();
+
 	void AddStatement(Statement* statement);
 
 	bool IncludeFile(const char* fileName);
@@ -186,6 +196,7 @@ protected:
 	char mSourceDir[1024];
 	char mObjectDir[1024];
 	char mOutFileName[1024];
+	std::string mInName;
 
 	Array<SourceFile*> mFileList;
 	FileReadState mReadState;
@@ -210,6 +221,7 @@ protected:
 	StringHash* mMacros;
 
 	char mError[1024];
+	INT32 mErrorCount;
 
 	GrowBuffer mOutBuffer;
 };

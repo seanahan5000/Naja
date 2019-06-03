@@ -32,6 +32,12 @@ Assembler::Assembler()
 	mObjectDir[0] = 0;
 	mMacroDef = NULL;
 	mWriteAsBin = false;
+
+	mParser = nullptr;
+	mVars = nullptr;
+	mSymbols = nullptr;
+	mMacroDef = nullptr;
+	mMacros = nullptr;
 }
 
 
@@ -42,32 +48,133 @@ Assembler::~Assembler()
 	ASSERT(mMacroDef == NULL);
 
 	//*** clear out macro hash table objects ***
-	//*** delete mSymbols ***
-	//*** delete mVars ***
 
-	if (mParser)
-		delete mParser;
+	delete mParser;
+	delete mSymbols;
+	delete mVars;
 }
 
 //------------------------------------------------------------------------------
 
-bool
-Assembler::Assemble(const char* inName,
-                    const char* outName,
-                    const char* listName,
-                    const char* symName)
+void Assembler::AssembleBegin()
+{
+	mError[0] = 0;
+	mErrorCount = 0;
+	mInWritePhase = false;
+	mInName.clear();
+}
+
+
+bool Assembler::AssembleParse(const char* inName)
+{
+	bool result = false;
+
+	mInName = inName;
+
+	if (!mParser)
+	{
+		mError[0] = 0;
+
+		mParser = new Parser(this);
+		mVars = new StringHash();
+		mSymbols = new StringHash();
+		mLocalBase[0] = 0;
+
+		mInDummy = false;
+
+		mMacroDef = NULL;
+		mMacros = new StringHash();
+
+		mReadState.file = NULL;
+	}
+
+	if (!IncludeFile(inName))
+		goto exit;
+
+	printf("Assembling %s%s\n", mSourceDir, inName);
+
+	mInWritePhase = false;
+	SetOrg(0x8000);		// Merlin default
+
+	while (mReadState.file != NULL)
+	{
+		do {
+			while (mReadState.curLineIndex < mReadState.endLineIndex)
+			{
+				LineRecord lineRec;
+				lineRec.fileIndex = mReadState.fileIndex;
+				lineRec.lineIndex = mReadState.curLineIndex;
+				lineRec.statement = NULL;
+				mLineList.Add(lineRec);
+
+				const char* line = mReadState.file->GetLine(mReadState.curLineIndex++);
+				mParser->ParseLine(line);
+
+				if (HasError())
+				{
+					PrintError(&lineRec);
+					if (++mErrorCount >= 64)
+						goto exit;
+
+					if (!mReadState.file)
+						break;
+				}
+			}
+
+			mReadState.curLineIndex = mReadState.startLineIndex;
+
+		} while (--mReadState.loopCount > 0);
+
+		mReadState = mReadStateStack.Pull();
+	}
+
+	if (mErrorCount > 0)
+		goto exit;
+
+	if (!mParser->ConditionalsComplete())
+	{
+		SetError("Incomplete conditional");
+		goto exit;
+	}
+
+	if (InMacroDef())
+	{
+		SetError("Incomplete macro definition");
+		goto exit;
+	}
+
+	if (InDummy())
+	{
+		SetError("Incomplete DUMMY section definition");
+		goto exit;
+	}
+
+	result = true;
+
+exit:
+	if (HasError())
+		PrintError(NULL);
+
+	return result;
+}
+
+
+bool Assembler::AssembleWrite(
+	const char* outName,
+	const char* listName,
+	const char* symName)
 {
 	FILE* listFile = NULL;
 	FILE* symFile = NULL;
 	bool result = false;
 
-	mError[0] = 0;
-
 	if (outName)
+	{
 		strcpy(mOutFileName, outName);
+	}
 	else
 	{
-		BuildFullObjectPath(mOutFileName, inName);
+		BuildFullObjectPath(mOutFileName, mInName.c_str());
 		INT32 len = strlen(mOutFileName);
 		if (len > 1)
 		{
@@ -103,77 +210,7 @@ Assembler::Assemble(const char* inName,
 		}
 	}
 
-	mParser = new Parser(this);
-	mVars = new StringHash();
-	mSymbols = new StringHash();
-	mLocalBase[0] = 0;
-
-	mInDummy = false;
-
-	mMacroDef = NULL;
-	mMacros = new StringHash();
-
-	mReadState.file = NULL;
-	if (!IncludeFile(inName))
-		goto exit;
-
-	printf("Assembling %s%s\n", mSourceDir, inName);
-
-	mInWritePhase = false;
-	SetOrg(0x8000);		// Merlin default
-
-	INT32 errorCount;
-    errorCount = 0;
-	while (mReadState.file != NULL)
-	{
-		do {
-			while (mReadState.curLineIndex < mReadState.endLineIndex)
-			{
-				LineRecord lineRec;
-				lineRec.fileIndex = mReadState.fileIndex;
-				lineRec.lineIndex = mReadState.curLineIndex;
-				lineRec.statement = NULL;
-				mLineList.Add(lineRec);
-
-				const char* line = mReadState.file->GetLine(mReadState.curLineIndex++);
-				mParser->ParseLine(line);
-
-				if (HasError())
-				{
-					PrintError(&lineRec);
-					if (++errorCount >= 64)
-						goto exit;
-
-					if (!mReadState.file)
-						break;
-				}
-			}
-
-			mReadState.curLineIndex = mReadState.startLineIndex;
-
-		} while (--mReadState.loopCount > 0);
-
-		mReadState = mReadStateStack.Pull();
-	}
-
-	if (!mParser->ConditionalsComplete())
-	{
-		SetError("Incomplete conditional");
-		goto exit;
-	}
-
-	if (InMacroDef())
-	{
-		SetError("Incomplete macro definition");
-		goto exit;
-	}
-
-	if (InDummy())
-	{
-		SetError("Incomplete DUMMY section definition");
-		goto exit;
-	}
-
+	ASSERT(!mInWritePhase);
 	mInWritePhase = true;
 	SetOrg(0x8000);			// Merlin default
 
@@ -192,7 +229,7 @@ Assembler::Assemble(const char* inName,
 			if (HasError())
 			{
 				PrintError(&mLineList[i]);
-				if (++errorCount >= 64)
+				if (++mErrorCount >= 64)
 					break;
 			}
 		}
@@ -235,55 +272,55 @@ Assembler::Assemble(const char* inName,
 			goto exit;
 	}
 
-    // dump symbols to file for use in debuggers
-    if (symFile)
-    {
-        INT32 count = mSymbols->GetEntryCount();
-        HashEntry** entries = new HashEntry*[count];
-        mSymbols->GetEntries(entries);
+	// dump symbols to file for use in debuggers
+	if (symFile)
+	{
+		INT32 count = mSymbols->GetEntryCount();
+		HashEntry** entries = new HashEntry*[count];
+		mSymbols->GetEntries(entries);
 
-        // dumb bubble-sort of entries
-        bool didSwap;
-        do
-        {
-            didSwap = false;
-            for (INT32 i = 0; i < count - 1; ++i)
-            {
-                Symbol* symbol1 = (Symbol*)(entries[i]->object);
-                Symbol* symbol2 = (Symbol*)(entries[i + 1]->object);
-                if (symbol1->GetValue() > symbol2->GetValue())
-                {
-                    HashEntry* tempEntry = entries[i];
-                    entries[i] = entries[i + 1];
-                    entries[i + 1] = tempEntry;
-                    didSwap = true;
-                }
-            }
-        } while (didSwap);
+		// dumb bubble-sort of entries
+		bool didSwap;
+		do
+		{
+			didSwap = false;
+			for (INT32 i = 0; i < count - 1; ++i)
+			{
+				Symbol* symbol1 = (Symbol*)(entries[i]->object);
+				Symbol* symbol2 = (Symbol*)(entries[i + 1]->object);
+				if (symbol1->GetValue() > symbol2->GetValue())
+				{
+					HashEntry* tempEntry = entries[i];
+					entries[i] = entries[i + 1];
+					entries[i + 1] = tempEntry;
+					didSwap = true;
+				}
+			}
+		} while (didSwap);
 
-        // dump entries to file, skipping z-page addresses
-        for (INT32 i = 0; i < count; ++i)
-        {
-            Symbol* symbol = (Symbol*)(entries[i]->object);
-            if (symbol->GetValue() >= 0x100)
-            {
+		// dump entries to file, skipping z-page addresses
+		for (INT32 i = 0; i < count; ++i)
+		{
+			Symbol* symbol = (Symbol*)(entries[i]->object);
+			if (symbol->GetValue() >= 0x100)
+			{
 #if 0
-                INT32 len = strlen(entries[i]->string);
-                fprintf(symFile, "%s", entries[i]->string);
-                for (INT32 j = 0; j < 22 - len; ++j)
-                    fprintf(symFile, " ");
-                fprintf(symFile, "= $%04X\n", symbol->GetValue());
+				INT32 len = strlen(entries[i]->string);
+				fprintf(symFile, "%s", entries[i]->string);
+				for (INT32 j = 0; j < 22 - len; ++j)
+					fprintf(symFile, " ");
+				fprintf(symFile, "= $%04X\n", symbol->GetValue());
 #else
-                // skip local symbols
-                if (EndsWith(entries[i]->string, "__"))
-                    continue;
+				// skip local symbols
+				if (EndsWith(entries[i]->string, "__"))
+					continue;
 
-                // print symbols in AppleWin format
-                fprintf(symFile, "%04X %s\n", symbol->GetValue(), entries[i]->string);
+				// print symbols in AppleWin format
+				fprintf(symFile, "%04X %s\n", symbol->GetValue(), entries[i]->string);
 #endif
-            }
-        }
-    }
+			}
+		}
+	}
 
 	result = true;
 
@@ -291,15 +328,29 @@ exit:
 	if (HasError())
 		PrintError(NULL);
 
+	if (listFile)
+		fclose(listFile);
+
+	if (symFile)
+		fclose(symFile);
+
+	return result;
+}
+
+
+void Assembler::AssembleEnd()
+{
 	for (INT32 i = 0; i < mLineList.GetCount(); ++i)
 	{
 		if (mLineList[i].statement)
 			delete mLineList[i].statement;
 	}
+
 	mLineList.Clear();
 
 	for (INT32 i = 0; i < mFileList.GetCount(); ++i)
 		delete mFileList[i];
+
 	mFileList.Clear();
 
 	if (mMacroDef)
@@ -307,11 +358,27 @@ exit:
 		delete mMacroDef;
 		mMacroDef = NULL;
 	}
+}
 
-	if (listFile)
-		fclose(listFile);
-	if (symFile)
-		fclose(symFile);
+
+bool
+Assembler::Assemble(
+	const char* inName,
+	const char* outName,
+	const char* listName,
+	const char* symName)
+{
+	bool result = false;
+
+	AssembleBegin();
+
+	if (AssembleParse(inName))
+	{
+		if (AssembleWrite(outName, listName, symName))
+			result = true;
+	}
+
+	AssembleEnd();
 	return result;
 }
 
