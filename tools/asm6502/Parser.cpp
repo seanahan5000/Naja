@@ -39,9 +39,9 @@ void
 Parser::ParseLine(const char* string)
 {
 	Token t;
-	Statement* statement = NULL;
+	Statement* statement = nullptr;
 	char labelBuffer[kMaxLabelSize + 1];
-	const char* label = NULL;
+	const char* label = nullptr;
 
 	labelBuffer[0] = 0;
 
@@ -92,7 +92,7 @@ Parser::ParseLine(const char* string)
 			goto error;
 		}
 	}
-	label = labelBuffer[0] ? labelBuffer : NULL;
+	label = labelBuffer[0] ? labelBuffer : nullptr;
 
 	t = Next();
 

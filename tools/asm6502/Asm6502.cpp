@@ -6,9 +6,9 @@ int main(int argc, char* argv[])
 {
 	bool setRoot = false;
 	bool setBase = false;
-	char* listName = NULL;
-	char* symName = NULL;
-	char* fileName = NULL;
+	char* listName = nullptr;
+	char* symName = nullptr;
+	char* fileName = nullptr;
 	Assembler* assembler = new Assembler();
 
 	argc -= 1;
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
 		goto usage;
 	}
 
-	assembler->Assemble(fileName, NULL, listName, symName);
+	assembler->Assemble(fileName, nullptr, listName, symName);
 	return 0;
 
 usage:

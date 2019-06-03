@@ -260,7 +260,7 @@ class ErrorStatement : public Statement
 public:
 	ErrorStatement() : Statement()
 	{
-		mExpression = NULL;
+		mExpression = nullptr;
 	}
 
 	~ErrorStatement();

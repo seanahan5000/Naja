@@ -10,7 +10,7 @@
 Expression::Parse(Parser* p, Token t, bool recurse)
 {
 	Assembler* assembler = p->GetAssembler();
-	Expression* exp = NULL;
+	Expression* exp = nullptr;
 
 	if (t == '$')
 	{
@@ -56,7 +56,7 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 	else if (t == '<' || t == '>' || t == '-')
 	{
 		exp = Expression::Parse(p, p->Next(), recurse);
-		if (exp == NULL)
+		if (exp == nullptr)
 			goto fail;
 		exp = new UnaryExpression(t, exp);
 	}
@@ -67,7 +67,7 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 	else if (t == '(')
 	{
 		exp = Expression::Parse(p, p->Next(), recurse);
-		if (exp == NULL)
+		if (exp == nullptr)
 			goto fail;
 
 		t = p->Next();
@@ -136,7 +136,7 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 
 			t = p->Next();
 			Expression* exp2 = Expression::Parse(p, p->Next(), false);
-			if (exp2 == NULL)
+			if (exp2 == nullptr)
 				goto fail;
 			exp = new BinaryExpression(exp, t, exp2);
 		}
@@ -147,7 +147,7 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 fail:
 	if (exp)
 		delete exp;
-	return NULL;
+	return nullptr;
 }
 
 //------------------------------------------------------------------------------

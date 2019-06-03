@@ -130,7 +130,7 @@ public:
 
 	void StartMacroDef(const char* name);
 	void EndMacroDef();
-	bool InMacroDef() { return mMacroDef != NULL; }
+	bool InMacroDef() { return mMacroDef != nullptr; }
 	bool StartMacroExpand(const char* name);
 	bool InMacroExpand() { return mReadState.isMacro; }
 

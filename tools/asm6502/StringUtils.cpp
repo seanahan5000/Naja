@@ -8,7 +8,7 @@ StringArray::StringArray(INT32 capacity)
 {
 	mCount = 0;
 	mCapacity = capacity;
-	mStrings = (char**)realloc(NULL, capacity * sizeof(char*));
+	mStrings = (char**)realloc(nullptr, capacity * sizeof(char*));
 }
 
 
@@ -49,7 +49,7 @@ StringHash::~StringHash()
 {
 	for (UINT32 i = 0; i < mSize; ++i)
 	{
-		HashEntry* entry = NULL;
+		HashEntry* entry = nullptr;
 		HashEntry* next = mEntries[i];
 		while (next)
 		{
@@ -141,7 +141,7 @@ StringHash::Find(const char* string)
 		entry = entry->next;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 

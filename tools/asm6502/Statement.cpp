@@ -10,7 +10,7 @@
 Statement::Statement()
 {
 	mPC = -1;
-	mExpression = NULL;
+	mExpression = nullptr;
 }
 
 
@@ -81,14 +81,14 @@ OpStatement::Parse(Parser* p, const char* label)
 	else if (t == '#')
 	{
 		mExpression = p->ParseExpression();
-		if (mExpression == NULL)
+		if (mExpression == nullptr)
 			return;
 		mTarget = OpTarget_IMM;
 	}
 	else if (t == '(')
 	{
 		mExpression = p->ParseExpression();
-		if (mExpression == NULL)
+		if (mExpression == nullptr)
 			return;
 
 		t = p->Next();
@@ -140,7 +140,7 @@ OpStatement::Parse(Parser* p, const char* label)
 	else
 	{
 		mExpression = p->ParseExpression(t);
-		if (mExpression == NULL)
+		if (mExpression == nullptr)
 			return;
 
 		t = p->Next();
@@ -841,7 +841,7 @@ ConditionalStatement::Parse(Parser* p, const char* label)
 
 UsrStatement::UsrStatement() : Statement()
 {
-	mBuffer = NULL;
+	mBuffer = nullptr;
 }
 
 

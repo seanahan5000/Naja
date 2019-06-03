@@ -17,7 +17,7 @@ public:
 	{
 		mCount = 0;
 		mCapacity = capacity;
-		mArray = (T*)realloc(NULL, mCapacity * sizeof(T));
+		mArray = (T*)realloc(nullptr, mCapacity * sizeof(T));
 	}
 
 	~Array()
@@ -80,7 +80,7 @@ public:
 	{
 		mDepth = 0;
 		mCapacity = capacity;
-		mStack = (T*)realloc(NULL, mCapacity * sizeof(T));
+		mStack = (T*)realloc(nullptr, mCapacity * sizeof(T));
 	}
 
 	~Stack()
@@ -138,7 +138,7 @@ public:
 	{
 		mAvailable = capacity;
 		mConsumed = 0;
-		mBuffer = (UINT8*)realloc(NULL, mConsumed + mAvailable);
+		mBuffer = (UINT8*)realloc(nullptr, mConsumed + mAvailable);
 	}
 
 	~GrowBuffer()
