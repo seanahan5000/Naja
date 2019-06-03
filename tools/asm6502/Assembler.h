@@ -151,9 +151,9 @@ public:
 	bool GetVar(const char* name, const char** value);
 
 	void SetError(const char* format, ...);
-	bool HasError() { return mError[0] != 0; }
-	char* GetError() { return mError; }
-	void ClearError() { mError[0] = 0; }
+	bool HasError() { return !mErrorMsg.empty(); }
+	const char* GetError() { return mErrorMsg.c_str(); }
+	void ClearError() { mErrorMsg.clear(); }
 	void PrintError(LineRecord* lineRec);
 
 	void SetLocalBase(const char* localBase) { strcpy(mLocalBase, localBase); }
@@ -220,7 +220,7 @@ protected:
 	MacroDef* mMacroDef;
 	StringHash* mMacros;
 
-	char mError[1024];
+	std::string mErrorMsg;
 	INT32 mErrorCount;
 
 	GrowBuffer mOutBuffer;

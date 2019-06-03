@@ -58,7 +58,7 @@ Assembler::~Assembler()
 
 void Assembler::AssembleBegin()
 {
-	mError[0] = 0;
+	mErrorMsg.clear();
 	mErrorCount = 0;
 	mInWritePhase = false;
 	mInName.clear();
@@ -73,8 +73,6 @@ bool Assembler::AssembleParse(const char* inName)
 
 	if (!mParser)
 	{
-		mError[0] = 0;
-
 		mParser = new Parser(this);
 		mVars = new StringHash();
 		mSymbols = new StringHash();
@@ -818,12 +816,13 @@ Assembler::AddEquateSymbol(const char* equate, INT32 value, bool forceLong)
 void
 Assembler::SetError(const char* format, ...)
 {
-	if (mError[0] == 0)
+	if (mErrorMsg.empty())
 	{
+		char tempBuffer[1024];
 		va_list args;
 		va_start(args, format);
-		_vsnprintf(mError, sizeof(mError), format, args);
-		mError[sizeof(mError) - 1] = 0;
+		_vsnprintf(tempBuffer, sizeof(tempBuffer), format, args);
+		mErrorMsg = tempBuffer;
 	}
 }
 
@@ -833,13 +832,14 @@ Assembler::PrintError(LineRecord* lineRec)
 {
 	if (lineRec)
 	{
-		printf("\nERROR line %d,  file \"%s\": %s\n", lineRec->lineIndex + 1,
-											mFileList[lineRec->fileIndex]->GetName(),
-											GetError());
+		printf("\nERROR line %d,  file \"%s\": %s\n",
+			lineRec->lineIndex + 1, mFileList[lineRec->fileIndex]->GetName(), GetError());
+
 		printf("%s\n", mFileList[lineRec->fileIndex]->GetLine(lineRec->lineIndex));
 	}
 	else
 		printf("\nERROR: %s\n", GetError());
+
 	ClearError();
 }
 
