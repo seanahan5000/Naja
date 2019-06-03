@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "ClassUtils.h"
 #include "Tokens.h"
+#include "ClassUtils.h"
 
 class Assembler;
 class Expression;
@@ -79,7 +79,7 @@ public:
 
 protected:
 	Token mTypeToken;
-	Array<Expression*> mExpList;
+	std::vector<Expression*> mExpList;
 };
 
 //------------------------------------------------------------------------------

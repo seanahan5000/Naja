@@ -7,11 +7,11 @@
 
 //------------------------------------------------------------------------------
 
-#define OPCODE(_op)	#_op,
-#define OP(_mode, _hex)
-#define OPEND()
 static const char* sOpcodeList[] = {
-#include "Opcodes.h"
+	#define OPCODE(_op)	#_op,
+	#define OP(_mode, _hex)
+	#define OPEND()
+	#include "Opcodes.h"
 };
 
 const INT32 kOpcodeCount = sizeof(sOpcodeList) / sizeof(sOpcodeList[0]);
@@ -87,8 +87,7 @@ Tokenizer::~Tokenizer()
 }
 
 
-void
-Tokenizer::SetString(const char* string)
+void Tokenizer::SetString(const char* string)
 {
 	strncpy(mStringBuffer, string, sizeof(mStringBuffer));
 	mStringBuffer[sizeof(mStringBuffer) - 1] = 0;
@@ -97,8 +96,7 @@ Tokenizer::SetString(const char* string)
 }
 
 
-void
-Tokenizer::SkipWhiteSpace()
+void Tokenizer::SkipWhiteSpace()
 {
 	char c;
 	INT32 i;
@@ -114,8 +112,7 @@ Tokenizer::SkipWhiteSpace()
 }
 
 
-Token
-Tokenizer::NextToken(bool hexHint)
+Token Tokenizer::NextToken(bool hexHint)
 {
 	char c;
 	INT32 i;
@@ -202,8 +199,7 @@ Tokenizer::NextToken(bool hexHint)
 }
 
 
-bool
-Tokenizer::NextFileName()
+bool Tokenizer::NextFileName()
 {
 	char c;
 	INT32 i;
@@ -245,8 +241,7 @@ Tokenizer::NextFileName()
 }
 
 
-bool
-Tokenizer::NextGroup(bool skipWhite, char terminator, bool mustFindTerm)
+bool Tokenizer::NextGroup(bool skipWhite, char terminator, bool mustFindTerm)
 {
 	char c;
 	INT32 i;

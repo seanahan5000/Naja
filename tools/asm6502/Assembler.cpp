@@ -33,8 +33,10 @@ static bool EndsWith(const char* string, const char* endsWith)
 //------------------------------------------------------------------------------
 
 Assembler::Assembler()
-	: mLineList(8192), mOutBuffer(16384)
+	: mOutBuffer(16384)
 {
+	mLineList.reserve(8192);
+
 	mSyntax = SyntaxMerlin;
 	mParser = nullptr;
 	mMacroDef = nullptr;
@@ -50,8 +52,8 @@ Assembler::Assembler()
 
 Assembler::~Assembler()
 {
-	ASSERT(mLineList.GetCount() == 0);
-	ASSERT(mFileList.GetCount() == 0);
+	ASSERT(mLineList.size() == 0);
+	ASSERT(mFileList.size() == 0);
 	ASSERT(mMacroDef == nullptr);
 
 	//*** clear out macro hash table objects ***
@@ -110,7 +112,7 @@ bool Assembler::AssembleParse(const char* inName)
 				lineRec.fileIndex = mReadState.fileIndex;
 				lineRec.lineIndex = mReadState.curLineIndex;
 				lineRec.statement = nullptr;
-				mLineList.Add(lineRec);
+				mLineList.push_back(lineRec);
 
 				const char* line = mReadState.file->GetLine(mReadState.curLineIndex++);
 				mParser->ParseLine(line);
@@ -130,7 +132,8 @@ bool Assembler::AssembleParse(const char* inName)
 
 		} while (--mReadState.loopCount > 0);
 
-		mReadState = mReadStateStack.Pull();
+		mReadState = mReadStateStack.top();
+		mReadStateStack.pop();
 	}
 
 	if (mErrorCount > 0)
@@ -220,7 +223,7 @@ bool Assembler::AssembleWrite(
 	SetOrg(0x8000);			// Merlin default
 
 	mOutBuffer.Clear();
-	for (INT32 i = 0; i < mLineList.GetCount(); ++i)
+	for (size_t i = 0; i < mLineList.size(); ++i)
 	{
 		Statement* statement = mLineList[i].statement;
 		INT32 writeOffset = mOutBuffer.GetSize();
@@ -345,18 +348,18 @@ exit:
 
 void Assembler::AssembleEnd()
 {
-	for (INT32 i = 0; i < mLineList.GetCount(); ++i)
+	for (size_t i = 0; i < mLineList.size(); ++i)
 	{
 		if (mLineList[i].statement)
 			delete mLineList[i].statement;
 	}
 
-	mLineList.Clear();
+	mLineList.clear();
 
-	for (INT32 i = 0; i < mFileList.GetCount(); ++i)
+	for (size_t i = 0; i < mFileList.size(); ++i)
 		delete mFileList[i];
 
-	mFileList.Clear();
+	mFileList.clear();
 
 	if (mMacroDef)
 	{
@@ -389,8 +392,8 @@ bool Assembler::Assemble(
 
 void Assembler::AddStatement(Statement* statement)
 {
-	ASSERT(mLineList[mLineList.GetCount() - 1].statement == nullptr);
-	mLineList[mLineList.GetCount() - 1].statement = statement;
+	ASSERT(mLineList[mLineList.size() - 1].statement == nullptr);
+	mLineList[mLineList.size() - 1].statement = statement;
 }
 
 //------------------------------------------------------------------------------
@@ -412,12 +415,12 @@ void Assembler::SetOrg(INT32 pc)
 
 bool Assembler::IncludeFile(const char* fileName)
 {
-	mReadStateStack.Push(mReadState);
+	mReadStateStack.push(mReadState);
 	mReadState.file = SourceFile::Create(this, fileName);
 	if (!mReadState.file)
 		return false;
-	mReadState.fileIndex = mFileList.GetCount();
-	mFileList.Add(mReadState.file);
+	mReadState.fileIndex = mFileList.size();
+	mFileList.push_back(mReadState.file);
 	mReadState.startLineIndex = 0;
 	mReadState.curLineIndex = 0;
 	mReadState.endLineIndex = mReadState.file->GetLineCount();
@@ -462,7 +465,7 @@ bool Assembler::StartMacroExpand(const char* name)
 	if (!macroDef)
 		return false;
 
-	mReadStateStack.Push(mReadState);
+	mReadStateStack.push(mReadState);
 	mReadState.file = mFileList[macroDef->fileIndex];
 	mReadState.fileIndex = macroDef->fileIndex;
 	mReadState.startLineIndex = macroDef->startLineIndex;
@@ -505,7 +508,7 @@ void Assembler::EndDummy()
 
 void Assembler::StartLoop(INT32 loopCount)
 {
-	mReadStateStack.Push(mReadState);
+	mReadStateStack.push(mReadState);
 	// mReadState.file, fileIndex remain the same
 	mReadState.startLineIndex = mReadState.curLineIndex;
 	// mReadState.curLineIndex, endLineIndex remain the same
@@ -517,7 +520,7 @@ void Assembler::StartLoop(INT32 loopCount)
 void Assembler::EndLoop()
 {
 	mReadState.endLineIndex = mReadState.curLineIndex - 1;
-	mReadStateStack.Top().curLineIndex = mReadState.curLineIndex;
+	mReadStateStack.top().curLineIndex = mReadState.curLineIndex;
 }
 
 

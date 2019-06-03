@@ -14,7 +14,6 @@ Parser::Parser(Assembler* assembler)
 	mTokenizer = new Tokenizer(assembler->GetSyntax());
 	mConditional.enableCount = 1;
 	mConditional.satisfied = true;
-	mConditionalIndex = 0;
 }
 
 
@@ -25,8 +24,7 @@ Parser::~Parser()
 }
 
 
-Token
-Parser::Peek()
+Token Parser::Peek()
 {
 	INT32 mark = mTokenizer->GetPosition();
 	Token t = Next();
@@ -35,8 +33,7 @@ Parser::Peek()
 }
 
 
-void
-Parser::ParseLine(const char* string)
+void Parser::ParseLine(const char* string)
 {
 	Token t;
 	Statement* statement = nullptr;
@@ -371,8 +368,7 @@ error:;
 }
 
 
-bool
-Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
+bool Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
 {
 	const char* sp = inString;
 	char* dp = outString;
@@ -459,8 +455,7 @@ Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
 //:LABEL
 //	@LABEL:
 //	:LABEL:
-bool
-Parser::ParseLabel(bool firstColumn, char* label, INT32 labelMax, bool* isLocal)
+bool Parser::ParseLabel(bool firstColumn, char* label, INT32 labelMax, bool* isLocal)
 {
 	*label = 0;
 	*isLocal = false;
@@ -510,15 +505,13 @@ fail:
 }
 
 
-Expression*
-Parser::ParseExpression(Token t)
+Expression* Parser::ParseExpression(Token t)
 {
 	return Expression::Parse(this, t, true);
 }
 
 
-bool
-Parser::ParseAndResolveExpression(Token t, INT32* value)
+bool Parser::ParseAndResolveExpression(Token t, INT32* value)
 {
 	Expression* exp = ParseExpression(t);
 	if (!exp)
@@ -531,8 +524,7 @@ Parser::ParseAndResolveExpression(Token t, INT32* value)
 
 //------------------------------------------------------------------------------
 
-INT32
-Parser::GetHexValue()
+INT32 Parser::GetHexValue()
 {
 	INT32 v = 0;
 	char c;
@@ -557,8 +549,7 @@ Parser::GetHexValue()
 }
 
 
-INT32
-Parser::GetDecValue()
+INT32 Parser::GetDecValue()
 {
 	INT32 v = 0;
 	char c;
@@ -569,8 +560,7 @@ Parser::GetDecValue()
 }
 
 
-INT32
-Parser::GetBinValue()
+INT32 Parser::GetBinValue()
 {
 	INT32 v = 0;
 	char c;
@@ -588,26 +578,26 @@ Parser::GetBinValue()
 
 //------------------------------------------------------------------------------
 
-bool
-Parser::PushConditional()
+bool Parser::PushConditional()
 {
-	if (mConditionalIndex == kConditionalMax)
+	// set an arbitrary limit on stack size to catch infinite recursion
+	if (mConditionalStack.size() > 255)
 		return false;
 
-	mConditionalStack[mConditionalIndex++] = mConditional;
+	mConditionalStack.push(mConditional);
 	--mConditional.enableCount;
 	mConditional.satisfied = false;
 	return true;
 }
 
 
-bool
-Parser::PullConditional()
+bool Parser::PullConditional()
 {
-	if (mConditionalIndex == 0)
+	if (mConditionalStack.empty())
 		return false;
 
-	mConditional = mConditionalStack[--mConditionalIndex];
+	mConditional = mConditionalStack.top();
+	mConditionalStack.pop();
 	return true;
 }
 

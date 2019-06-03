@@ -159,8 +159,7 @@ NumberExpression::NumberExpression(INT32 value, bool forceLong) : Expression()
 }
 
 
-INT32
-NumberExpression::GetSize(Assembler* assembler)
+INT32 NumberExpression::GetSize(Assembler* assembler)
 {
 	//*** check mResolved ***
 	if (mForceLong || mValue > 255 || mValue < -128)
@@ -169,8 +168,7 @@ NumberExpression::GetSize(Assembler* assembler)
 }
 
 
-bool
-NumberExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
+bool NumberExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	*value = mValue;
 	return true;
@@ -184,8 +182,7 @@ SymbolExpression::SymbolExpression(const char* string) : Expression()
 }
 
 
-INT32
-SymbolExpression::GetSize(Assembler* assembler)
+INT32 SymbolExpression::GetSize(Assembler* assembler)
 {
 	//*** check mResolved ***
 	Symbol* symbol = assembler->FindSymbol(mString.c_str());
@@ -195,8 +192,7 @@ SymbolExpression::GetSize(Assembler* assembler)
 }
 
 
-bool
-SymbolExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
+bool SymbolExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	Symbol* symbol = assembler->FindSymbol(mString.c_str());
 	if (!symbol)
@@ -225,8 +221,7 @@ UnaryExpression::~UnaryExpression()
 }
 
 
-INT32
-UnaryExpression::GetSize(Assembler* assembler)
+INT32 UnaryExpression::GetSize(Assembler* assembler)
 {
 	//*** check mResolved ***
 	if (mOperation == '>' || mOperation == '<')
@@ -235,8 +230,7 @@ UnaryExpression::GetSize(Assembler* assembler)
 }
 
 
-bool
-UnaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
+bool UnaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	if (!mArg->Resolve(assembler, value, setError))
 		return false;
@@ -273,8 +267,7 @@ BinaryExpression::~BinaryExpression()
 }
 
 
-INT32
-BinaryExpression::GetSize(Assembler* assembler)
+INT32 BinaryExpression::GetSize(Assembler* assembler)
 {
 	//*** check mResolved ***
 	if (mArg1->GetSize(assembler) == 2)
@@ -283,8 +276,7 @@ BinaryExpression::GetSize(Assembler* assembler)
 }
 
 
-bool
-BinaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
+bool BinaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	INT32 value1;
 	INT32 value2;
@@ -322,15 +314,13 @@ BinaryExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 
 //------------------------------------------------------------------------------
 
-INT32
-PcExpression::GetSize(Assembler* assembler)
+INT32 PcExpression::GetSize(Assembler* assembler)
 {
 	return 2;
 }
 
 
-bool
-PcExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
+bool PcExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	*value = assembler->GetPC();
 	return true;
@@ -350,16 +340,14 @@ ParenExpression::~ParenExpression()
 }
 
 
-INT32
-ParenExpression::GetSize(Assembler* assembler)
+INT32 ParenExpression::GetSize(Assembler* assembler)
 {
 	//*** check mResolved ***
 	return mArg->GetSize(assembler);
 }
 
 
-bool
-ParenExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
+bool ParenExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
 	if (!mArg->Resolve(assembler, value, setError))
 		return false;

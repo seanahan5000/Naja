@@ -54,7 +54,7 @@ public:
 
 	bool ExpandVars(const char* inString, char* outString, INT32 outSize);
 
-	bool ConditionalsComplete() { return mConditionalIndex == 0; }
+	bool ConditionalsComplete() { return mConditionalStack.empty(); }
 
 	void SetTokenError(char expected)
 	{
@@ -87,12 +87,9 @@ protected:
 
 	Assembler* mAssembler;
 	Tokenizer* mTokenizer;
-	char* mLastLabel;
 
 	ConditionalState mConditional;
-	static const INT32 kConditionalMax = 8;
-	ConditionalState mConditionalStack[kConditionalMax];
-	INT32 mConditionalIndex;
+	std::stack<ConditionalState> mConditionalStack;
 };
 
 //------------------------------------------------------------------------------

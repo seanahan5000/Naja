@@ -281,20 +281,21 @@ OpStatement::Write(Assembler* assembler)
 //------------------------------------------------------------------------------
 
 DataStatement::DataStatement(Token typeToken)
-				 : Statement(), mExpList(3)
+	: Statement()
 {
+	mExpList.reserve(3);
 	mTypeToken = typeToken;
 }
 
 
 DataStatement::~DataStatement()
 {
-	mExpList.DeleteAll();
+	for (size_t i = 0; i < mExpList.size(); ++i)
+		delete mExpList[i];
 }
 
 
-void
-DataStatement::Parse(Parser* p, const char* label)
+void DataStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -340,7 +341,7 @@ DataStatement::Parse(Parser* p, const char* label)
 		if (!exp)
 			return;
 
-		mExpList.Add(exp);
+		mExpList.push_back(exp);
 
 		t = p->Next();
 		if (t == ',')
@@ -355,16 +356,15 @@ DataStatement::Parse(Parser* p, const char* label)
 		break;
 	}
 
-	assembler->AdvancePC(mExpList.GetCount() * needed);
+	assembler->AdvancePC(mExpList.size() * needed);
 }
 
 
-void
-DataStatement::Write(Assembler* assembler)
+void DataStatement::Write(Assembler* assembler)
 {
 	UINT8* bp;
 	INT32 value;
-	INT32 expCount = mExpList.GetCount();
+	INT32 expCount = mExpList.size();
 
 	// at this pointer, type is either DB, DDB, or DW
 	if (mTypeToken == TokenDB)
@@ -521,8 +521,7 @@ AlignStatement::Write(Assembler* assembler)
 
 //------------------------------------------------------------------------------
 
-static bool
-ScanHex(Assembler* assembler, char* string, GrowBuffer* buffer)
+static bool ScanHex(Assembler* assembler, const char* string, GrowBuffer* buffer)
 {
 	INT32 length = strlen(string);
 	if (length & 1)
@@ -552,8 +551,7 @@ ScanHex(Assembler* assembler, char* string, GrowBuffer* buffer)
 }
 
 
-void
-HexStatement::Parse(Parser* p, const char* label)
+void HexStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -592,16 +590,14 @@ HexStatement::Parse(Parser* p, const char* label)
 }
 
 
-void
-HexStatement::Write(Assembler* assembler)
+void HexStatement::Write(Assembler* assembler)
 {
 	assembler->WriteBytes(mBuffer.GetPtr(), mBuffer.GetSize());
 }
 
 //------------------------------------------------------------------------------
 
-void
-AscStatement::Parse(Parser* p, const char* label)
+void AscStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -653,8 +649,7 @@ AscStatement::Parse(Parser* p, const char* label)
 }
 
 
-void
-AscStatement::Write(Assembler* assembler)
+void AscStatement::Write(Assembler* assembler)
 {
 	if (mPrependLength)
 		assembler->WriteByte(mBaseLength);
@@ -664,8 +659,7 @@ AscStatement::Write(Assembler* assembler)
 
 //------------------------------------------------------------------------------
 
-void
-EquStatement::Parse(Parser* p, const char* label)
+void EquStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 
@@ -698,8 +692,7 @@ EquStatement::Parse(Parser* p, const char* label)
 
 //------------------------------------------------------------------------------
 
-void
-OrgStatement::Parse(Parser* p, const char* label)
+void OrgStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 
@@ -718,8 +711,7 @@ OrgStatement::Parse(Parser* p, const char* label)
 }
 
 
-void
-OrgStatement::Write(Assembler* assembler)
+void OrgStatement::Write(Assembler* assembler)
 {
 	assembler->SetOrg(mOrg);
 
@@ -740,8 +732,7 @@ OrgStatement::Write(Assembler* assembler)
 
 //------------------------------------------------------------------------------
 
-void
-ConditionalStatement::Parse(Parser* p, const char* label)
+void ConditionalStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -851,8 +842,7 @@ UsrStatement::~UsrStatement()
 }
 
 
-void
-UsrStatement::Parse(Parser* p, const char* label)
+void UsrStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 	Token t;
@@ -940,16 +930,14 @@ UsrStatement::Parse(Parser* p, const char* label)
 }
 
 
-void
-UsrStatement::Write(Assembler* assembler)
+void UsrStatement::Write(Assembler* assembler)
 {
 	assembler->WriteBytes(mBuffer, mLength);
 }
 
 //------------------------------------------------------------------------------
 
-void
-IncludeStatement::Parse(Parser* p, const char* label)
+void IncludeStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 
@@ -969,8 +957,7 @@ SavStatement::SavStatement() : Statement()
 }
 
 
-void
-SavStatement::Parse(Parser* p, const char* label)
+void SavStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 
@@ -990,8 +977,7 @@ SavStatement::Parse(Parser* p, const char* label)
 }
 
 
-void
-SavStatement::Write(Assembler* assembler)
+void SavStatement::Write(Assembler* assembler)
 {
 	if (!mString.empty())
 		assembler->SaveFile(mString.c_str());
@@ -1004,8 +990,7 @@ DskStatement::DskStatement() : Statement()
 }
 
 
-void
-DskStatement::Parse(Parser* p, const char* label)
+void DskStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 
@@ -1041,8 +1026,7 @@ ErrorStatement::~ErrorStatement()
 }
 
 
-void
-ErrorStatement::Parse(Parser* p, const char* label)
+void ErrorStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 
@@ -1056,8 +1040,7 @@ ErrorStatement::Parse(Parser* p, const char* label)
 }
 
 
-void
-ErrorStatement::Write(Assembler* assembler)
+void ErrorStatement::Write(Assembler* assembler)
 {
 	if (mExpression)
 	{
@@ -1073,8 +1056,7 @@ ErrorStatement::Write(Assembler* assembler)
 
 //------------------------------------------------------------------------------
 
-void
-DummyStatement::Parse(Parser* p, const char* label)
+void DummyStatement::Parse(Parser* p, const char* label)
 {
 	Assembler* assembler = p->GetAssembler();
 
@@ -1091,8 +1073,7 @@ DummyStatement::Parse(Parser* p, const char* label)
 }
 
 
-void
-DummyStatement::Write(Assembler* assembler)
+void DummyStatement::Write(Assembler* assembler)
 {
 	if (mStart)
 		assembler->StartDummy(mOrg);

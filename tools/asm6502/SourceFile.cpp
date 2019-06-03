@@ -6,10 +6,11 @@
 //------------------------------------------------------------------------------
 
 SourceFile::SourceFile(Assembler* assembler, const char* fileName)
-	: mOffsets(256)
 {
 	mFileName = fileName;
 	mBuffer = nullptr;
+
+	mOffsets.reserve(256);
 
 	std::string fullPath = assembler->BuildFullSourcePath(fileName);
 	fullPath += ".S";
@@ -48,7 +49,7 @@ SourceFile::SourceFile(Assembler* assembler, const char* fileName)
 		char c = *sp++;
 		if (c == '\r' || c == '\n')
 		{
-			mOffsets.Add(start - mBuffer);
+			mOffsets.push_back(start - mBuffer);
 			*(sp - 1) = 0;		// replace '\r' with zero terminator
 			if (c == '\r' && *sp == '\n')
 				sp++;
@@ -57,11 +58,11 @@ SourceFile::SourceFile(Assembler* assembler, const char* fileName)
 	}
 	if (sp != start)
 	{
-		mOffsets.Add(start - mBuffer);
+		mOffsets.push_back(start - mBuffer);
 		*sp = 0;
 	}
 
-	mOffsets.Trim();
+	mOffsets.shrink_to_fit();
 }
 
 

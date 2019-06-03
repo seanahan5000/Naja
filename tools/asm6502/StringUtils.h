@@ -3,25 +3,6 @@
 
 //------------------------------------------------------------------------------
 
-class StringArray
-{
-public:
-	StringArray(INT32 capacity = 8);
-	~StringArray();
-
-	INT32 Add(const char* string);
-	char* operator[](size_t index) { return mStrings[index]; }
-
-	INT32 GetCount() { return mCount; }
-
-protected:
-	INT32 mCount;
-	INT32 mCapacity;
-	char** mStrings;
-};
-
-//------------------------------------------------------------------------------
-
 struct HashEntry
 {
 	HashEntry* next;

@@ -192,11 +192,11 @@ protected:
 	std::string mOutFileName;
 	std::string mInName;
 
-	Array<SourceFile*> mFileList;
+	std::vector<SourceFile*> mFileList;
 	FileReadState mReadState;
-	Stack<FileReadState> mReadStateStack;
+	std::stack<FileReadState> mReadStateStack;
 
-	Array<LineRecord> mLineList;
+	std::vector<LineRecord> mLineList;
 
 	Parser* mParser;
 	StringHash* mVars;
