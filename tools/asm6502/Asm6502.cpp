@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 	char* listName = nullptr;
 	char* symName = nullptr;
 	char* fileName = nullptr;
-	Assembler* assembler = new Assembler();
+	Assembler assembler;
 
 	argc -= 1;
 	argv += 1;
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 
 			str = *argv++;
 			--argc;
-			assembler->SetRootDir(str);
+			assembler.SetRootDir(str);
 			setRoot = true;
 		}
 		else if (_stricmp(str, "-srcbase") == 0 || _stricmp(str, "-base") == 0)
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 
 			str = *argv++;
 			--argc;
-			assembler->SetSourceDir(str);
+			assembler.SetSourceDir(str);
 			setBase = true;
 		}
 		else if (_stricmp(str, "-objbase") == 0)
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 
 			str = *argv++;
 			--argc;
-			assembler->SetObjectDir(str);
+			assembler.SetObjectDir(str);
 			setBase = true;
 		}
 		else if (_stricmp(str, "-list") == 0)
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
 		}
 		else if (_stricmp(str, "-bin") == 0)
 		{
-			assembler->SetSaveAsBin(true);
+			assembler.SetSaveAsBin(true);
 		}
 		else if (str[0] == '-')
 		{
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
 		goto usage;
 	}
 
-	assembler->Assemble(fileName, nullptr, listName, symName);
+	assembler.Assemble(fileName, nullptr, listName, symName);
 	return 0;
 
 usage:
