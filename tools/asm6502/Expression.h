@@ -15,7 +15,7 @@ public:
 	static Expression* Parse(Parser* p, Token t, bool recurse = true);
 	virtual ~Expression() {}
 
-	virtual INT32 GetSize(Assembler* assembler) = 0;	//***
+	virtual INT32 GetSize(Assembler* assembler) = 0;
 	virtual bool Resolve(Assembler* assembler, INT32* value, bool setError = true) = 0;
 };
 
@@ -26,7 +26,7 @@ class NumberExpression : public Expression
 public:
 	NumberExpression(INT32 value, bool forceLong);
 
-	INT32 GetSize(Assembler* assembler);		//***
+	INT32 GetSize(Assembler* assembler);
 	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 
 protected:
@@ -39,14 +39,13 @@ protected:
 class SymbolExpression : public Expression
 {
 public:
-	SymbolExpression(char* string);
-	~SymbolExpression();
+	SymbolExpression(const char* string);
 
-	INT32 GetSize(Assembler* assembler);		//***
+	INT32 GetSize(Assembler* assembler);
 	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 
 protected:
-	char* mString;
+	std::string mString;
 	bool mLocal;
 };
 
@@ -58,7 +57,7 @@ public:
 	UnaryExpression(Token op, Expression* arg);
 	~UnaryExpression();
 
-	INT32 GetSize(Assembler* assembler);		//***
+	INT32 GetSize(Assembler* assembler);
 	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 
 protected:
@@ -74,7 +73,7 @@ public:
 	BinaryExpression(Expression* arg1, Token op, Expression* arg2);
 	~BinaryExpression();
 
-	INT32 GetSize(Assembler* assembler);	//***
+	INT32 GetSize(Assembler* assembler);
 	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 
 protected:
@@ -102,7 +101,7 @@ public:
 	ParenExpression(Expression* arg);
 	~ParenExpression();
 
-	INT32 GetSize(Assembler* assembler);		//***
+	INT32 GetSize(Assembler* assembler);
 	bool Resolve(Assembler* assembler, INT32* value, bool setError);
 
 protected:

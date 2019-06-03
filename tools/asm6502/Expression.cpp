@@ -31,9 +31,10 @@ Expression::Parse(Parser* p, Token t, bool recurse)
 			assembler->SetError("Invalid local label in expression \"%s\"", p->GetString());
 			goto fail;
 		}
-		char buffer[256];
-		assembler->LocalToGlobal(p->GetString(), buffer, sizeof(buffer));
-		exp = new SymbolExpression(buffer);
+
+		std::string global;
+		assembler->LocalToGlobal(p->GetString(), global);
+		exp = new SymbolExpression(global.c_str());
 	}
 	else if (t == '%')
 	{
@@ -177,15 +178,9 @@ NumberExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 
 //------------------------------------------------------------------------------
 
-SymbolExpression::SymbolExpression(char* string) : Expression()
+SymbolExpression::SymbolExpression(const char* string) : Expression()
 {
-	mString = _strdup(string);
-}
-
-
-SymbolExpression::~SymbolExpression()
-{
-	free(mString);
+	mString = string;
 }
 
 
@@ -193,7 +188,7 @@ INT32
 SymbolExpression::GetSize(Assembler* assembler)
 {
 	//*** check mResolved ***
-	Symbol* symbol = assembler->FindSymbol(mString);
+	Symbol* symbol = assembler->FindSymbol(mString.c_str());
 	if (symbol)
 		return symbol->GetSize();
 	return 2;
@@ -203,11 +198,11 @@ SymbolExpression::GetSize(Assembler* assembler)
 bool
 SymbolExpression::Resolve(Assembler* assembler, INT32* value, bool setError)
 {
-	Symbol* symbol = assembler->FindSymbol(mString);
+	Symbol* symbol = assembler->FindSymbol(mString.c_str());
 	if (!symbol)
 	{
 		if (setError)
-			assembler->SetError("Unresolved symbol \"%s\"", mString);
+			assembler->SetError("Unresolved symbol \"%s\"", mString.c_str());
 		return false;
 	}
 

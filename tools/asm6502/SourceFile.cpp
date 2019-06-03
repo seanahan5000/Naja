@@ -8,29 +8,30 @@
 SourceFile::SourceFile(Assembler* assembler, const char* fileName)
 	: mOffsets(256)
 {
-	mFileName = _strdup(fileName);
-	mBuffer = NULL;
+	mFileName = fileName;
+	mBuffer = nullptr;
 
-	char fullPath[1024];
-	assembler->BuildFullSourcePath(fullPath, fileName);
+	std::string fullPath = assembler->BuildFullSourcePath(fileName);
+	fullPath += ".S";
 
-	// must opened as binary, not text
-	strcat(fullPath, ".S");
-	FILE* file = fopen(fullPath, "rb");
+	// must be opened as binary, not text
+	FILE* file = fopen(fullPath.c_str(), "rb");
 	if (!file)
 	{
-		fullPath[strlen(fullPath) - 2] = 0;
-		file = fopen(fullPath, "rb");
+		fullPath.resize(fullPath.size() - 2);
+		file = fopen(fullPath.c_str(), "rb");
 	}
 
 	if (!file)
 	{
-		assembler->SetError("Input file \"%s\" not found", fullPath);
+		assembler->SetError("Input file \"%s\" not found", fullPath.c_str());
 		return;
 	}
 
+	// TODO: error checks on file operations
+
 	fseek(file, 0, SEEK_END);
-	long fileSize = ftell(file);
+	size_t fileSize = ftell(file);
 	fseek(file, 0, SEEK_SET);
 
 	// Use fileSize + 1 to make room for last terminator
@@ -64,14 +65,13 @@ SourceFile::SourceFile(Assembler* assembler, const char* fileName)
 }
 
 
-/*static*/ SourceFile*
-SourceFile::Create(Assembler* assembler, const char* fileName)
+SourceFile* SourceFile::Create(Assembler* assembler, const char* fileName)
 {
 	SourceFile* file = new SourceFile(assembler, fileName);
-	if (file->mBuffer == NULL)
+	if (!file->mBuffer)
 	{
 		delete file;
-		file = NULL;
+		file = nullptr;
 	}
 	return file;
 }
@@ -79,7 +79,6 @@ SourceFile::Create(Assembler* assembler, const char* fileName)
 
 SourceFile::~SourceFile()
 {
-	free((void*)mFileName);
 	free(mBuffer);
 }
 

@@ -209,7 +209,7 @@ public:
 	void Write(Assembler* assembler);
 
 protected:
-	char* mString;
+	UINT8* mBuffer;
 	INT32 mLength;
 };
 
@@ -231,13 +231,12 @@ class SavStatement : public Statement
 {
 public:
 	SavStatement();
-	~SavStatement();
 
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 
 protected:
-	char* mString;
+	std::string mString;
 };
 
 //------------------------------------------------------------------------------
@@ -246,13 +245,12 @@ class DskStatement : public Statement
 {
 public:
 	DskStatement();
-	~DskStatement();
 
 	void Parse(Parser* p, const char* label);
 	void Write(Assembler* assembler);
 
 protected:
-	char* mString;
+	std::string mString;
 };
 
 //------------------------------------------------------------------------------

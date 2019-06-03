@@ -841,13 +841,13 @@ ConditionalStatement::Parse(Parser* p, const char* label)
 
 UsrStatement::UsrStatement() : Statement()
 {
-	mString = NULL;
+	mBuffer = NULL;
 }
 
 
 UsrStatement::~UsrStatement()
 {
-	free(mString);
+	free(mBuffer);
 }
 
 
@@ -879,9 +879,9 @@ UsrStatement::Parse(Parser* p, const char* label)
 	// (TEXT)=	T,E,X,T^$80
 
 	char* sp = p->GetString();
-	char* dp;
-	mString = (char*)malloc(strlen(sp) + 3);
-	dp = mString;
+	UINT8* dp;
+	mBuffer = (UINT8*)malloc(strlen(sp) + 3);
+	dp = mBuffer;
 
 	while ((c = *sp++) != 0)
 	{
@@ -917,12 +917,12 @@ UsrStatement::Parse(Parser* p, const char* label)
 	t = p->Next();
 	if (t == 0)
 	{
-		*dp++ = (char)0x8D;
+		*dp++ = 0x8D;
 	}
 	else if (t == '+')
 	{
-		*dp++ = (char)0x8D;
-		*dp++ = (char)0xFF;
+		*dp++ = 0x8D;
+		*dp++ = 0xFF;
 	}
 	else if (t == '=')
 	{
@@ -935,7 +935,7 @@ UsrStatement::Parse(Parser* p, const char* label)
 	}
 	*dp = 0;
 
-	mLength = dp - mString;
+	mLength = dp - mBuffer;
 	assembler->AdvancePC(mLength);
 }
 
@@ -943,7 +943,7 @@ UsrStatement::Parse(Parser* p, const char* label)
 void
 UsrStatement::Write(Assembler* assembler)
 {
-	assembler->WriteBytes((UINT8*)mString, mLength);
+	assembler->WriteBytes(mBuffer, mLength);
 }
 
 //------------------------------------------------------------------------------
@@ -966,13 +966,6 @@ IncludeStatement::Parse(Parser* p, const char* label)
 
 SavStatement::SavStatement() : Statement()
 {
-	mString = NULL;
-}
-
-
-SavStatement::~SavStatement()
-{
-	free(mString);
 }
 
 
@@ -993,28 +986,21 @@ SavStatement::Parse(Parser* p, const char* label)
 		return;
 	}
 
-	mString = _strdup(p->GetString());
+	mString = p->GetString();
 }
 
 
 void
 SavStatement::Write(Assembler* assembler)
 {
-	if (mString)
-		assembler->SaveFile(mString);
+	if (!mString.empty())
+		assembler->SaveFile(mString.c_str());
 }
 
 //------------------------------------------------------------------------------
 
 DskStatement::DskStatement() : Statement()
 {
-	mString = NULL;
-}
-
-
-DskStatement::~DskStatement()
-{
-	free(mString);
 }
 
 
@@ -1035,15 +1021,15 @@ DskStatement::Parse(Parser* p, const char* label)
 		return;
 	}
 
-	mString = _strdup(p->GetString());
+	mString = p->GetString();
 }
 
 
 void
 DskStatement::Write(Assembler* assembler)
 {
-	if (mString)
-		assembler->SetDiskFile(mString);
+	if (!mString.empty())
+		assembler->SetDiskFile(mString.c_str());
 }
 
 //------------------------------------------------------------------------------

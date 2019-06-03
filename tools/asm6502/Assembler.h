@@ -40,27 +40,21 @@ class Var
 public:
 	Var(const char* value)
 	{
-		mValue = _strdup(value);
-	}
-
-	~Var()
-	{
-		free(mValue);
+		mValue = value;
 	}
 
 	void SetValue(const char* value)
 	{
-		free(mValue);
-		mValue = _strdup(value);
+		mValue = value;
 	}
 
 	const char* GetValue()
 	{
-		return mValue;
+		return mValue.c_str();
 	}
 
 protected:
-	char* mValue;
+	std::string mValue;
 };
 
 //------------------------------------------------------------------------------
@@ -109,12 +103,12 @@ public:
 	void SetRootDir(const char* dirName);
 	void SetSourceDir(const char* dirName);
 	void SetObjectDir(const char* dirName);
-	const char* GetRootDir() { return mRootDir; }
-	const char* GetSourceDir() { return mSourceDir; }
-	const char* GetObjectDir() { return mObjectDir; }
+	const char* GetRootDir() { return mRootDir.c_str(); }
+	const char* GetSourceDir() { return mSourceDir.c_str(); }
+	const char* GetObjectDir() { return mObjectDir.c_str(); }
 	void SetDiskFile(const char* fileName);
-	void BuildFullSourcePath(char* fullPath, const char* fileName);
-	void BuildFullObjectPath(char* fullPath, const char* fileName);
+	std::string BuildFullSourcePath(const char* fileName);
+	std::string BuildFullObjectPath(const char* fileName);
 
 	bool Assemble(
 		const char* inName,
@@ -156,8 +150,8 @@ public:
 	void ClearError() { mErrorMsg.clear(); }
 	void PrintError(LineRecord* lineRec);
 
-	void SetLocalBase(const char* localBase) { strcpy(mLocalBase, localBase); }
-	bool LocalToGlobal(const char* symbol, char* buffer, INT32 bufferSize);
+	void SetLocalBase(const char* localBase) { mLocalBase = localBase; }
+	void LocalToGlobal(const char* symbol, std::string& global);
 
 	bool AddLabelSymbol(const char* string, bool local = false);
 	bool AddEquateSymbol(const char* string, INT32 value, bool forceLong);
@@ -188,14 +182,14 @@ public:
 	bool FlushToFile(const char* fileName);
 
 protected:
-	void CleanDirName(char* cleanName, const char* dirName);
+	std::string CleanDirName(const char* dirName);
 
 	Syntax mSyntax;
 
-	char mRootDir[1024];
-	char mSourceDir[1024];
-	char mObjectDir[1024];
-	char mOutFileName[1024];
+	std::string mRootDir;
+	std::string mSourceDir;
+	std::string mObjectDir;
+	std::string mOutFileName;
 	std::string mInName;
 
 	Array<SourceFile*> mFileList;
@@ -207,7 +201,7 @@ protected:
 	Parser* mParser;
 	StringHash* mVars;
 	StringHash* mSymbols;
-	char mLocalBase[kMaxLabelSize + 1];
+	std::string mLocalBase;
 
 	bool mInDummy;
 	INT32 mPC;

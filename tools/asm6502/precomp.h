@@ -9,4 +9,3 @@
 #define ASSERT  assert
 
 #pragma warning (disable: 4100)  // unreferenced formal parameter
-#pragma warning (disable: 4310)  // cast truncates constant value

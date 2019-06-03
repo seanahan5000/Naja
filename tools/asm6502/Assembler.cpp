@@ -9,6 +9,16 @@
 
 //------------------------------------------------------------------------------
 
+static void NormalizeSlashes(std::string& str)
+{
+	for (size_t i = 0; i < str.size(); ++i)
+	{
+		if (str[i] == '/')
+			str[i] = '\\';
+	}
+}
+
+
 static bool EndsWith(const char* string, const char* endsWith)
 {
 	size_t strLength = strlen(string);
@@ -26,11 +36,8 @@ Assembler::Assembler()
 	: mLineList(8192), mOutBuffer(16384)
 {
 	mSyntax = SyntaxMerlin;
-	mParser = NULL;
-	mRootDir[0] = 0;
-	mSourceDir[0] = 0;
-	mObjectDir[0] = 0;
-	mMacroDef = NULL;
+	mParser = nullptr;
+	mMacroDef = nullptr;
 	mWriteAsBin = false;
 
 	mParser = nullptr;
@@ -45,7 +52,7 @@ Assembler::~Assembler()
 {
 	ASSERT(mLineList.GetCount() == 0);
 	ASSERT(mFileList.GetCount() == 0);
-	ASSERT(mMacroDef == NULL);
+	ASSERT(mMacroDef == nullptr);
 
 	//*** clear out macro hash table objects ***
 
@@ -76,25 +83,25 @@ bool Assembler::AssembleParse(const char* inName)
 		mParser = new Parser(this);
 		mVars = new StringHash();
 		mSymbols = new StringHash();
-		mLocalBase[0] = 0;
+		mLocalBase.clear();
 
 		mInDummy = false;
 
-		mMacroDef = NULL;
+		mMacroDef = nullptr;
 		mMacros = new StringHash();
 
-		mReadState.file = NULL;
+		mReadState.file = nullptr;
 	}
 
 	if (!IncludeFile(inName))
 		goto exit;
 
-	printf("Assembling %s%s\n", mSourceDir, inName);
+	printf("Assembling %s%s\n", mSourceDir.c_str(), mInName.c_str());
 
 	mInWritePhase = false;
 	SetOrg(0x8000);		// Merlin default
 
-	while (mReadState.file != NULL)
+	while (mReadState.file != nullptr)
 	{
 		do {
 			while (mReadState.curLineIndex < mReadState.endLineIndex)
@@ -102,7 +109,7 @@ bool Assembler::AssembleParse(const char* inName)
 				LineRecord lineRec;
 				lineRec.fileIndex = mReadState.fileIndex;
 				lineRec.lineIndex = mReadState.curLineIndex;
-				lineRec.statement = NULL;
+				lineRec.statement = nullptr;
 				mLineList.Add(lineRec);
 
 				const char* line = mReadState.file->GetLine(mReadState.curLineIndex++);
@@ -151,7 +158,7 @@ bool Assembler::AssembleParse(const char* inName)
 
 exit:
 	if (HasError())
-		PrintError(NULL);
+		PrintError(nullptr);
 
 	return result;
 }
@@ -162,28 +169,28 @@ bool Assembler::AssembleWrite(
 	const char* listName,
 	const char* symName)
 {
-	FILE* listFile = NULL;
-	FILE* symFile = NULL;
+	FILE* listFile = nullptr;
+	FILE* symFile = nullptr;
 	bool result = false;
 
 	if (outName)
 	{
-		strcpy(mOutFileName, outName);
+		mOutFileName = outName;
 	}
 	else
 	{
-		BuildFullObjectPath(mOutFileName, mInName.c_str());
-		INT32 len = strlen(mOutFileName);
-		if (len > 1)
+		mOutFileName = BuildFullObjectPath(mInName.c_str());
+
+		size_t size = mOutFileName.size();
+		if (size > 1)
 		{
-			char* sp = mOutFileName + len - 2;
-			if (*sp++ == '.')
+			if (mOutFileName[size - 2] == '.')
 			{
-				char c = (char)toupper(*sp);
+				char c = (char)toupper(mOutFileName[size - 1]);
 				if (c == 'S' || c == 'A')
-					*(sp - 1) = 0;
+					mOutFileName.resize(size - 2);
 				else
-					strcat(mOutFileName, ".bin");
+					mOutFileName += ".bin";
 			}
 		}
 	}
@@ -264,9 +271,9 @@ bool Assembler::AssembleWrite(
 	if (HasError())
 		goto exit;
 
-	if (mOutBuffer.GetSize() != 0 && mOutFileName[0])
+	if (mOutBuffer.GetSize() != 0 && !mOutFileName.empty())
 	{
-		if (!FlushToFile(mOutFileName))
+		if (!FlushToFile(mOutFileName.c_str()))
 			goto exit;
 	}
 
@@ -324,7 +331,7 @@ bool Assembler::AssembleWrite(
 
 exit:
 	if (HasError())
-		PrintError(NULL);
+		PrintError(nullptr);
 
 	if (listFile)
 		fclose(listFile);
@@ -354,13 +361,12 @@ void Assembler::AssembleEnd()
 	if (mMacroDef)
 	{
 		delete mMacroDef;
-		mMacroDef = NULL;
+		mMacroDef = nullptr;
 	}
 }
 
 
-bool
-Assembler::Assemble(
+bool Assembler::Assemble(
 	const char* inName,
 	const char* outName,
 	const char* listName,
@@ -381,17 +387,15 @@ Assembler::Assemble(
 }
 
 
-void
-Assembler::AddStatement(Statement* statement)
+void Assembler::AddStatement(Statement* statement)
 {
-	ASSERT(mLineList[mLineList.GetCount() - 1].statement == NULL);
+	ASSERT(mLineList[mLineList.GetCount() - 1].statement == nullptr);
 	mLineList[mLineList.GetCount() - 1].statement = statement;
 }
 
 //------------------------------------------------------------------------------
 
-void
-Assembler::SetOrg(INT32 pc)
+void Assembler::SetOrg(INT32 pc)
 {
 	if (mInWritePhase)
 	{
@@ -406,8 +410,7 @@ Assembler::SetOrg(INT32 pc)
 }
 
 
-bool
-Assembler::IncludeFile(const char* fileName)
+bool Assembler::IncludeFile(const char* fileName)
 {
 	mReadStateStack.Push(mReadState);
 	mReadState.file = SourceFile::Create(this, fileName);
@@ -424,8 +427,7 @@ Assembler::IncludeFile(const char* fileName)
 }
 
 
-void
-Assembler::StartMacroDef(const char* name)
+void Assembler::StartMacroDef(const char* name)
 {
 	if (InMacroDef())
 	{
@@ -441,8 +443,7 @@ Assembler::StartMacroDef(const char* name)
 }
 
 
-void
-Assembler::EndMacroDef()
+void Assembler::EndMacroDef()
 {
 	if (!InMacroDef())
 	{
@@ -451,12 +452,11 @@ Assembler::EndMacroDef()
 	}
 
 	mMacroDef->endLineIndex = mReadState.curLineIndex - 1;
-	mMacroDef = NULL;
+	mMacroDef = nullptr;
 }
 
 
-bool
-Assembler::StartMacroExpand(const char* name)
+bool Assembler::StartMacroExpand(const char* name)
 {
 	MacroDef* macroDef = (MacroDef*)mMacros->Find(name);
 	if (!macroDef)
@@ -474,8 +474,7 @@ Assembler::StartMacroExpand(const char* name)
 }
 
 
-void
-Assembler::StartDummy(INT32 org)
+void Assembler::StartDummy(INT32 org)
 {
 	if (InDummy())
 	{
@@ -489,8 +488,7 @@ Assembler::StartDummy(INT32 org)
 }
 
 
-void
-Assembler::EndDummy()
+void Assembler::EndDummy()
 {
 	if (!InDummy())
 	{
@@ -505,8 +503,7 @@ Assembler::EndDummy()
 }
 
 
-void
-Assembler::StartLoop(INT32 loopCount)
+void Assembler::StartLoop(INT32 loopCount)
 {
 	mReadStateStack.Push(mReadState);
 	// mReadState.file, fileIndex remain the same
@@ -517,16 +514,14 @@ Assembler::StartLoop(INT32 loopCount)
 }
 
 
-void
-Assembler::EndLoop()
+void Assembler::EndLoop()
 {
 	mReadState.endLineIndex = mReadState.curLineIndex - 1;
 	mReadStateStack.Top().curLineIndex = mReadState.curLineIndex;
 }
 
 
-void
-Assembler::SetVar(const char* name, const char* value)
+void Assembler::SetVar(const char* name, const char* value)
 {
 	Var* var = (Var*)mVars->Find(name);
 	if (!var)
@@ -538,8 +533,7 @@ Assembler::SetVar(const char* name, const char* value)
 }
 
 
-bool
-Assembler::GetVar(const char* name, const char** value)
+bool Assembler::GetVar(const char* name, const char** value)
 {
 	Var* var = (Var*)mVars->Find(name);
 	if (!var)
@@ -551,107 +545,81 @@ Assembler::GetVar(const char* name, const char** value)
 
 //------------------------------------------------------------------------------
 
-void
-Assembler::BuildFullSourcePath(char* fullPath, const char* fileName)
+std::string Assembler::BuildFullSourcePath(const char* fileName)
 {
-	strcpy(fullPath, mRootDir);
+	std::string fullPath = mRootDir;
+
 	if (fileName[0] != '\\' && fileName[0] != '/')
-		strcat(fullPath, mSourceDir);
+		fullPath += mSourceDir;
 
-	strcat(fullPath, fileName);
+	fullPath += fileName;
 
-	for (INT32 i = 0; i < sizeof(fullPath); ++i)
-	{
-		if (fullPath[i] == '/')
-			fullPath[i] = '\\';
-	}
+	NormalizeSlashes(fullPath);
+	return fullPath;
 }
 
 
-void
-Assembler::BuildFullObjectPath(char* fullPath, const char* fileName)
+std::string Assembler::BuildFullObjectPath(const char* fileName)
 {
-	strcpy(fullPath, mRootDir);
+	std::string fullPath = mRootDir;
+
 	if (fileName[0] != '\\' && fileName[0] != '/')
 	{
-		if (mObjectDir[0] != 0)
-			strcat(fullPath, mObjectDir);
+		if (!mObjectDir.empty())
+			fullPath += mObjectDir;
 		else
-			strcat(fullPath, mSourceDir);
+			fullPath += mSourceDir;
 	}
 
-	strcat(fullPath, fileName);
+	fullPath += fileName;
 
-	for (INT32 i = 0; i < sizeof(fullPath); ++i)
-	{
-		if (fullPath[i] == '/')
-			fullPath[i] = '\\';
-	}
+	NormalizeSlashes(fullPath);
+	return fullPath;
 }
 
 
-void
-Assembler::SetRootDir(const char* dirName)
+std::string Assembler::CleanDirName(const char* dirName)
 {
-	strcpy(mRootDir, dirName);
+	std::string cleanName = dirName;
 
-	// remove trailing slash
-	INT32 length = strlen(dirName);
-	if (length > 0)
+	// must have trailing slash
+	size_t size = cleanName.size();
+	if (size > 0)
 	{
-		char c = mRootDir[length - 1];
+		char c = cleanName[size - 1];
 		if (c == '/' || c == '\\')
-			mRootDir[length - 1] = 0;
+			return cleanName;
 	}
+
+	cleanName += '\\';
+	return cleanName;
 }
 
 
-/*protected*/ void
-Assembler::CleanDirName(char* cleanName, const char* dirName)
+void Assembler::SetRootDir(const char* dirName)
 {
-	// must have leading slash
-	if (dirName[0] != '/' && dirName[0] != '\\')
-	{
-		cleanName[0] = '\\';
-		cleanName[1] = 0;
-		strcat(cleanName, dirName);
-	}
-	else
-		strcpy(cleanName, dirName);
-
-	// and must have trailing slash
-	INT32 length = strlen(cleanName);
-	if (length)
-	{
-		char c = cleanName[length - 1];
-		if (c == '/' || c == '\\')
-			return;
-	}
-	strcat(cleanName, "\\");
+	mRootDir = CleanDirName(dirName);
 }
 
 
-void
-Assembler::SetSourceDir(const char* dirName)
+void Assembler::SetSourceDir(const char* dirName)
 {
-	CleanDirName(mSourceDir, dirName);
+	mSourceDir = CleanDirName(dirName);
 }
 
 
-void
-Assembler::SetObjectDir(const char* dirName)
+void Assembler::SetObjectDir(const char* dirName)
 {
-	CleanDirName(mObjectDir, dirName);
+	mObjectDir = CleanDirName(dirName);
 }
 
 
-bool
-Assembler::FlushToFile(const char* fileName)
+bool Assembler::FlushToFile(const char* fileName)
 {
 	FILE* file = fopen(fileName, "wb+");
 	if (!file)
 	{
-		SetError("Output file \"%s\" not found", mOutFileName);
+		SetError("Output file \"%s\" not found", fileName);
 		return false;
 	}
 
@@ -677,30 +645,27 @@ Assembler::FlushToFile(const char* fileName)
 }
 
 
-void
-Assembler::SetDiskFile(const char* fileName)
+void Assembler::SetDiskFile(const char* fileName)
 {
 	// if there's already output data,
 	//	save it using the previous file name
 	if (mOutBuffer.GetSize() != 0 && mOutFileName[0])
-		FlushToFile(mOutFileName);
+		FlushToFile(mOutFileName.c_str());
 
-	BuildFullObjectPath(mOutFileName, fileName);
+	mOutFileName = BuildFullObjectPath(fileName);
 }
 
 
-bool
-Assembler::SaveFile(const char* fileName)
+bool Assembler::SaveFile(const char* fileName)
 {
-	char fullPath[1024];
-	BuildFullObjectPath(fullPath, fileName);
-	return FlushToFile(fullPath);
+	std::string fullPath;
+	fullPath = BuildFullObjectPath(fileName);
+	return FlushToFile(fullPath.c_str());
 }
 
 //------------------------------------------------------------------------------
 
-void
-Assembler::WriteByte(UINT8 b)
+void Assembler::WriteByte(UINT8 b)
 {
 	if (InDummy())
 		return;
@@ -711,8 +676,7 @@ Assembler::WriteByte(UINT8 b)
 }
 
 
-void
-Assembler::WriteByteByte(UINT8 b1, UINT8 b2)
+void Assembler::WriteByteByte(UINT8 b1, UINT8 b2)
 {
 	if (InDummy())
 		return;
@@ -724,8 +688,7 @@ Assembler::WriteByteByte(UINT8 b1, UINT8 b2)
 }
 
 
-void
-Assembler::WriteByteWord(UINT8 b, UINT16 w)
+void Assembler::WriteByteWord(UINT8 b, UINT16 w)
 {
 	if (InDummy())
 		return;
@@ -738,8 +701,7 @@ Assembler::WriteByteWord(UINT8 b, UINT16 w)
 }
 
 
-void
-Assembler::WriteBytes(UINT8* bp, INT32 count)
+void Assembler::WriteBytes(UINT8* bp, INT32 count)
 {
 	if (InDummy())
 		return;
@@ -751,8 +713,7 @@ Assembler::WriteBytes(UINT8* bp, INT32 count)
 }
 
 
-void
-Assembler::WritePattern(UINT8 b, INT32 count)
+void Assembler::WritePattern(UINT8 b, INT32 count)
 {
 	if (InDummy())
 		return;
@@ -765,39 +726,32 @@ Assembler::WritePattern(UINT8 b, INT32 count)
 
 //------------------------------------------------------------------------------
 
-bool
-Assembler::LocalToGlobal(const char* symbol, char* buffer, INT32 bufferSize)
+void Assembler::LocalToGlobal(const char* symbol, std::string& global)
 {
-//	if (!mLocalBase[0])
-//	{
-//		buffer[0] = 0;
-//		SetError("Local label found before any non-local");
-//		return false;
-//	}
-
-	_snprintf(buffer, bufferSize, "%s_%s__", mLocalBase, symbol);
-	buffer[bufferSize - 1] = 0;
-	return true;
+	global = mLocalBase.c_str();
+	global += '_';
+	global += symbol;
+	global += "__";
 }
 
 
-bool
-Assembler::AddLabelSymbol(const char* label, bool local)
+bool Assembler::AddLabelSymbol(const char* label, bool local)
 {
-	char buffer[256];
+	std::string global;
+
 	if (local)
 	{
-		LocalToGlobal(label, buffer, sizeof(buffer));
-		label = buffer;
+		LocalToGlobal(label, global);
+		label = global.c_str();
 	}
 
 	Symbol* symbol = new Symbol(mPC, false);
+	// TODO: fix leak of symbol on error
 	return mSymbols->Add(label, symbol);
 }
 
 
-bool
-Assembler::AddEquateSymbol(const char* equate, INT32 value, bool forceLong)
+bool Assembler::AddEquateSymbol(const char* equate, INT32 value, bool forceLong)
 {
 	Symbol* symbol = new Symbol(value, forceLong);
 	if (!mSymbols->Add(equate, symbol))
@@ -813,8 +767,7 @@ Assembler::AddEquateSymbol(const char* equate, INT32 value, bool forceLong)
 
 //------------------------------------------------------------------------------
 
-void
-Assembler::SetError(const char* format, ...)
+void Assembler::SetError(const char* format, ...)
 {
 	if (mErrorMsg.empty())
 	{
@@ -827,8 +780,7 @@ Assembler::SetError(const char* format, ...)
 }
 
 
-void
-Assembler::PrintError(LineRecord* lineRec)
+void Assembler::PrintError(LineRecord* lineRec)
 {
 	if (lineRec)
 	{
