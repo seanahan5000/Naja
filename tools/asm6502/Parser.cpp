@@ -14,7 +14,6 @@ Parser::Parser(Assembler* assembler)
 	mTokenizer = new Tokenizer(assembler->GetSyntax());
 	mConditional.enableCount = 1;
 	mConditional.satisfied = true;
-	mConditionalIndex = 0;
 }
 
 
@@ -25,8 +24,7 @@ Parser::~Parser()
 }
 
 
-Token
-Parser::Peek()
+Token Parser::Peek()
 {
 	INT32 mark = mTokenizer->GetPosition();
 	Token t = Next();
@@ -35,20 +33,19 @@ Parser::Peek()
 }
 
 
-void
-Parser::ParseLine(const char* string)
+void Parser::ParseLine(const char* string)
 {
 	Token t;
-	Statement* statement = NULL;
+	Statement* statement = nullptr;
 	char labelBuffer[kMaxLabelSize + 1];
-	const char* label = NULL;
-	
+	const char* label = nullptr;
+
 	labelBuffer[0] = 0;
-	
+
 	// check for empty, comment, or disabled line
 	if (*string == 0 || *string == '*' || *string == ';')
 		goto exit;
-	
+
 	char expandBuffer[1024];
 	if (mAssembler->InMacroExpand())
 	{
@@ -56,13 +53,17 @@ Parser::ParseLine(const char* string)
 			goto error;
 		string = expandBuffer;
 	}
-	
+
 	mTokenizer->SetString(string);
-	
-	bool labelIsLocal = false;
-	bool doAddLabelSymbol = true;
-	bool hasLabel = *string != ' ' && *string != '\t';
-	
+
+    bool labelIsLocal;
+    bool doAddLabelSymbol;
+    bool hasLabel;
+
+	labelIsLocal = false;
+	doAddLabelSymbol = true;
+	hasLabel = *string != ' ' && *string != '\t';
+
 	if (!mConditional.IsEnabled())
 	{
 		t = Next();
@@ -79,7 +80,7 @@ Parser::ParseLine(const char* string)
 		}
 		goto exit;
 	}
-	
+
 	if (!ParseLabel(hasLabel, labelBuffer, sizeof(labelBuffer), &labelIsLocal))
 	{
 		if (hasLabel || labelIsLocal)
@@ -88,17 +89,17 @@ Parser::ParseLine(const char* string)
 			goto error;
 		}
 	}
-	label = labelBuffer[0] ? labelBuffer : NULL;
-	
+	label = labelBuffer[0] ? labelBuffer : nullptr;
+
 	t = Next();
-	
+
 	if (mAssembler->InMacroDef())
 	{
 		if (t == TokenEOM || t == TokenENDM)
 			mAssembler->EndMacroDef();
 		goto exit;
 	}
-	
+
 	if (t == 0)
 	{
 		// do nothing
@@ -152,11 +153,11 @@ Parser::ParseLine(const char* string)
 	else
 	{
 		doAddLabelSymbol = false;
-		
+
 		if (t == TokenEQU || t == '=')
 		{
 			statement = new EquStatement();
-			
+
 			if (labelIsLocal)
 			{
 				mAssembler->SetError("Local label not allowed");
@@ -208,14 +209,14 @@ Parser::ParseLine(const char* string)
 					mAssembler->SetError("Label not allowed");
 					goto error;
 				}
-				
+
 				t = Next();
 				if (t == 0)
 				{
 					mAssembler->SetError("Missing macro label");
 					goto error;
 				}
-				
+
 				mAssembler->StartMacroDef(GetString());
 			}
 			else
@@ -228,7 +229,7 @@ Parser::ParseLine(const char* string)
 		else if (t == TokenSEG)
 		{
 			bool dummySegment = false;
-			
+
 			t = Next();
 			if (t == '.')
 			{
@@ -238,26 +239,26 @@ Parser::ParseLine(const char* string)
 					mAssembler->SetError("Missing segment type");
 					goto error;
 				}
-				
+
 				dummySegment = true;
 				t = Next();
 			}
-			
+
 			if (t == 0)
 			{
 				mAssembler->SetError("Missing segment name");
 				goto error;
 			}
-			
+
 			statement = new DummyStatement(dummySegment, 0);
 		}
 		else if (t == TokenDUM || t == TokenDUMMY)
 		{
 			INT32 value;
-			
+
 			if (!ParseAndResolveExpression(&value))
 				goto error;
-			
+
 			statement = new DummyStatement(true, value);
 		}
 		else if (t == TokenDEND)
@@ -272,17 +273,17 @@ Parser::ParseLine(const char* string)
 				mAssembler->SetError("Label not allowed");
 				goto error;
 			}
-			
+
 			INT32 loopCount;
 			if (!ParseAndResolveExpression(&loopCount))
 				goto error;
-			
+
 			if (loopCount <= 0)
 			{
 				mAssembler->SetError("Invalid loop count");
 				goto error;
 			}
-			
+
 			mAssembler->StartLoop(loopCount);
 		}
 		else if (t == TokenREPEND || t == '-')
@@ -292,7 +293,7 @@ Parser::ParseLine(const char* string)
 				mAssembler->SetError("Invalid loop end");
 				goto error;
 			}
-			
+
 			if (label)
 			{
 				//*** DASM allows label, Merlin does not ***
@@ -312,13 +313,13 @@ Parser::ParseLine(const char* string)
 		else if (mAssembler->StartMacroExpand(GetString()))
 		{
 			doAddLabelSymbol = true;
-			
+
 			char name[2] = { '1', 0 };
 			while (true)
 			{
 				if (!mTokenizer->NextMacroArg())
 					break;
-				
+
 				mAssembler->SetVar(name, GetString());
 				++name[0];
 			}
@@ -329,7 +330,7 @@ Parser::ParseLine(const char* string)
 			goto error;
 		}
 	}
-	
+
 	if (label && doAddLabelSymbol)
 	{
 		if (labelIsLocal)
@@ -350,31 +351,30 @@ Parser::ParseLine(const char* string)
 			}
 		}
 	}
-	
+
 exit:
 	if (statement)
 	{
 		statement->SetPC(mAssembler->GetPC());
 		statement->Parse(this, label);
-		
+
 		t = Next();
 		if (t != 0)
 			this->SetTokenError(0);
 		mAssembler->AddStatement(statement);
 	}
-	
+
 error:;
 }
 
 
-bool
-Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
+bool Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
 {
 	const char* sp = inString;
 	char* dp = outString;
 	char* ep = dp + outSize - 1;
 	char c;
-	
+
 	while (true)
 	{
 		while (true)
@@ -382,7 +382,7 @@ Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
 			c = *sp++;
 			if (c == ']')
 				break;
-			
+
 			*dp++ = c;
 			if (dp == ep)
 			{
@@ -390,23 +390,30 @@ Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
 				mAssembler->SetError("Macro expansion overflow");
 				return false;
 			}
-			
+
 			if (c == 0)
 				return true;
 		}
-		
+
 		const char* start = sp;
-		
-		while (true)
+
+		// special-case macro parameter variables
+		c = *sp;
+		if (c >= '1' && c <= '8')
 		{
-			c = *sp;
-			
-			if (!isalpha(c) && !isdigit(c) && c != '_')
-				break;
-			
 			++sp;
 		}
-		
+		else
+		{
+			while (true)
+			{
+				if (!isalpha(c) && !isdigit(c) && c != '_')
+					break;
+
+				c = *++sp;
+			}
+		}
+
 		char name[256];
 		INT32 len = sp - start;
 		if (len >= sizeof(name))
@@ -414,17 +421,17 @@ Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
 			mAssembler->SetError("Variable name too large");
 			return false;
 		}
-		
+
 		memcpy(name, start, len);
 		name[len] = 0;
-		
+
 		const char* varValue;
 		if (!mAssembler->GetVar(name, &varValue))
 		{
 			mAssembler->SetError("Unknown variable");
 			return false;
 		}
-		
+
 		while (true)
 		{
 			if (dp == ep)
@@ -433,7 +440,7 @@ Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
 				mAssembler->SetError("Macro expansion overflow");
 				return false;
 			}
-			
+
 			c = *varValue++;
 			if (c == 0)
 				break;
@@ -448,24 +455,23 @@ Parser::ExpandVars(const char* inString, char* outString, INT32 outSize)
 //:LABEL
 //	@LABEL:
 //	:LABEL:
-bool
-Parser::ParseLabel(bool firstColumn, char* label, INT32 labelMax, bool* isLocal)
+bool Parser::ParseLabel(bool firstColumn, char* label, INT32 labelMax, bool* isLocal)
 {
 	*label = 0;
 	*isLocal = false;
-	
+
 	INT32 startMark = mTokenizer->GetPosition();
-	
+
 	Token t = Next();
 	if (!t)
 		return false;
-	
+
 	if (t == ':' || t == '@' || (firstColumn && t == '.'))
 	{
 		*isLocal = true;
 		t = Next();
 	}
-	
+
 	if (t != TokenSymbol)
 	{
 		// labels that match keywords cannot be indented
@@ -476,11 +482,12 @@ Parser::ParseLabel(bool firstColumn, char* label, INT32 labelMax, bool* isLocal)
 				goto fail;
 		}
 	}
-	
+
 	strncpy(label, mTokenizer->GetTokenString(), labelMax - 1);
 	label[labelMax - 1] = 0;
-	
-	INT32 colonMark = mTokenizer->GetPosition();
+
+    INT32 colonMark;
+    colonMark = mTokenizer->GetPosition();
 	t = Next();
 	if (t != ':')
 	{
@@ -488,9 +495,9 @@ Parser::ParseLabel(bool firstColumn, char* label, INT32 labelMax, bool* isLocal)
 			goto fail;
 		mTokenizer->SetPosition(colonMark);
 	}
-	
+
 	return true;
-	
+
 fail:
 	mTokenizer->SetPosition(startMark);
 	label[0] = 0;
@@ -498,20 +505,18 @@ fail:
 }
 
 
-Expression*
-Parser::ParseExpression(Token t)
+Expression* Parser::ParseExpression(Token t)
 {
 	return Expression::Parse(this, t, true);
 }
 
 
-bool
-Parser::ParseAndResolveExpression(Token t, INT32* value)
+bool Parser::ParseAndResolveExpression(Token t, INT32* value)
 {
 	Expression* exp = ParseExpression(t);
 	if (!exp)
 		return false;
-	
+
 	bool result = exp->Resolve(mAssembler, value);
 	delete exp;
 	return result;
@@ -519,8 +524,7 @@ Parser::ParseAndResolveExpression(Token t, INT32* value)
 
 //------------------------------------------------------------------------------
 
-INT32
-Parser::GetHexValue()
+INT32 Parser::GetHexValue()
 {
 	INT32 v = 0;
 	char c;
@@ -545,8 +549,7 @@ Parser::GetHexValue()
 }
 
 
-INT32
-Parser::GetDecValue()
+INT32 Parser::GetDecValue()
 {
 	INT32 v = 0;
 	char c;
@@ -557,8 +560,7 @@ Parser::GetDecValue()
 }
 
 
-INT32
-Parser::GetBinValue()
+INT32 Parser::GetBinValue()
 {
 	INT32 v = 0;
 	char c;
@@ -576,26 +578,26 @@ Parser::GetBinValue()
 
 //------------------------------------------------------------------------------
 
-bool
-Parser::PushConditional()
+bool Parser::PushConditional()
 {
-	if (mConditionalIndex == kConditionalMax)
+	// set an arbitrary limit on stack size to catch infinite recursion
+	if (mConditionalStack.size() > 255)
 		return false;
-	
-	mConditionalStack[mConditionalIndex++] = mConditional;
+
+	mConditionalStack.push(mConditional);
 	--mConditional.enableCount;
 	mConditional.satisfied = false;
 	return true;
 }
 
 
-bool
-Parser::PullConditional()
+bool Parser::PullConditional()
 {
-	if (mConditionalIndex == 0)
+	if (mConditionalStack.empty())
 		return false;
-	
-	mConditional = mConditionalStack[--mConditionalIndex];
+
+	mConditional = mConditionalStack.top();
+	mConditionalStack.pop();
 	return true;
 }
 

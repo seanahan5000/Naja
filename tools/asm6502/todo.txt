@@ -49,7 +49,7 @@ the sources or the file was somehow corrupted (which seems unlikely).
 
 TRACC\ASM.CAMP.S
 
-Lines 244-246 generate (FF FF FF FF) but reference file contains 
+Lines 244-246 generate (FF FF FF FF) but reference file contains
 (A4 00 01 0C).  This is very likely caused by a change that was
 made without reassembling.
 

@@ -1,100 +1,40 @@
 DUALTRON		USR	(DUALTRONIC_ROBOT)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$42,$00
-				DB	$6E,$6C,$0C
-				DB	$7C,$40,$40
-				DB	$7C,$7F,$40
-				DB	$3F,$33,$6D
-				DB	$6D,$33,$7F
-				DB	$03,$7D,$4C
-				DB	$37,$37,$4C
-				DB	$07,$76,$31
-				DB	$3F,$03,$03
-				DB	$3F,$0C,$6E
-				DB	$60,$80,$3F
-				DB	$40,$7F,$80
-				DB	$7D,$03,$7F
-				DB	$80,$31,$36
-				DB	$3B,$80
+				DB	$6E,$6C,$0C,$7C,$40,$40,$7C
+				DB	$7F,$40,$3F,$33,$6D,$6D,$33
+				DB	$7F,$03,$7D,$4C,$37,$37,$4C
+				DB	$07,$76,$31,$3F,$03,$03,$3F
+				DB	$0C,$6E,$60,$80
+				DB	$3F,$40,$7F,$80
+				DB	$7D,$03,$7F,$80
+				DB	$31,$36,$3B,$80
 				DB	$FF
 
 CENTAUR			USR	(CENTAURIAN_ROBOT)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$23,$00
-				DB	$00,$00,$70
-				DB	$1E,$1E,$76
-				DB	$10,$00,$00
-				DB	$07,$3C,$3C
-				DB	$37,$04,$70
-				DB	$10,$70,$10
-				DB	$70,$18,$68
-				DB	$07,$04,$07
-				DB	$04,$07,$0C
-				DB	$0B,$2F,$6F
-				DB	$0B,$7B,$3B
-				DB	$03,$02,$7A
-				DB	$7B,$68,$6F
-				DB	$6E,$60,$20
+				DB	$00,$00,$70,$1E,$1E,$76,$10
+				DB	$00,$00,$07,$3C,$3C,$37,$04
+				DB	$70,$10,$70,$10,$70,$18,$68
+				DB	$07,$04,$07,$04,$07,$0C,$0B
+				DB	$2F,$6F,$0B,$7B,$3B,$03,$02
+				DB	$7A,$7B,$68,$6F,$6E,$60,$20
 				DB	$FF
 
 SLIME			USR	(SLIME_CREATURE__)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+iscompiled+frame0
 				DB	$22
@@ -141,168 +81,72 @@ SLIME			USR	(SLIME_CREATURE__)-
 				DB	$FF
 
 TALUMA			USR	(TALUMA_AND_MOUNT)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$23,$00
-				DB	$0C,$0C,$5A
-				DB	$7A,$76,$60
-				DB	$20,$18,$18
-				DB	$2D,$2F,$37
-				DB	$03,$02,$60
-				DB	$38,$60,$26
-				DB	$6C,$6C,$7A
-				DB	$03,$0E,$03
-				DB	$32,$1B,$1B
-				DB	$2F,$7A,$63
-				DB	$40,$40,$40
-				DB	$80,$2F,$63
-				DB	$01,$01,$03
-				DB	$87
+				DB	$0C,$0C,$5A,$7A,$76,$60,$20
+				DB	$18,$18,$2D,$2F,$37,$03,$02
+				DB	$60,$38,$60,$26,$6C,$6C,$7A
+				DB	$03,$0E,$03,$32,$1B,$1B,$2F
+				DB	$7A,$63,$40,$40,$40,$80
+				DB	$2F,$63,$01,$01,$03,$87
 				DB	$FF
 
 SPECTROM		USR	(SPECTRAMITE_____)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$52,$00
-				DB	$02,$00,$02
-				DB	$7B,$02,$44
-				DB	$72,$06,$73
-				DB	$7C,$3F,$7C
-				DB	$73,$00,$60
-				DB	$4F,$3E,$7C
-				DB	$3E,$4F,$00
-				DB	$40,$01,$40
-				DB	$5F,$40,$23
-				DB	$4E,$00,$00
-				DB	$00,$01,$80
-				DB	$0C,$04,$04
-				DB	$80,$40,$80
-				DB	$03,$80,$30
-				DB	$20,$20,$80
+				DB	$02,$00,$02,$7B,$02,$44,$72
+				DB	$06,$73,$7C,$3F,$7C,$73,$00
+				DB	$60,$4F,$3E,$7C,$3E,$4F,$00
+				DB	$40,$01,$40,$5F,$40,$23,$4E
+				DB	$00,$00,$00,$01,$80
+				DB	$0C,$04,$04,$80
+				DB	$40,$80
+				DB	$03,$80
+				DB	$30,$20,$20,$80
 				DB	$80
 				DB	$FF
 
 SPIKE			USR	("SPIKE"_________)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$21,$02
-				DB	$68,$30,$5F
-				DB	$30,$68,$58
-				DB	$44,$0B,$06
-				DB	$7D,$06,$0B
-				DB	$0D,$11
+				DB	$68,$30,$5F,$30,$68,$58,$44
+				DB	$0B,$06,$7D,$06,$0B,$0D,$11
 				DB	$FF
 
 SOLICIAN		USR	(SOLICIAN________)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$42,$00
-				DB	$3C,$66,$03
-				DB	$43,$73,$86
-				DB	$78,$0D,$70
-				DB	$3F,$70,$0C
-				DB	$78,$07,$0C
-				DB	$03,$7F,$43
-				DB	$2C,$67,$00
-				DB	$00,$00,$00
-				DB	$03,$80,$0C
-				DB	$18,$80,$80
+				DB	$3C,$66,$03,$43,$73,$86
+				DB	$78,$0D,$70,$3F,$70,$0C,$78
+				DB	$07,$0C,$03,$7F,$43,$2C,$67
+				DB	$00,$00,$00,$00,$03,$80
+				DB	$0C,$18,$80
+				DB	$80
 				DB	$40,$40,$80
 				DB	$01,$01,$80
 				DB	$FF
 
 WANDERIN		USR	(WANDERIN_THOUGHT)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+notcompiled+frame0
 				DB	$22
@@ -382,25 +226,10 @@ WANDERIN		USR	(WANDERIN_THOUGHT)-
 				DB	$FF
 
 INTRUDER		USR	(INTRUDER_MISSILE)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+notcompiled+frame0
 				DB	$11
@@ -436,25 +265,10 @@ INTRUDER		USR	(INTRUDER_MISSILE)-
 				DB	$FF
 
 SPEEDO			USR	("SPEEDO"________)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+notcompiled+frame0
 				DB	$11
@@ -476,181 +290,78 @@ SPEEDO			USR	("SPEEDO"________)-
 				DB	$FF
 
 SHIFTER			USR	(SHIFTER_________)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$21,$03
-				DB	$60,$38,$1F
-				DB	$3B,$63,$06
-				DB	$00,$03,$0E
-				DB	$7C,$6E,$63
-				DB	$60,$30
+				DB	$60,$38,$1F,$3B,$63,$06,$00
+				DB	$03,$0E,$7C,$6E,$63,$60,$30
 				DB	$FF
 
 GREMLIN			USR	(ADHARAN_GREMLIN_)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$22,$00
-				DB	$60,$60,$60
-				DB	$60,$60,$00
-				DB	$60,$7F,$6E
-				DB	$6E,$6E,$7F
-				DB	$00,$01,$78
-				DB	$6C,$0C,$80
-				DB	$07,$0D,$0C
-				DB	$80
+				DB	$60,$60,$60,$60,$60,$00,$60
+				DB	$7F,$6E,$7F,$6E,$7F,$00,$01
+				DB	$78,$6C,$0C,$80
+				DB	$07,$0D,$0C,$80
 				DB	$FF
 
 AIRCIRCU		USR	(AIR_CIRCULATOR__)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$63,$20
-				DB	$80,$80,$7C
-				DB	$0C,$78,$00
-				DB	$F8,$07,$06
-				DB	$03,$00,$83
-				DB	$80,$80,$00
-				DB	$00,$00,$38
-				DB	$00,$0F,$5B
-				DB	$00,$00,$79
-				DB	$1D,$5D,$60
-				DB	$2F,$00,$1C
-				DB	$1E,$1F,$1F
-				DB	$63,$78,$00
-				DB	$07,$6F,$1F
-				DB	$3F,$78,$43
-				DB	$00,$00,$13
-				DB	$57,$17,$00
-				DB	$3E,$00,$00
-				DB	$00,$03,$00
-				DB	$1E,$1B,$5B
-				DB	$5B,$0F,$80
-				DB	$0F,$6F,$40
-				DB	$40,$80,$7F
-				DB	$7F,$04,$7F
-				DB	$00,$70,$60
-				DB	$1F,$7F,$24
-				DB	$3F,$00,$01
-				DB	$00,$3E,$3E
-				DB	$80,$1B,$1B
-				DB	$1E,$80
+				DB	$80
+				DB	$80
+				DB	$7C,$0C,$78,$00,$F8
+				DB	$07,$06,$03,$00,$83
+				DB	$80
+				DB	$80
+				DB	$00,$00,$00,$38,$00,$0F,$5B
+				DB	$00,$00,$79,$1D,$5D,$60,$2F
+				DB	$00,$1C,$1E,$1F,$1F,$63,$78
+				DB	$00,$07,$6F,$1F,$3F,$78,$43
+				DB	$00,$00,$13,$57,$17,$00,$3E
+				DB	$00,$00,$00,$03,$00,$1E,$1B
+				DB	$5B,$5B,$0F,$80
+				DB	$0F,$6F,$40,$40,$80
+				DB	$7F,$7F,$04,$7F,$00,$70,$60
+				DB	$1F,$7F,$24,$3F,$00,$01,$00
+				DB	$3E,$3E,$80
+				DB	$1B,$1B,$1E,$80
 				DB	$FF
 
 DRILLER			USR	(STATION_DRILLER_)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$42,$04
-				DB	$00,$7E,$36
-				DB	$36,$36,$D6
-				DB	$70,$3D,$46
-				DB	$1B,$63,$75
-				DB	$73,$0F,$3C
-				DB	$63,$18,$07
-				DB	$2F,$4E,$00
-				DB	$7F,$6C,$6D
-				DB	$6D,$EB,$56
-				DB	$36,$36,$36
-				DB	$7E,$80,$75
-				DB	$63,$1B,$46
-				DB	$3D,$70,$00
-				DB	$2F,$07,$18
-				DB	$63,$3C,$0F
-				DB	$00,$6B,$6D
-				DB	$6D,$6C,$7F
-				DB	$80
+				DB	$00,$7E,$36,$36,$36,$D6
+				DB	$70,$3D,$46,$1B,$63,$75,$73
+				DB	$0F,$3C,$63,$18,$07,$2F,$4E
+				DB	$00,$7F,$6C,$6D,$6D,$EB
+				DB	$56,$36,$36,$36,$7E,$80
+				DB	$75,$63,$1B,$46,$3D,$70,$00
+				DB	$2F,$07,$18,$63,$3C,$0F,$00
+				DB	$6B,$6D,$6D,$6C,$7F,$80
 				DB	$FF
 
 INVISIBL		USR	(INVISIBLE_ALIEN_)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+iscompiled+frame0
 				DB	$12
@@ -667,191 +378,85 @@ INVISIBL		USR	(INVISIBLE_ALIEN_)-
 				DB	$FF
 
 COOLER			USR	(COOLING_UNIT____)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$63,$01
-				DB	$70,$3B,$3B
-				DB	$58,$63,$FB
-				DB	$00,$FD,$40
-				DB	$6E,$1E,$7E
-				DB	$0E,$72,$1C
-				DB	$07,$3B,$3C
-				DB	$3F,$38,$27
-				DB	$1C,$00,$DF
-				DB	$00,$6F,$6F
-				DB	$6F,$6F,$61
-				DB	$4E
-				DB	$7B,$3A,$59
-				DB	$6B,$5B,$3B
-				DB	$7B,$7D,$3C
-				DB	$3D,$1D,$3D
-				DB	$3C,$7D,$66
-				DB	$7B,$7B,$7D
-				DB	$7B,$7B,$66
-				DB	$33,$6F,$6F
-				DB	$5F,$6F,$6F
-				DB	$33,$1F,$5E
-				DB	$5E,$1C,$5E
-				DB	$5E,$5F,$2B
-				DB	$67,$68,$EF
-				DB	$7B
-				DB	$7B,$7B,$79
-				DB	$7A,$7B,$00
-				DB	$7D,$7D,$7D
-				DB	$61,$1D,$7D
-				DB	$38,$1C,$72
-				DB	$0E,$7E,$7E
-				DB	$7E,$00,$1C
-				DB	$27,$38,$3F
-				DB	$3F,$3F,$00
-				DB	$4F,$53,$5D
-				DB	$3D,$3B,$5B
-				DB	$30
-				DB	$6F,$6F,$0F
-				DB	$6F,$6F,$6F
-				DB	$00
+				DB	$70,$3B,$3B,$58,$63,$FB
+				DB	$00,$FD
+				DB	$40,$6E,$1E,$7E,$0E,$72,$1C
+				DB	$07,$3B,$3C,$3F,$38,$27,$1C
+				DB	$00,$DF
+				DB	$00,$6F,$6F,$6F,$6F,$61,$4E
+				DB	$7B,$3A,$59,$6B,$5B,$3B,$7B
+				DB	$7D,$3C,$3D,$1D,$3D,$3C,$7D
+				DB	$66,$7B,$7B,$7D,$7B,$7B,$66
+				DB	$33,$6F,$6F,$5F,$6F,$6F,$33
+				DB	$1F,$5E,$5E,$1C,$5E,$5E,$5F
+				DB	$2B,$67,$68,$EF
+				DB	$7B,$7B,$7B,$79,$7A,$7B,$00
+				DB	$7D,$7D,$7D,$61,$1D,$7D,$38
+				DB	$1C,$72,$0E,$7E,$7E,$7E,$00
+				DB	$1C,$27,$38,$3F,$3F,$3F,$00
+				DB	$4F,$53,$5D,$3D,$3B,$5B,$30
+				DB	$6F,$6F,$0F,$6F,$6F,$6F,$00
 				DB	$FF
 
 THERMAL			USR	(THERMAL_UNIT____)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
-				DB	$63,$11			;tview dimens, offset
-				DB	$FB,$FD,$7E
-				DB	$7E,$7E,$0E
-				DB	$72,$1C,$66
-				DB	$3F,$3F,$3F
-				DB	$38,$27,$1C
-				DB	$33,$DF,$EF
+				DB	$63,$11
 				DB	$FB
-				DB	$3D,$3D,$1D
-				DB	$3D,$3D,$FD
-				DB	$7B,$7B,$7D
-				DB	$7B,$7B,$66
-				DB	$1C,$6F,$6F
-				DB	$5F,$6F,$6F
-				DB	$33,$1C,$5E
-				DB	$5E,$5C,$5E
-				DB	$5E,$DF,$EF
-				DB	$7B
-				DB	$7B,$7B,$7B
-				DB	$7B,$80,$7D
-				DB	$7D,$7D,$7D
-				DB	$7D,$80,$72
-				DB	$0E,$7E,$7E
-				DB	$7E,$80,$27
-				DB	$38,$3F,$3F
-				DB	$3F,$80,$5F
-				DB	$5F,$5F,$5F
-				DB	$5F,$80
-				DB	$6F,$6F,$6F
-				DB	$6F,$6F,$80
+				DB	$FD
+				DB	$7E,$7E,$7E,$0E,$72,$1C,$66
+				DB	$3F,$3F,$3F,$38,$27,$1C,$33
+				DB	$DF
+				DB	$EF
+				DB	$FB
+				DB	$3D,$3D,$1D,$3D,$3D,$FD
+				DB	$7B,$7B,$7D,$7B,$7B,$66,$1C
+				DB	$6F,$6F,$5F,$6F,$6F,$33,$1C
+				DB	$5E,$5E,$5C,$5E,$5E,$DF
+				DB	$EF
+				DB	$7B,$7B,$7B,$7B,$7B,$80
+				DB	$7D,$7D,$7D,$7D,$7D,$80
+				DB	$72,$0E,$7E,$7E,$7E,$80
+				DB	$27,$38,$3F,$3F,$3F,$80
+				DB	$5F,$5F,$5F,$5F,$5F,$80
+				DB	$6F,$6F,$6F,$6F,$6F,$80
 				DB	$FF
 
 INFRAFLO		USR	(INFRA-FLOURINOID)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$43,$00
-				DB	$40,$00,$00
-				DB	$00,$40,$60
-				DB	$3C,$03,$7E
-				DB	$0C,$00,$3F
-				DB	$80,$78,$1E
-				DB	$06,$03,$03
-				DB	$81,$03,$06
-				DB	$1C,$18,$18
-				DB	$0C,$06,$36
-				DB	$66,$63,$43
-				DB	$43,$66,$6C
-				DB	$40,$40,$00
-				DB	$01,$5F,$78
-				DB	$0C,$00,$00
-				DB	$40,$79,$0F
-				DB	$30,$60,$06
-				DB	$03,$05,$06
-				DB	$0C,$0C,$18
-				DB	$30,$30,$18
-				DB	$58,$4C,$4C
-				DB	$7C,$0C,$06
-				DB	$03,$01,$01
-				DB	$01,$03,$60
-				DB	$40,$80,$1C
-				DB	$07,$80
+				DB	$40,$00,$00,$00,$40,$60,$3C
+				DB	$03,$7E,$0C,$00,$3F,$80
+				DB	$78,$1E,$06,$03,$03,$81
+				DB	$03,$06,$1C,$18,$18,$0C,$06
+				DB	$36,$66,$63,$43,$43,$66,$6C
+				DB	$40,$40,$00,$01,$5F,$78,$0C
+				DB	$00,$00,$40,$79,$0F,$30,$60
+				DB	$06,$03,$05,$06,$0C,$0C,$18
+				DB	$30,$30,$18,$58,$4C,$4C,$7C
+				DB	$0C,$06,$03,$01,$01,$01,$03
+				DB	$60,$40,$80
+				DB	$1C,$07,$80
 				DB	$FF
 
 GASSER			USR	("GASSER"________)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+notcompiled+frame0
 				DB	$21
@@ -864,8 +469,8 @@ GASSER			USR	("GASSER"________)-
 				DB	$00,$07,$1B,$37,$37,$1B,$07
 				DB	$00,$00,$00,$07,$46,$46,$66
 				DB	$1B,$0F,$80
-				DB	$06,$6C,$60,$80,$18,$0D,$01
-				DB	$80
+				DB	$06,$6C,$60,$80
+				DB	$18,$0D,$01,$80
 				DB	$3E,$80
 
 				DB	$42,$11
@@ -908,7 +513,7 @@ GASSER			USR	("GASSER"________)-
 				DB	$34,$49,$07,$80
 				DB	$6C,$39,$07,$80
 
-				DB	$42,$00
+				DB	$52,$00
 				DB	$08,$24,$19,$32,$09,$41,$6A
 				DB	$20,$04,$62,$19,$24,$42,$24
 				DB	$00,$63,$10,$49,$03,$10,$0C
@@ -933,56 +538,23 @@ GASSER			USR	("GASSER"________)-
 				DB	$FF
 
 FUNGUS			USR	(TRACC_FUNGUS____)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$22,$00
-				DB	$02,$07,$0D
-				DB	$18,$70,$60
-				DB	$70,$00,$10
-				DB	$70,$58,$0F
-				DB	$06,$7C,$5A
-				DB	$4E,$02,$80
+				DB	$02,$07,$0D,$18,$70,$60,$70
+				DB	$00,$10,$70,$58,$0F,$06,$7C
+				DB	$5A,$4E,$02,$80
 				DB	$27,$01,$80
 				DB	$FF
 
 QUEEN			USR	(QUEEN_INSECT____)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+iscompiled+frame0
 				DB	$22
@@ -1112,44 +684,29 @@ QUEEN			USR	(QUEEN_INSECT____)-
 				DB	$FF
 
 HOTHEAD			USR	(HAMELER_HOT_HEAD)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+notcompiled+frame0
 				DB	$11
 				BYTE	blink;uparound
 				BYTE	repeat1;normalspeed
 
-				DB	$21,$02
+				DB	$22,$02
 				DB	$58,$2C,$5E,$36,$06,$04,$14
 				DB	$0E,$1D,$3E,$36,$30,$28,$14
 				DB	$08,$80
 				DB	$08,$80
 
-				DB	$21,$02
+				DB	$22,$02
 				DB	$38,$1C,$5E,$36,$06,$09,$12
 				DB	$0D,$1D,$3C,$36,$30,$20,$24
 				DB	$04,$80
 				DB	$08,$80
 
-				DB	$21,$02
+				DB	$22,$02
 				DB	$18,$5C,$3E,$36,$06,$04,$12
 				DB	$0D,$1E,$3D,$36,$30,$28,$10
 				DB	$08,$80
@@ -1158,26 +715,13 @@ HOTHEAD			USR	(HAMELER_HOT_HEAD)-
 				DB	$FF
 
 FIGHTBUG		USR	(FIGHTER_INSECT__)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
+			; turned off until animation works
+			do 0
 				DB	animated+notcompiled+frame0
 				DB	$12
 				BYTE	special;upstop
@@ -1228,6 +772,7 @@ FIGHTBUG		USR	(FIGHTER_INSECT__)-
 				DB	$03,$3D,$03,$07,$07,$7B,$07
 				DB	$70,$10,$6C,$36,$66,$80
 				DB	$07,$04,$3B,$36,$33,$B0
+			fin
 
 				DB	$23,$00
 				DB	$00,$00,$40,$60,$5E,$E0

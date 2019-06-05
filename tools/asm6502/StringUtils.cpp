@@ -4,37 +4,6 @@
 
 //------------------------------------------------------------------------------
 
-StringArray::StringArray(INT32 capacity)
-{
-	mCount = 0;
-	mCapacity = capacity;
-	mStrings = (char**)realloc(NULL, capacity * sizeof(char*));
-}
-
-
-StringArray::~StringArray()
-{
-	for (INT32 i = 0; i < mCount; ++i)
-		free(mStrings[i]);
-}
-
-
-INT32
-StringArray::Add(const char* string)
-{
-	if (mCount >= mCapacity)
-	{
-		mCapacity += mCapacity;
-		if (mCapacity == 0)
-			mCapacity = 8;
-		mStrings = (char**)realloc(mStrings, mCapacity * sizeof(char*));
-	}
-	mStrings[mCount++] = _strdup(string);
-	return mCount - 1;
-}
-
-//------------------------------------------------------------------------------
-
 StringHash::StringHash(UINT32 size)
 {
     mCount = 0;
@@ -49,7 +18,7 @@ StringHash::~StringHash()
 {
 	for (UINT32 i = 0; i < mSize; ++i)
 	{
-		HashEntry* entry = NULL;
+		HashEntry* entry = nullptr;
 		HashEntry* next = mEntries[i];
 		while (next)
 		{
@@ -62,12 +31,11 @@ StringHash::~StringHash()
 }
 
 
-bool
-StringHash::Add(const char* string, void* object)
+bool StringHash::Add(const char* string, void* object)
 {
 	UINT32 key = GenerateKey(string);
 	INT32 index = key % mSize;
-	
+
 	HashEntry* entry = mEntries[index];
 	while (entry)
 	{
@@ -79,7 +47,7 @@ StringHash::Add(const char* string, void* object)
 		}
 		entry = entry->next;
 	}
-	
+
 	entry = (HashEntry*)malloc(sizeof(HashEntry) + strlen(string));
 	entry->key = key;
 	entry->object = object;
@@ -91,44 +59,42 @@ StringHash::Add(const char* string, void* object)
 }
 
 
-bool
-StringHash::AddNoCase(const char* string, void* object)
+bool StringHash::AddNoCase(const char* string, void* object)
 {
 	char* sp = _strdup(string);
 	char* cp;
 	char c;
 	bool result;
-	
+
 	cp = sp;
 	do {
 		c = *cp;
-		*cp++ = tolower(c);
+		*cp++ = (char)tolower(c);
 	} while (c != 0);
-	
+
 	result = Add(sp, object);
-	
+
 	if (result)
 	{
 		cp = sp;
 		do {
 			c = *cp;
-			*cp++ = toupper(c);
+			*cp++ = (char)toupper(c);
 		} while (c != 0);
-		
+
 		result = Add(sp, object);
 	}
-	
+
 	free(sp);
 	return result;
 }
 
 
-void*
-StringHash::Find(const char* string)
+void* StringHash::Find(const char* string)
 {
 	UINT32 key = GenerateKey(string);
 	INT32 index = key % mSize;
-	
+
 	HashEntry* entry = mEntries[index];
 	while (entry)
 	{
@@ -140,13 +106,12 @@ StringHash::Find(const char* string)
 		}
 		entry = entry->next;
 	}
-	
-	return NULL;
+
+	return nullptr;
 }
 
 
-UINT32
-StringHash::GenerateKey(const char* string)
+UINT32 StringHash::GenerateKey(const char* string)
 {
 	UINT32 key = 0;
 	const UINT8* sp = (const UINT8*)string;
@@ -159,8 +124,7 @@ StringHash::GenerateKey(const char* string)
 
 // Caller assumed to have allocated enough space for entries
 //  based on previous call to GetEntryCount().
-void
-StringHash::GetEntries(HashEntry** entries)
+void StringHash::GetEntries(HashEntry** entries)
 {
     INT32 index = 0;
     for (UINT32 i = 0; i < mSize; ++i)
