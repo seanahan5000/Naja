@@ -1,23 +1,8 @@
 TIMEWARP		USR	(TIME_WARP_______)-	;THIS NAME HAS CHANGED
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$B6,$00
 				DB	$80
@@ -90,143 +75,59 @@ TIMEWARP		USR	(TIME_WARP_______)-	;THIS NAME HAS CHANGED
 				DB	$FF
 
 MINDSLAV		USR	(NAJA_MIND_SLAVE_)-	;IS THIS NAME RIGHT???
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$43,$00
-				DB	$00,$00,$00
-				DB	$00,$00,$00
-				DB	$40,$00,$00
-				DB	$00,$60,$3C
-				DB	$5E,$3D,$00
-				DB	$00,$00,$1F
-				DB	$78,$F7,$00
-				DB	$00,$00,$00
-				DB	$01,$03,$0D
-				DB	$40,$60,$60
-				DB	$60,$60,$40
-				DB	$00,$03,$6D
-				DB	$60,$00,$00
-				DB	$01,$03,$07
-				DB	$6E,$1E,$7F
-				DB	$3F,$7E,$00
-				DB	$0E,$1C,$18
-				DB	$18,$1B,$98
-				DB	$80,$06,$0C
-				DB	$78,$18,$30
-				DB	$60,$00,$00
-				DB	$00,$01,$03
-				DB	$02,$01,$00
-				DB	$18,$18,$1C
-				DB	$36,$66,$66
-				DB	$34
+				DB	$00,$00,$00,$00,$00,$00,$40
+				DB	$00,$00,$00,$60,$3C,$5E,$3D
+				DB	$00,$00,$00,$1F,$78,$F7
+				DB	$00,$00,$00,$00,$01,$03,$0D
+				DB	$40,$60,$60,$60,$60,$40,$00
+				DB	$03,$6D,$60,$00,$00,$01,$03
+				DB	$07,$6E,$1E,$7F,$3F,$7E,$00
+				DB	$0E,$1C,$18,$18,$1B,$98
+				DB	$80
+				DB	$06,$0C,$78,$18,$30,$60,$00
+				DB	$00,$00,$01,$03,$02,$01,$00
+				DB	$18,$18,$1C,$36,$66,$66,$34
 				DB	$FF
 
 PLASMAN			USR	(PLASMANOID______)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$22,$00
-				DB	$09,$64,$38
-				DB	$4D,$66,$1E
-				DB	$76,$24,$03
-				DB	$2E,$59,$33
-				DB	$3C,$37,$16
-				DB	$06,$24,$80
-				DB	$34,$31,$12
-				DB	$80
+				DB	$09,$64,$38,$4D,$66,$1E,$76
+				DB	$24,$03,$2E,$59,$33,$3C,$37
+				DB	$16,$06,$24,$80
+				DB	$34,$31,$12,$80
 				DB	$FF
 
 BLASTBRE		USR	(BLAST_BREATHER__)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$23,$00
-				DB	$00,$00,$60
-				DB	$F0,$00,$07
-				DB	$1F,$39,$30
-				DB	$30,$11,$70
-				DB	$60,$60,$70
-				DB	$78,$0F,$77
-				DB	$11,$03,$03
-				DB	$07,$0F,$78
-				DB	$77,$6C,$48
-				DB	$40,$80,$1B
-				DB	$0B,$03,$07
-				DB	$07,$80
+				DB	$00,$00,$60,$F0
+				DB	$00,$07,$1F,$39,$30,$30,$11
+				DB	$70,$60,$60,$70,$78,$0F,$77
+				DB	$11,$03,$03,$07,$0F,$78,$77
+				DB	$6C,$48,$40,$80
+				DB	$1B,$0B,$03,$07,$07,$80
 				DB	$FF
 
 ASYMETRI		USR	(ASYMMETRIC_ALIEN)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+iscompiled+frame0
 				DB	$22
@@ -267,25 +168,10 @@ ASYMETRI		USR	(ASYMMETRIC_ALIEN)-
 				DB	$FF
 
 RICOCHET		USR	(RICOCHET_MISSILE)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+notcompiled+frame0
 				DB	$11
@@ -321,25 +207,10 @@ RICOCHET		USR	(RICOCHET_MISSILE)-
 				DB	$FF
 
 CEREBROM		USR	(CEREBROMORPH____)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+notcompiled+frame0
 				DB	$11
@@ -361,326 +232,152 @@ CEREBROM		USR	(CEREBROMORPH____)-
 				DB	$FF
 
 BLINKER			USR	("BLINKER"_______)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$43,$00
-				DB	$80,$00,$00
-				DB	$00,$40,$04
-				DB	$04,$08,$00
-				DB	$00,$00,$00
-				DB	$11,$89,$00
-				DB	$00,$00,$00
-				DB	$00,$00,$01
-				DB	$00,$20,$40
-				DB	$78,$7C,$70
-				DB	$0C,$68,$70
-				DB	$3B,$7B,$5B
-				DB	$77,$62,$57
-				DB	$0D,$5F,$5A
-				DB	$5F,$6E,$07
-				DB	$00,$00,$03
-				DB	$1F,$3F,$0F
-				DB	$30,$1A,$1A
-				DB	$1B,$33,$33
-				DB	$30,$00,$11
-				DB	$10,$08,$00
-				DB	$00,$7F,$00
-				DB	$09,$11,$12
-				DB	$00,$00,$40
-				DB	$00,$58,$58
-				DB	$6C,$66,$63
-				DB	$01,$00
+				DB	$80
+				DB	$00,$00,$00,$40,$04,$04,$08
+				DB	$00,$00,$00,$00,$11,$89
+				DB	$00,$00,$00,$00,$00,$00,$01
+				DB	$00,$20,$40,$78,$7C,$70,$0C
+				DB	$68,$70,$3B,$7B,$5B,$77,$62
+				DB	$57,$0D,$5F,$5A,$5F,$6E,$07
+				DB	$00,$00,$03,$1F,$3F,$0F,$30
+				DB	$1A,$1A,$1B,$33,$33,$30,$00
+				DB	$11,$10,$08,$00,$00,$7F,$00
+				DB	$09,$11,$12,$00,$00,$40,$00
+				DB	$58,$58,$6C,$66,$63,$01,$00
 				DB	$FF
 
 LEVITATR		USR	(MAN_IN_LEVITATOR)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$33,$40
-				DB	$00,$6F,$7B
-				DB	$6B,$8B,$00
-				DB	$4C,$4C,$7F
-				DB	$00,$00,$3F
-				DB	$00,$3D,$37
-				DB	$35,$B4,$4B
-				DB	$73,$7B,$7B
-				DB	$5B,$5B,$1B
-				DB	$61,$5E,$5E
-				DB	$56,$61,$FF
-				DB	$34,$33,$37
-				DB	$37,$B6,$13
-				DB	$4B,$0B,$0B
-				DB	$7B,$0F,$7F
-				DB	$00,$0D,$00
-				DB	$00,$7F,$0C
-				DB	$7F,$32,$34
-				DB	$34,$34,$37
-				DB	$3C,$3F
+				DB	$00,$6F,$7B,$6B,$8B
+				DB	$00,$4C,$4C,$7F,$00,$00,$3F
+				DB	$00,$3D,$37,$35,$B4
+				DB	$4B,$73,$7B,$7B,$5B,$5B,$1B
+				DB	$61,$5E,$5E,$56,$61,$FF
+				DB	$34,$33,$37,$37,$B6
+				DB	$13,$4B,$0B,$0B,$7B,$0F,$7F
+				DB	$00,$0D,$00,$00,$7F,$0C,$7F
+				DB	$32,$34,$34,$34,$37,$3C,$3F
 				DB	$FF
 
 MECHANIC		USR	(MECHANICO_450___)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$22,$00
-				DB	$03,$7B,$0B
-				DB	$6F,$69,$69
-				DB	$6F,$60,$6F
-				DB	$68,$7B,$4B
-				DB	$4B,$7B,$0B
-				DB	$7B,$3B,$80
-				DB	$68,$6F,$6E
-				DB	$80
+				DB	$03,$7B,$0B,$6F,$69,$69,$6F
+				DB	$60,$6F,$68,$7B,$4B,$4B,$7B
+				DB	$0B,$7B,$3B,$80
+				DB	$68,$6F,$6E,$80
 				DB	$FF
 
 AIRLOCK			USR	(PORTABLE_AIRLOCK)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$B6,$01
-				DB	$80,$80,$80
-				DB	$60,$00,$60
-				DB	$00,$60,$00
-				DB	$7C,$7F,$00
-				DB	$7F,$00,$7F
-				DB	$00,$7F
-				DB	$79,$00,$79
-				DB	$00,$79,$00
-				DB	$7F,$3F,$00
-				DB	$3F,$00,$3F
-				DB	$00,$7F,$00
-				DB	$00,$00,$00
-				DB	$00,$00,$03
-				DB	$80,$80,$80
 				DB	$80
-				DB	$80,$00,$00
-				DB	$00,$00,$00
-				DB	$3C,$00,$7E
-				DB	$7F,$07,$77
-				DB	$B7,$7F,$7F
-				DB	$02,$7F,$00
-				DB	$6F,$7F
-				DB	$7F,$7F,$00
-				DB	$7F,$00,$30
-				DB	$7F,$7F,$7F
-				DB	$04,$7F,$60
-				DB	$EF,$07,$0F
-				DB	$0E,$0E,$0E
-				DB	$6E,$0E,$00
-				DB	$00,$00,$00
-				DB	$00,$03,$00
-				DB	$80,$80
 				DB	$80
-				DB	$80,$3C,$00
-				DB	$3C,$00,$3C
-				DB	$00,$3C,$37
-				DB	$37,$37,$37
-				DB	$37,$37,$77
-				DB	$40,$3E,$3E
-				DB	$4E,$6E,$0E
-				DB	$5C
-				DB	$1F
-				DB	$6F,$6F,$1F
-				DB	$3F,$40,$1F
-				DB	$60,$67,$67
-				DB	$67,$67,$67
-				DB	$73,$6E,$0E
-				DB	$6E,$0E,$6E
-				DB	$0E,$6E,$03
-				DB	$00,$03,$00
-				DB	$03,$00,$03
-				DB	$80,$80
-				DB	$80,$80,$00
-				DB	$3C,$00,$7C
-				DB	$00,$7C,$00
-				DB	$07,$7F,$7E
-				DB	$7D,$00,$6F
-				DB	$00,$1E,$4E
-				DB	$5E,$4E,$1E
-				DB	$4E,$1E
-				DB	$40,$1F,$5F
-				DB	$1F,$40,$19
-				DB	$40,$07,$77
-				DB	$77,$77,$07
-				DB	$37,$07,$0E
-				DB	$6F,$07,$7B
-				DB	$00,$7F,$00
-				DB	$00,$03,$00
-				DB	$03,$00,$03
-				DB	$00,$80,$80
 				DB	$80
-				DB	$80,$7C,$00
-				DB	$7C,$00,$00
-				DB	$00,$70,$6F
-				DB	$00,$6F,$00
-				DB	$00,$40,$3F
-				DB	$4E,$1E,$4E
-				DB	$1C,$3F,$7F
-				DB	$00
-				DB	$19,$40,$19
-				DB	$40,$60,$70
-				DB	$0F,$37,$07
-				DB	$37,$03,$0F
-				DB	$1F,$60,$7F
-				DB	$00,$7F,$00
-				DB	$00,$00,$7F
-				DB	$03,$00,$03
-				DB	$80,$80,$80
-				DB	$7B,$06
-				DB	$7F,$7F,$06
-				DB	$7B,$00,$7F
-				DB	$00,$7F,$7F
-				DB	$00,$7F,$00
-				DB	$0F,$70,$2F
-				DB	$2F,$70,$0F
-				DB	$70,$7F,$00
-				DB	$7F,$7F,$00
-				DB	$FF,$7F,$00
-				DB	$7F,$7F,$00
-				DB	$FF
-				DB	$7F,$00,$7F
-				DB	$7F,$00,$FF
-				DB	$7F,$00,$7F
-				DB	$7F,$00,$FF
-				DB	$0F,$70,$2F
-				DB	$2F,$70,$0F
-				DB	$7F,$7F,$00
-				DB	$7F,$7F,$00
-				DB	$7F,$00,$7F
-				DB	$00,$7F,$7F
-				DB	$00,$7F,$00
-				DB	$0D,$06,$0F
-				DB	$0F,$06,$0D
-				DB	$00
+				DB	$60,$00,$60,$00,$60,$00,$7C
+				DB	$7F,$00,$7F,$00,$7F,$00,$7F
+				DB	$79,$00,$79,$00,$79,$00,$7F
+				DB	$3F,$00,$3F,$00,$3F,$00,$7F
+				DB	$00,$00,$00,$00,$00,$00,$03
+				DB	$80
+				DB	$80
+				DB	$80
+				DB	$80
+				DB	$80
+				DB	$00,$00,$00,$00,$00,$3C,$00
+				DB	$7E,$7F,$07,$77,$B7
+				DB	$7F,$7F,$02,$7F,$00,$6F,$7F
+				DB	$7F,$7F,$00,$7F,$00,$30,$7F
+				DB	$7F,$7F,$04,$7F,$60,$EF
+				DB	$07,$0F,$0E,$0E,$0E,$6E,$0E
+				DB	$00,$00,$00,$00,$00,$03,$00
+				DB	$80
+				DB	$80
+				DB	$80
+				DB	$80
+				DB	$3C,$00,$3C,$00,$3C,$00,$3C
+				DB	$37,$37,$37,$37,$37,$37,$77
+				DB	$40,$3E,$3E,$4E,$6E,$0E,$5C
+				DB	$1F,$6F,$6F,$1F,$3F,$40,$1F
+				DB	$60,$67,$67,$67,$67,$67,$73
+				DB	$6E,$0E,$6E,$0E,$6E,$0E,$6E
+				DB	$03,$00,$03,$00,$03,$00,$03
+				DB	$80
+				DB	$80
+				DB	$80
+				DB	$80
+				DB	$00,$3C,$00,$7C,$00,$7C,$00
+				DB	$07,$7F,$7E,$7D,$00,$6F,$00
+				DB	$1E,$4E,$5E,$4E,$1E,$4E,$1E
+				DB	$40,$1F,$5F,$1F,$40,$19,$40
+				DB	$07,$77,$77,$77,$07,$37,$07
+				DB	$0E,$6F,$07,$7B,$00,$7F,$00
+				DB	$00,$03,$00,$03,$00,$03,$00
+				DB	$80
+				DB	$80
+				DB	$80
+				DB	$80
+				DB	$7C,$00,$7C,$00,$00,$00,$70
+				DB	$6F,$00,$6F,$00,$00,$40,$3F
+				DB	$4E,$1E,$4E,$1C,$3F,$7F,$00
+				DB	$19,$40,$19,$40,$60,$70,$0F
+				DB	$37,$07,$37,$03,$0F,$1F,$60
+				DB	$7F,$00,$7F,$00,$00,$00,$7F
+				DB	$03,$00,$03,$80
+				DB	$80
+				DB	$80
+				DB	$7B,$06,$7F,$7F,$06,$7B,$00
+				DB	$7F,$00,$7F,$7F,$00,$7F,$00
+				DB	$0F,$70,$2F,$2F,$70,$0F,$70
+				DB	$7F,$00,$7F,$7F,$00,$FF
+				DB	$7F,$00,$7F,$7F,$00,$FF
+				DB	$7F,$00,$7F,$7F,$00,$FF
+				DB	$7F,$00,$7F,$7F,$00,$FF
+				DB	$0F,$70,$2F,$2F,$70,$0F,$7F
+				DB	$7F,$00,$7F,$7F,$00,$7F,$00
+				DB	$7F,$00,$7F,$7F,$00,$7F,$00
+				DB	$0D,$06,$0F,$0F,$06,$0D,$00
 				DB	$FF
 
 THROWER			USR	("THROWER"_______)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$23,$00
-				DB	$18,$18,$30
-				DB	$68,$68,$C4
-				DB	$0C,$0C,$06
-				DB	$0B,$0B,$91
-				DB	$44,$34,$74
-				DB	$78,$5C,$46
-				DB	$38,$11,$16
-				DB	$17,$0F,$1D
-				DB	$31,$0E,$7E
-				DB	$7F,$61,$5E
-				DB	$33,$4C,$73
-				DB	$3F,$7F,$43
-				DB	$3D,$66,$19
-				DB	$67
+				DB	$18,$18,$30,$68,$68,$C4
+				DB	$0C,$0C,$06,$0B,$0B,$91
+				DB	$44,$34,$74,$78,$5C,$46,$38
+				DB	$11,$16,$17,$0F,$1D,$31,$0E
+				DB	$7E,$7F,$61,$5E,$33,$4C,$73
+				DB	$3F,$7F,$43,$3D,$66,$19,$67
 				DB	$FF
 
 LATCHER			USR	("LATCHER"_______)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+notcompiled+frame0
 				DB	$12
@@ -704,25 +401,10 @@ LATCHER			USR	("LATCHER"_______)-
 				DB	$FF
 
 INVERSE			USR	(INVERSION_ALIEN_)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+notcompiled+frame0
 				DB	$11
@@ -750,114 +432,47 @@ INVERSE			USR	(INVERSION_ALIEN_)-
 				DB	$FF
 
 ANTICIP			USR	(ANTICIPATOR_____)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$22,$01
-				DB	$60,$78,$6C
-				DB	$2C,$0C,$0C
-				DB	$08,$07,$1F
-				DB	$37,$34,$30
-				DB	$30,$10,$1C
-				DB	$80,$30,$80
+				DB	$60,$78,$6C,$2C,$0C,$0C,$08
+				DB	$07,$1F,$37,$34,$30,$30,$10
+				DB	$1C,$80
+				DB	$30,$80
 				DB	$FF
 
 SNARC			USR	(SNARC___________)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$21,$05
-				DB	$60,$38,$67
-				DB	$18,$0C,$80
-				DB	$01,$07,$39
-				DB	$06,$0C,$80
+				DB	$60,$38,$67,$18,$0C,$80
+				DB	$01,$07,$39,$06,$0C,$80
 				DB	$FF
 
 ASSASSIN		USR	(ALIEN_ASSASSIN__)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	$22,$01
-				DB	$78,$08,$6F
-				DB	$69,$69,$6F
-				DB	$08,$0F,$08
-				DB	$7B,$4B,$4B
-				DB	$7B,$08,$78
-				DB	$38,$80,$0F
-				DB	$0E,$80
+				DB	$78,$08,$6F,$69,$69,$6F,$08
+				DB	$0F,$08,$7B,$4B,$4B,$7B,$08
+				DB	$78,$38,$80
+				DB	$0F,$0E,$80
 				DB	$FF
 
 INFORMER		USR	(INFORMER________)-
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE,$EE,$EE
-				DB	$EE
+				DS	48,0
 
-				DB	$FF,$DD,$19,$FF	;temporary
+				DB	$FF,$DD
+				DB	$19,$FF		;temporary
 
 				DB	animated+notcompiled+frame0
 				DB	$11
