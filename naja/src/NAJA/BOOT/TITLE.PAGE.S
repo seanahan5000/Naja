@@ -1838,7 +1838,8 @@ COVER			DFB	$0F,$09,$07
 DECOVER			LDY	#$05	
 UNCOVER			LDA	$FA,Y
 				AND	#$0F
-				STA	SERIAL,Y
+; don't update serial number because it's not initialized
+;				STA	SERIAL,Y
 				DEY
 				BPL	UNCOVER
 				RTS
