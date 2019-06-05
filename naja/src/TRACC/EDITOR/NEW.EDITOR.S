@@ -3,17 +3,14 @@
 				TR	ON
 
 Entry			MAC
-				DB	E1-*,]1,]2,]3
+				DB	]1,]2,]3
 				USR	(]4:)=
-E1
 				EOM
 
 Transfer		MAC
-				DB	T1-*
 				DB	tTransfer
 				DW	]1
 				USR	(]2_->)=
-T1
 				EOM
 
 				USE	/NAJA/VARS/MACROS
@@ -47,14 +44,17 @@ tfShots			=	17
 tfRunAfter		=	18
 tfRunUntil		=	19
 
+gridX			=	200
 gridY			=	123
+gridDX			=	15
+gridDY			=	11
 
 COUNTER			=	$00
 NUMBER			=	ZBLOCK_60+0
 PTR				=	ZBLOCK_60+1		;+2
 MAXNUMB			=	ZBLOCK_60+3
-COUNTX			=	ZBLOCK_60+4
-COUNTY			=	ZBLOCK_60+5
+XCOUNT			=	ZBLOCK_60+4
+YCOUNT			=	ZBLOCK_60+5
 DATPNTL			=	ZBLOCK_60+6
 DATPNTH			=	ZBLOCK_60+7
 
@@ -77,23 +77,39 @@ GET_SHELL		JSR	CLEAR_PAGE
 				JSR	INIT_CURSOR
 				JSR	GETKEY
 				LDX	CURSOR
+            do ORIGINAL
+				CPX	#5
+            else
 				CPX	#4
+			fin
 				BNE	:SKIPA
 				JMP	EXIT_EDITOR
 
 :SKIPA			INX
 				STX	SHELL_NUMBER
+			do ORIGINAL
+				TXA
+				CLC
+				ADC #side_T1-1
+				TAY
+			else
 				LDY	#side_F1
 				CPX	#3
 				BCC	:SKIPB
 				INY
+			fin
 :SKIPB			STY	DISK_SIDE
 				JSR	LOADSUB
 				JMP	GOT_SHELL
 
 *-------------------------------
 
-GETSHELL_DEF	DB	$04
+GETSHELL_DEF
+            do ORIGINAL
+				DB	$05
+            else
+				DB	$04
+			fin
 				DB	$80
 				DW	:SHELL_CURS
 
@@ -103,6 +119,9 @@ GETSHELL_DEF	DB	$04
 				JMP	ARROWER
 :YPNTS			DB	76,84,92
 				DB	100,108
+			do ORIGINAL
+				DB	116
+			fin
 
 *-------------------------------
 
@@ -444,7 +463,7 @@ SHOW_PAGE		LDA	PAGE
 				PUT	NEW.LISTS
 				PUT	NEW.DRAW
 				PUT	NEW.EDIT
-				PUT	NEW.BUFFERS
+				PUT	NEW.BUFFER
 				PUT	NEW.TOPVIEWS
 				PUT	NEW.DATA
 
@@ -490,11 +509,20 @@ TEXTS			DW	TEXT0
 
 TEXT0			PLOTAT	86;46;(>>_ALIEN_EDITOR_<<)
 				PLOTAT	86;66;(EDIT_WHICH_SHELL_?)
+            do ORIGINAL
+				PLOTAT	101;76;(SHELL_17_<1>)
+				PLOTAT	101;84;(SHELL_15_<2>)
+				PLOTAT	101;92;(SHELL_13_<3>)
+				PLOTAT	101;100;(SHELL_11_<4>)
+				PLOTAT	101;108;(SHELL__9_<5>)
+				PLOTAT	101;116;(LEAVE)+
+            else
 				PLOTAT	101;76;(SHELL_15_<1>)
 				PLOTAT	101;84;(SHELL_13_<2>)
 				PLOTAT	101;92;(SHELL_11_<3>)
 				PLOTAT	101;100;(SHELL__9_<4>)
 				PLOTAT	101;108;(LEAVE)+
+			fin
 TEXT1			PLOTAT	0;0;(NUMBER)+
 TEXT2			PLOTAT	199;185;(TO_WHERE:)+
 TEXT3			PLOTAT	199;185;(ARE_YOU_SURE?)+
