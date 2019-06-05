@@ -16,7 +16,7 @@
 
 				HEX	EE
 
-				HEX	04571543		;Credit
+				HEX	00002543		;Credit
 				HEX	CC				;Strength
 				HEX	CC				;Upper Reflex
 				HEX	CC				;Lower Reflex
@@ -273,7 +273,7 @@
 ********************************
 
 				USR	(CYBORG____)-
-				DFB	critical		;healthy
+				DFB	healthy
 				HEX	0001			;Level
 				DFB	cybernate*16+stilicx
 				HEX	00256666		;Experience
@@ -293,8 +293,7 @@
 				HEX	0000			;Damage level
 				HEX	0037			;Damage maximum
 				HEX	50				;Composition (organic)
-*HEX 003616 ;Power level
-				HEX	000020			;Power level
+				HEX 003616 			;Power level
 				HEX	003700			;Power maximum
 				HEX	CCCC			;Power consumption
 
@@ -360,8 +359,8 @@
 				HEX	0000			;Damage level
 				HEX	0039			;Damage maximum
 				HEX	60				;Composition (organic)
-				HEX	012345			;Power level
-				HEX	012345			;Power maximum
+				HEX	002345			;Power level
+				HEX	002345			;Power maximum
 				HEX	CCCC			;Power consumption
 
 				HEX	EE

@@ -106,7 +106,7 @@ RARITY_13
 				DB	$13,$06
 				DB	$02,$14,$15,$16,$FF
 
-* I - Transperent
+* I - Transparent
 				DB	ALIEN_FORM+ALL_FACES
 				DB	$12,$06
 				DB	$04,$0A,$0C,$13,$18,$FF
