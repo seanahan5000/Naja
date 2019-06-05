@@ -5,7 +5,7 @@ set BUILD=%ROOT%\build
 set SRC=%ROOT%\src
 set OBJ=%ROOT%\obj
 set BIN=%ROOT%\bin
-set ASM=asm6502 -root %SRC% -objbase ..\obj -base
+set ASM=asm6502 -root %SRC% -objbase ..\obj -srcbase
 
 if not exist %OBJ% mkdir %OBJ%
 if not exist %BIN% mkdir %BIN%
