@@ -6,39 +6,41 @@
 //------------------------------------------------------------------------------
 
 SourceFile::SourceFile(Assembler* assembler, const char* fileName)
-	: mOffsets(256)
 {
-	mFileName = _strdup(fileName);
-	mBuffer = NULL;
-	
-	char fullPath[1024];
-	assembler->BuildFullSourcePath(fullPath, fileName);
-	
-	// must opened as binary, not text
-	strcat(fullPath, ".S");
-	FILE* file = fopen(fullPath, "rb");
+	mFileName = fileName;
+	mBuffer = nullptr;
+
+	mOffsets.reserve(256);
+
+	std::string fullPath = assembler->BuildFullSourcePath(fileName);
+	fullPath += ".S";
+
+	// must be opened as binary, not text
+	FILE* file = fopen(fullPath.c_str(), "rb");
 	if (!file)
 	{
-		fullPath[strlen(fullPath) - 2] = 0;
-		file = fopen(fullPath, "rb");
+		fullPath.resize(fullPath.size() - 2);
+		file = fopen(fullPath.c_str(), "rb");
 	}
-	
+
 	if (!file)
 	{
-		assembler->SetError("Input file \"%s\" not found", fullPath);
+		assembler->SetError("Input file \"%s\" not found", fullPath.c_str());
 		return;
 	}
-	
+
+	// TODO: error checks on file operations
+
 	fseek(file, 0, SEEK_END);
-	long fileSize = ftell(file);
+	size_t fileSize = ftell(file);
 	fseek(file, 0, SEEK_SET);
-	
+
 	// Use fileSize + 1 to make room for last terminator
 	//	if file doesn't end with a '\r' or '\n'.
 	mBuffer = (char*)malloc(fileSize + 1);
 	fread(mBuffer, 1, fileSize, file);
 	fclose(file);
-	
+
 	char* sp = mBuffer;
 	char* ep = mBuffer + fileSize;
 	char* start = sp;
@@ -47,7 +49,7 @@ SourceFile::SourceFile(Assembler* assembler, const char* fileName)
 		char c = *sp++;
 		if (c == '\r' || c == '\n')
 		{
-			mOffsets.Add(start - mBuffer);
+			mOffsets.push_back(start - mBuffer);
 			*(sp - 1) = 0;		// replace '\r' with zero terminator
 			if (c == '\r' && *sp == '\n')
 				sp++;
@@ -56,22 +58,21 @@ SourceFile::SourceFile(Assembler* assembler, const char* fileName)
 	}
 	if (sp != start)
 	{
-		mOffsets.Add(start - mBuffer);
+		mOffsets.push_back(start - mBuffer);
 		*sp = 0;
 	}
-	
-	mOffsets.Trim();
+
+	mOffsets.shrink_to_fit();
 }
 
 
-/*static*/ SourceFile*
-SourceFile::Create(Assembler* assembler, const char* fileName)
+SourceFile* SourceFile::Create(Assembler* assembler, const char* fileName)
 {
 	SourceFile* file = new SourceFile(assembler, fileName);
-	if (file->mBuffer == NULL)
+	if (!file->mBuffer)
 	{
 		delete file;
-		file = NULL;
+		file = nullptr;
 	}
 	return file;
 }
@@ -79,7 +80,6 @@ SourceFile::Create(Assembler* assembler, const char* fileName)
 
 SourceFile::~SourceFile()
 {
-	free((void*)mFileName);
 	free(mBuffer);
 }
 
