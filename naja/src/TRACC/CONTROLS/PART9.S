@@ -20,7 +20,7 @@
 				DB	$FF,$FF			;13
 				DB	$FF,$FF			;14
 				DB	$FF,$FF			;15
-				DW	ORBDOOR			;16
+				DW	ORB_DOOR		;16
 				DW	NAJADOR			;17
 				DW	FAKE2			;18
 
@@ -79,7 +79,7 @@ FACE5			DB	$01,$03,$03
 				DB	$08,$03,$01
 				DB	$12,$12,$FF
 FACE6			DB	$21,$04,$0E
-				DB	$82,$05,$11
+				DB	$82,$05,$11		; fake face change
 				DB	$26,$09,$07
 				DB	$27,$04,$02
 				DB	$27,$05,$02
@@ -89,9 +89,9 @@ FACE6			DB	$21,$04,$0E
 				DB	$29,$03,$02
 				DB	$29,$07,$02
 				DB	$12,$12,$FF
-FACE7			DB	$87,$04,$17
-				DB	$89,$05,$16
-				DB	$C9,$05,$18
+FACE7			DB	$87,$04,$17		; naja door
+				DB	$89,$05,$16		; orb door
+				DB	$C9,$05,$18		; fake face change 2
 				DB	$12,$12,$FF
 
 TEXTS			DW	CRITICAL_TEXT
@@ -99,9 +99,11 @@ TEXTS			DW	CRITICAL_TEXT
 				DW	CURED_TEXT
 				DW	CONTAG_TEXT
 
-***tor = 0
+sOrbDoor		=	0
 
-FILE_TABLE
+FILE_TABLE		DB	$90				;0 - sOrbDoor
+				DW	$0180
+				DB	$0D
 
 LINER			TYA
 				ASL
@@ -320,13 +322,19 @@ FARELEV			BIT	UNSTROB
 				BNE	FARELEV
 				JMP	RDKEY
 
+*************
+; Fake face change to get to orb door/core
+;
 FAKEFC			JSR	FAKER
 				LDA	#$07
 				STA	FACE
 				LDA	#$09
 				STA	XPOS
 				JSR	GETNSEW
-				JMP	ORB2
+				JMP	ORB_DOOR
+
+; Fake face change to get back from orb door/core
+;
 FAKE2			JSR	FAKER
 				LDA	#$06
 				STA	FACE
@@ -334,8 +342,10 @@ FAKE2			JSR	FAKER
 				STA	XPOS
 				JSR	GETNSEW
 				JSR	CLEAR1
-				JSR	NOSCAN
-				JMP	RDKEY
+				JMP	NOSCAN			; implicit RTS
+
+; Wait for forward keypress to cross fake face change
+;
 FAKER			LDA	FLAG12
 				CMP	#$02
 				BNE	GONOF
@@ -352,27 +362,57 @@ GOFAKE			BIT	KEYBRD
 				BEQ	GORDKEY
 				BIT	UNSTROB
 				JMP	GOFAKE
-GORDKEY			JMP	RDKEY
+GORDKEY			PLA
+				PLA
+				LDA	#$FF			; read key before redrawing tunnel
+				RTS
 GOFORWD			BIT	UNSTROB
 				RTS
-ORBED			DB	$00
-ORBDOOR			BIT	ORBED
-				BVS	DUMMY2			;TEMP
+
+; Orb door animation
+;
+ORB_DOOR		BIT	DOOR_OPEN
+				BVS	:IS_OPEN
+
+				; draw destination tunnel on page 2
+				;	to be revealed by door animation
+				;
+				LDA	#$40
+				STA	PAGE
+				JSR	CLEAR2
+				JSR	NOSCAN
+
+				LDX	#sOrbDoor
+				JSR	SLOAD_FILE
+				JSR	$9000
+				BCC	:NOT_OPENED
 				LDA	#$FF
-				STA	ORBED
-ORB2			LDA	#$04
-*STA STRACK
-*LDA #$00
-*STA SSECTOR
-*LDA #$10
-*STA READNUM
-*LDA #$88
-*STA SSTOREH
-*JSR SREAD
-				JSR	$8800
-				JMP	RDKEY
-DUMMY2			LDA	#$00
+				STA	DOOR_OPEN
+				BNE	:IS_OPEN		; always
+
+:NOT_OPENED		JSR	TURN_AWAY
+:IS_OPEN		LDA	#$FF			; read key before redrawing tunnel
 				RTS
+
+DOOR_OPEN		DB	$00				; TODO: should be stored someplace permanent
+
+*************
+
+; TODO: this should be part of COMMON.S
+; TODO: reconcile with CPARER1, CPAPER2
+
+RETURN_AWAY		BIT	UNSTROB
+TURN_AWAY		LDA	KEYBRD
+				BPL	TURN_AWAY
+				JSR	CHECK_DOWN
+				BEQ	:1
+				JSR	CHECK_LEFT
+				BEQ	:1
+				JSR	CHECK_RIGHT
+				BNE	RETURN_AWAY
+:1				RTS
+
+*************
 
 SHELL9
 			do ORIGINAL
@@ -485,7 +525,7 @@ F6				HEX	3FDDF0
 				HEX	3F0CF0
 				HEX	63CF30
 				HEX	333E00
-				HEX	C0E330
+				HEX	D0E330
 				HEX	3CC000
 				HEX	CF3330
 				HEX	3B0FF0

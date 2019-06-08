@@ -1,6 +1,6 @@
 @echo off
 
-set ROOT=%~dp0\..
+set ROOT=%~dp0..
 set BUILD=%ROOT%\build
 set SRC=%ROOT%\src
 set OBJ=%ROOT%\obj
@@ -152,18 +152,21 @@ REM ---------------------------------------
 REM TRACC shell 9
 REM ---------------------------------------
 
-%ASM% ALIENS                    ASM.DATA.9.S -list ALIEN.DATA.9.LST
-%ASM% ALIENS                    ASM.PICS.9.S -list ALIEN.PICS.9.LST
+%ASM% ALIENS					ASM.DATA.9.S
+%ASM% ALIENS					ASM.PICS.9.S
 
-%ASM% TRACC                     ASM.9.S -list CONTROL9.LST
+%ASM% TRACC						ASM.9.S
+
+%ASM% SPECIALS\SHELL9			ASM.DOOR.S
 
 set A2NIB=a2nib -disk %BIN%\tracc5.nib
 %A2NIB% -create -volume 5
 
-%A2NIB% %OBJ%\ALIEN.DATA.9      -t 00 -s 00 -c 0c
-%A2NIB% %OBJ%\ALIEN.PICS.9      -t 02 -s 00 -c 52
+%A2NIB% %OBJ%\ALIEN.DATA.9		-t 00 -s 00 -c 0c
+%A2NIB% %OBJ%\ALIEN.PICS.9		-t 02 -s 00 -c 52
 
-%A2NIB% %OBJ%\CONTROL9          -t 1B -s 00 -c 10
+%A2NIB% %OBJ%\ORB.DOOR			-t 18 -s 00 -c 0D
+%A2NIB% %OBJ%\CONTROL9			-t 1B -s 00 -c 10
 
 call :TRACC_COMMON
 
