@@ -209,7 +209,7 @@ ROTSPOT			DB	$03,$08,$F0,$01
 *************
 NET				LDA	FLAG12
 *****TEMP*****
-				LDA	$BC80
+				LDA	$BC80			; TODO: figure out what this is
 				CMP	#$0C
 				BNE	NOOPEN
 				LDA	#$00
@@ -235,7 +235,7 @@ WAVER2			STA	PRIMARY
 				BPL	WAVER2
 				JSR	CPARER2
 				BNE	WAVER1
-				JMP	RDKEY
+				JMP	RDKEY			; TODO: should RTS instead of jumping
 NETDRAW			LDA	YPOS
 				ORA	#$D0
 				CMP	PICKON
@@ -320,8 +320,7 @@ FARELEV			BIT	UNSTROB
 				BPL	:LOOP1
 				JSR	CPARER1
 				BNE	FARELEV
-				JMP	RDKEY
-
+				JMP	RDKEY			; TODO: should RTS instead of jumping
 *************
 ; Fake face change to get to orb door/core
 ;

@@ -1,70 +1,17 @@
+
 				LST	OFF
+
 LINENUM			EQU	$00
 COLUMN			EQU	$01
 SCRATCH			EQU	$02
-COUNTER			EQU	$03	
-MAXTEXT			EQU	$05
-TBLPNTL			EQU	$0D
-DESTINL			EQU	$0D
-TBLPNTH			EQU	$0E
-DESTINH			EQU	$0E
-TOTAL			EQU	$0F	
-ENDLINE			EQU	$11	
-POINTL			EQU	$12
-POINTH			EQU	$13
-HOLDIT			EQU	$16
-SCREENL			EQU	$26
-SCREENH			EQU	$27
-ALIEN1			EQU	$61	
-ALIEN2			EQU	$62	
-ALIEN3			EQU	$63	
-HMANY1			EQU	$64	
-ALTYPE1			EQU	$67	
-CHARDL			EQU	$91	
-SSTOREH			EQU	$B2	
-STRACK			EQU	$BA	
-SSECTOR			EQU	$BB	
-READNUM			EQU	$BC	
-COUNT			EQU	$C0	
-COLOR			EQU	$E4
-PAGE			EQU	$E6
-SRANGE			EQU	$F0
-DIRECTN			EQU	$F3
-TEXTBUF			EQU	$0200
-MOVETO1			EQU	$0326	
-WAIT2			EQU	$0395
-SREADIT			EQU	$0669	
-LOBYTES			EQU	$0800
-HIBYTES			EQU	$08C0
-LINEOUT			EQU	$0980
-TEXTOUT			EQU	$09E0
-INPUT			EQU	$0A15
-INPUT2			EQU	$0A1C
-KEYREAD			EQU	$0A2A
-CHAROUT			EQU	$0AFB
-EXPANDR			EQU	$0C60
-CLEAR1			EQU	$11AA
-CLEAR2			EQU	$1212
-POINTIT			EQU	$12D3	
-RDKEY			EQU	$6000
-GETNSEW			EQU	$614A	
-NOSCAN			EQU	$6653	
-AFTMANY			EQU	$7706			;IN FIGHT LOADER
-RUUSTOP			EQU	$791B			;IN FIGHT LOADER
-RIFTABL			EQU	$9FF0	
-CPARER2			=	$B423
-GRPNUMB			EQU	$BC7F	
-KEYBRD			EQU	$C000
-UNSTROB			EQU	$C010
-PRIMARY			EQU	$C054
-SCNDARY			EQU	$C055
-BLUE			EQU	$D5
-ORANGE			EQU	$AA
-				ORG	$9000
+COUNTER			EQU	$03
+TOTAL			EQU	$0F
+ENDLINE			EQU	$11
+
 				JSR	CLEAR2
 				LDA	#$40
 				STA	PAGE
-				LDA	#$FF	
+				LDA	#$FF
 				STA	DIRECTN
 				LDA	SRANGE
 				PHA
@@ -120,15 +67,17 @@ YESWANT			JSR	CLRBOX
 				CPX	#$FF
 				BEQ	BSCREEN
 				BNE	CSCREEN
+
 BSCREEN			LDY	#$01
 				JSR	TEXTER
 				LDY	#$02
 				JSR	TEXTER
 				BIT	UNSTROB
-				LDY	#$14	
+				LDY	#$14
 				JSR	WAITER
 				JSR	CLRBOX
 				JMP	FSCREEN
+
 CSCREEN			LDY	#$01
 				JSR	TEXTER
 				LDY	#$03
@@ -152,7 +101,7 @@ NOIS			JSR	CLRBOX
 YESIS			JSR	CLRBOX
 				LDY	#$04
 				JSR	TEXTER
-				LDA	#ORANGE
+				LDA	#RED
 				STA	COLOR
 				LDY	#$01
 				JSR	LINER
@@ -165,9 +114,9 @@ YESIS			JSR	CLRBOX
 				BEQ	ISRET
 				JSR	CHAROUT
 ISRET			JSR	CLRBOX
-				LDA	#$07	
+				LDA	#$07
 				STA	COUNTER
-REMLOOP			LDX	COUNTER	
+REMLOOP			LDX	COUNTER
 				LDA	RIFTABL-1,X
 				JSR	POINTIT
 				LDX	COUNTER
@@ -177,12 +126,16 @@ REMLOOP			LDX	COUNTER
 				DEC	COUNTER
 				BPL	REMLOOP
 				JMP	FSCREEN
+
 ESCREEN			LDY	#$05
 				JSR	TEXTER
-				LDY	#$04	
+				LDY	#$04
 				JSR	WAITER
-				LDY	#$06
+				LDY	#$06		; "GUARDS!!!"
 				JSR	TEXTER
+
+				; generate an encounter with RUUIKs MEN
+				;
 				LDA	#$23
 				STA	ALIEN1
 				LDA	#$08
@@ -192,11 +145,20 @@ ESCREEN			LDY	#$05
 				LDA	#$FF
 				STA	ALIEN2
 				STA	ALIEN3
-				LDX	#$05	
+
+;****************************************
+; TODO: figure out how this is related to giving Ruuiks men the password
+			do	0
+				LDX	#$05
 XXLOOP			LDA	XXDATA,X
 				STA	$1194,X
 				DEX
 				BPL	XXLOOP
+			fin
+;****************************************
+
+				; turn away from King Ruuik to give background for encounter
+				;
 				LDA	#$0F
 				STA	DIRECTN
 				JSR	GETNSEW
@@ -204,6 +166,10 @@ XXLOOP			LDA	XXDATA,X
 				STA	PRIMARY
 				LDA	#$20
 				STA	PAGE
+
+;****************************************
+; TODO: figure out how this is related to giving Ruuiks men the password
+			do	0
 				LDA	#$77
 				STA	SSTOREH
 				LDA	#$00
@@ -211,42 +177,60 @@ XXLOOP			LDA	XXDATA,X
 				STA	SSECTOR
 				LDA	#$19
 				STA	READNUM
-				LDA	#$11	
+				LDA	#$11
 				PHA
-				LDA	#$93	
+				LDA	#$93
 				PHA
 				JMP	SREADIT
-XXDATA			DFB	$CE	
-				DW	RUUSTOP-1	
-				DFB	$4C	
+
+AFTMANY			EQU	$7706			;IN FIGHT LOADER
+RUUSTOP			EQU	$791B			;IN FIGHT LOADER
+
+XXDATA			DFB	$CE
+				DW	RUUSTOP-1
+				DFB	$4C
 				DW	AFTMANY
+			else
+				LDA	#$FF		; read key before redrawing tunnel
+				RTS				; return to RDKEY
+			fin
+;****************************************
+
 FSCREEN			LDY	#$07
 				JSR	TEXTER
-				LDY	#$16	
+				LDY	#$16
 				JSR	WAITER
 				JSR	MOVE212
-KEYLOOP			BIT	KEYBRD
-				BPL	KEYLOOP
-				LDA	KEYBRD
-				JSR	CPARER2
-				BEQ	GORD
-				BIT	UNSTROB
-				JMP	KEYLOOP
-GORD			LDA	#$20
+				JSR	TURN_AWAY
+				LDA	#$20
 				STA	PAGE
 				JSR	CLEAR1
 				STA	PRIMARY
-				JMP	RDKEY
-RECALL			LDA	HOLDIT
-				PHA
-				JMP	KEYREAD
+				LDA	#$FF		; read key before redrawing tunnel
+				RTS				; return to RDKEY
+
+; TODO: this should be part of COMMON.S
+; TODO: reconcile with CPARER1, CPAPER2
+
+RETURN_AWAY		BIT	UNSTROB
+TURN_AWAY		LDA	KEYBRD
+				BPL	TURN_AWAY
+				JSR	CHECK_DOWN
+				BEQ	:1
+				JSR	CHECK_LEFT
+				BEQ	:1
+				JSR	CHECK_RIGHT
+				BNE	RETURN_AWAY
+:1				RTS
+
 WAITER			LDA	#$00
 				JSR	WAIT2
 				BNE	WAITEND
 				DEY
-				BPL	WAITER	
+				BPL	WAITER
 WAITEND			BIT	UNSTROB
 				RTS
+
 RIFLER			LDA	#$00
 				STA	COUNT
 				STA	TOTAL
@@ -257,7 +241,7 @@ RILOOP1			LDA	#$00
 				LDY	#$0A
 				LDA	(CHARDL),Y
 				CMP	#$05
-				BEQ	RISKIP2	
+				BEQ	RISKIP2
 RILOOP2			LDA	COUNTER
 				JSR	CORCALC
 				LDA	(CHARDL),Y
@@ -293,9 +277,12 @@ RISKIP2			INC	COUNT
 				RTS
 RIFLOUT			LDX	#$00
 				RTS
+
+RIFTABL			DS	16,0
+
 REMOVE			STA	SCRATCH
 				TAY
-				CMP	#$4D	
+				CMP	#$4D
 				BCC	SINGLE
 				CPY	#$61
 				BEQ	SINGLE
@@ -303,7 +290,7 @@ REMOVE			STA	SCRATCH
 				LDA	(CHARDL),Y
 				BPL	NOTSING
 				LDY	SCRATCH
-				CPY	#$4D	
+				CPY	#$4D
 				BEQ	SINGLE
 NOTSING			LDY	#$1D
 				LDA	(CHARDL),Y
@@ -345,6 +332,7 @@ CORCALC			ASL	A
 				ADC	#$3D
 				TAY
 				RTS
+
 MOVE212			LDA	#$00
 				STA	LINENUM
 MLOOP1			LDX	LINENUM
@@ -371,6 +359,7 @@ MLOOP2			LDA	(SCREENL),Y
 				CMP	#$2A
 				BNE	MLOOP1
 				RTS
+
 CLRBOX			LDX	#$01
 CLOOP1			LDA	LOBYTES,X
 				STA	SCREENL
@@ -387,6 +376,7 @@ CLOOP2			STA	(SCREENL),Y
 				CPX	#$27
 				BNE	CLOOP1
 				RTS
+
 FLIP			LDA	#$00
 				STA	LINENUM
 LOOP1			LDX	LINENUM
@@ -432,6 +422,3 @@ ROTLOOP			ASL	A
 				CMP	#$BF
 				BNE	LOOP1
 				RTS
-
-				PUT	RUUIK.DATA
-				SAV	RUUIK

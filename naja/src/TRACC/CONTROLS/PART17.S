@@ -60,7 +60,7 @@ FACE5			DB	$C1,$09,$07
 				DB	$24,$10,$10
 				DB	$25,$0C,$10
 				DB	$26,$0D,$10
-				DB	$C8,$09,$0A
+				DB	$C8,$09,$0A			; king ruuik throne
 				DB	$28,$10,$10
 				DB	$49,$01,$07
 				DB	$C9,$01,$04
@@ -135,16 +135,20 @@ TEXTS			DW	CRITICAL_TEXT
 				DW	CONTAG_TEXT
 				DW	TEXT3
 
-VPort			=	0
-DCComp			=	1
-Throne			=	2
-OrbPed			=	3
+sThrone			=	0
+sVPort			=	1
+sDCComp			=	2
+sOrbPed			=	3
 
 *** DestH,SectL,SectH,Length
-FILE_TABLE		DB	$99,$99,$99,$99				;VPort
-				DB	$99,$99,$99,$99				;DCComp
-				DB	$99,$99,$99,$99				;Throne
-				DB	$99,$99,$99,$99				;OrbPed
+FILE_TABLE
+				DB	$90							; 0 - sThrone
+				DW	$0180
+				DB	$10
+
+				DB	$99,$99,$99,$99				; 1 - sVPort
+				DB	$99,$99,$99,$99				; 2 - sDCComp
+				DB	$99,$99,$99,$99				; 3 - sOrbPed
 
 LINER			TYA
 				ASL
@@ -162,23 +166,19 @@ LINES			DW	HOLEDAT
 				DW	EBOX2
 				DW	NET_EDGES
 
-TEXT3			DB	$0E,$03,$2D
-				DB	$19,$1F,$1E
-				DB	$0A,$19,$10
-				DB	$0A,$0F,$18
-				DB	$0F,$1C,$11
-				DB	$23,$8D,$FF
-SHIPSND			NOP	
-IN1WAY			NOP	
-WPFOUND			NOP	
-KILROY			NOP	
+TEXT3			PLOTAT	101;45;(OUT_OF_ENERGY)+
+
+SHIPSND			NOP
+IN1WAY			NOP
+WPFOUND			NOP
+KILROY			NOP
 AUTOEN			NOP
-DUMMY			LDA	#$00			;PERMANENT 
+DUMMY			LDA	#$00			;PERMANENT
 				RTS
 **************
 THRONE			LDA	#$00
 				STA	CAMP_HERE		;This has to be fixed
-				LDX	#Throne
+				LDX	#sThrone
 				JSR	SLOAD_FILE
 				JMP	$9000
 **************
@@ -187,7 +187,7 @@ DCCOMP			LDA	#$00
 				LDA	PROGON
 				CMP	#$DC
 				BEQ	NODCLOD
-				LDX	#DCComp
+				LDX	#sDCComp
 				JSR	SLOAD_FILE
 NODCLOD			JMP	$9000
 **************
@@ -197,7 +197,7 @@ VPORT			LDA	#$00
 				LDA	PROGON
 				CMP	#$EB
 				BEQ	ISINMEM
-				LDX	#VPort
+				LDX	#sVPort
 				JSR	SLOAD_FILE
 				LDA	#$EB
 				STA	PROGON
@@ -205,7 +205,7 @@ VPORT			LDA	#$00
 				STA	PICKON
 ISINMEM			LDY	COUNT
 *LDA TYPE,Y      ;FIX THIS LATER
-				JMP	$9000	
+				JMP	$9000
 **************
 ROTCUBE			LDA	FLAG12
 				CMP	#$02
@@ -224,7 +224,7 @@ DRECTS			DB	$00,$0F,$F0
 **************
 ISDOOR			LDX	#$00
 				BEQ	DOORCOM
-NOTDOOR			LDX	#$08	
+NOTDOOR			LDX	#$08
 DOORCOM			LDA	#$00
 				STA	COUNT
 DCOM2			LDY	COUNT
@@ -250,13 +250,13 @@ DOORS			DB	$3B,$BC,$E3
 				DB	$F3,$FC,$F0
 				DB	$FF,$F3
 **************
-ORBGRD			LDA	XPOS	
+ORBGRD			LDA	XPOS
 				CMP	#$08
 				BNE	NOTORB
 				LDA	DIRECTN
 				CMP	#$0F
 				BNE	NOTORB
-				LDA	YPOS	
+				LDA	YPOS
 				CMP	#$0E
 				BEQ	MAYBGRD
 				CMP	#$10
@@ -289,13 +289,13 @@ MAYBGRD			LDA	ORBHERE
 				JMP	$9000
 NOTORB			LDA	#$00
 				RTS
-MAYBORB			LDA	PROGON	
+MAYBORB			LDA	PROGON
 				CMP	#$B7
 				BEQ	NORBLOD
 				LDA	CAMP_HERE		;This has to be fixed
 				AND	#$78
 				STA	CAMP_HERE		;This has to be fixed
-				LDX	#OrbPed
+				LDX	#sOrbPed
 				JSR	SLOAD_FILE
 NORBLOD			JMP	$9C00
 **************
@@ -317,7 +317,7 @@ EVATOR			LDA	#$40
 				TAY
 				INY
 				JSR	LINER
-				STA	SCNDARY	
+				STA	SCNDARY
 				JSR	MOVETO1
 				STA	PRIMARY
 				LDA	XPOS
@@ -336,7 +336,7 @@ FARELEV			BIT	UNSTROB
 				BPL	:LOOP1
 				JSR	CPARER1
 				BNE	FARELEV
-				JMP	RDKEY
+				JMP	RDKEY					; TODO: should RTS instead of jumping
 **************
 DSIGN			JSR	HGR
 ********************************
@@ -368,8 +368,8 @@ ROLOOP			JSR	POINTIT
 				LDA	COUNT
 				CMP	GRPNUMB
 				BNE	ROLOOP
-				BEQ	NOASK	
-GOTROID			JSR	QUESTIN	
+				BEQ	NOASK
+GOTROID			JSR	QUESTIN
 				LDA	#$00
 				STA	MAXTEXT
 				JSR	INPUT2
@@ -414,7 +414,7 @@ NOKEY			LDA	KEYBRD
 				BEQ	GORD
 				BIT	UNSTROB
 				JMP	NOKEY
-GORD			JMP	RDKEY
+GORD			JMP	RDKEY					; TODO: should RTS instead of jumping
 TOWORD			DB	$0A,$1E,$19
 				DB	$8D
 QUESTIN			LDY	#$01
@@ -431,8 +431,8 @@ SPLOOP			LDA	TEXTBUF,Y
 				DEY
 				BPL	SPLOOP
 GOTASP			INY
-				LDX	#$00	
-TOLOOP			LDA	TOWORD,X	
+				LDX	#$00
+TOLOOP			LDA	TOWORD,X
 				STA	TEXTBUF,Y
 				INY
 				INX

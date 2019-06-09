@@ -75,19 +75,21 @@ REM ---------------------------------------
 REM TRACC shell 17
 REM ---------------------------------------
 
-%ASM% ALIENS                    ASM.DATA.17.S
-%ASM% ALIENS                    ASM.PICS.17.S
+%ASM% ALIENS					ASM.DATA.17.S
+%ASM% ALIENS					ASM.PICS.17.S
 
-%ASM% TRACC                     ASM.17.S
+%ASM% TRACC						ASM.17.S
+%ASM% SPECIALS\SHELL17			ASM.RUUIK.S
 
 set A2NIB=a2nib -disk %BIN%\tracc1.nib
 %A2NIB% -create -volume 1
 
-%A2NIB% %OBJ%\ALIEN.DATA.17     -t 00 -s 00 -c 1C
-%A2NIB% %OBJ%\ALIEN.PICS.17     -t 02 -s 00 -c 7B
+%A2NIB% %OBJ%\ALIEN.DATA.17		-t 00 -s 00 -c 1C
+%A2NIB% %OBJ%\ALIEN.PICS.17		-t 02 -s 00 -c 7B
 
-%A2NIB% %OBJ%\CONTROL17         -t 1B -s 00 -c 10
-%A2NIB% %OBJ%\LOADER17          -t 22 -s 00 -c 0D
+%A2NIB% %OBJ%\RUUIK				-t 18 -s 00 -c 10
+%A2NIB% %OBJ%\CONTROL17			-t 1B -s 00 -c 10
+%A2NIB% %OBJ%\LOADER17			-t 22 -s 00 -c 0D
 
 call :TRACC_COMMON
 
