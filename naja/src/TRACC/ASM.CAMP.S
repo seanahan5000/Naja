@@ -66,10 +66,10 @@ COUNT1			EQU	$01
 COUNT2			EQU	$02
 COUNT3			EQU	$08
 MAXBACK			EQU	$0A
-MAXCARY			EQU	$0B	
+MAXCARY			EQU	$0B
 ELECT			EQU	$10
 PHYSIC			EQU	$11
-OTHER			EQU	$14	
+OTHER			EQU	$14
 DYTOP			EQU	$15
 DYBOT			EQU	$16
 SYTOP			EQU	$17
@@ -249,19 +249,19 @@ CAMP_FILES
 				DB	$0C
 
 				DB	$98				; Findment
-				DW	$0160
+				DW	$01C0
 				DB	$08
 
 				DB	$90				; Elevator
-				DW	$0170
+				DW	$01A4
 				DB	$0C
 
 				DB	$78				; Reformat/Regenerate/Compress
-				DW	$01C0
+				DW	$0178
 				DB	$0E
 
 				DB	$86				; Diagnose
-				DW	$01CE
+				DW	$0186
 				DB	$11
 
 				DB	$FF				;*** UNUSED ***
@@ -269,19 +269,19 @@ CAMP_FILES
 				DB	$FF
 
 				DB	$60				; Tunnels
-				DW	$01F0
+				DW	$0160
 				DB	$18
 
 				DB	$D9				; Tracc Camp A (cTraccCampA)
-				DW	$0222
+				DW	$01D2
 				DB	$07
 
 				DB	$DC				; Tracc Camp B (cTraccCampB)
-				DW	$0229
+				DW	$01D9
 				DB	$04
 
 				DB	$B0				; Tracc Camp C (cCampCommons)
-				DW	$01E0
+				DW	$0198
 				DB	$0B
 
 			else

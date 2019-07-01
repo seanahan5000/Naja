@@ -4,7 +4,7 @@
 			else
 				DW	ELEVATOR_12		;1
 			fin
-				DW	FAR_ELEVATOR	;2
+				DW	ELEVATOR_FAR	;2
 				DW	GREEN_NET		;3
 
 
@@ -13,7 +13,7 @@ sElevator123	=	0
 			else
 sElevator12		=	1
 			fin
-sFarElevator	=	2
+sElevatorFar	=	2
 sGreenNet		=	3
 
 ; NOTE: FACEn table coordinates need to be sorted by X then Y
@@ -34,7 +34,7 @@ FACE4           DB  16,16,$FF
 
 FACE5           DB  16,16,$FF
 
-FACE6           DB  south+2,11,sFarElevator
+FACE6           DB  south+2,11,sElevatorFar
                 DB  south+2,12,sElevator123
                 DB  east+6,1,sGreenNet
                 DB  west+10,2,sGreenNet
@@ -57,9 +57,9 @@ FACE4
 				DB	16,16,$FF
 FACE5
 				DB	north+9,7,sElevator123
-				DB	north+9,8,sFarElevator
+				DB	north+9,8,sElevatorFar
 				DB	west+10,8,sElevator12
-				DB	west+11,8,sFarElevator
+				DB	west+11,8,sElevatorFar
 				DB	south+11,13,sGreenNet
 				DB	16,16,$FF
 FACE6
@@ -69,31 +69,9 @@ FACE6
 FACE7			DB	16,16,$FF
 			fin
 
-TEXTS			DW	CRITICAL_TEXT
-				DW	RUNDOWN_TEXT
-				DW	CURED_TEXT
-				DW	CONTAG_TEXT
-
 FILE_TABLE		DB	$FF				;UNUSED*****
 				DW	$FFFF
 				DB	$FF
-
-LINER			TYA
-				ASL
-				TAY
-				LDA	LINES,Y
-				STA	POINTL
-				LDA	LINES+1,Y
-				STA	POINTH
-				JMP	LINEOUT
-
-LINES			DW	0
-				DW	0
-				DW	BLKLIN2
-				DW	EBOX2
-				DW	BLKLINE
-				DW	EBOX
-
 
 *-------------------------------
 *
@@ -108,47 +86,13 @@ ELEVATOR_12		LDA	#2				;Flag down 2 floors
 ELEVATOR
 			fin
 				PHA
-				LDA	#4				; LINES.BLKLIN,EBOX
-				JSR	LINE_SUB
+				LDA	#0				; BLKLIN, EBOX
+				JSR	EV_LINE_SUB
 				JSR	SET_CAMPFILES
-				LDA	CAMP_HERE
-				AND	#bit_Diagnose!$FF				;! means XOR
-				STA	CAMP_HERE
 				LDX	#cElevator
-				JSR	SLOAD_FILE
+				JSR	SLOAD_SPECIAL
 				PLA
 				JMP	$9000
-
-FAR_ELEVATOR	LDA	#2				; LINES.BLKLIN2,EBOX2
-				JSR	LINE_SUB
-:1				BIT	UNSTROB
-:2				LDA	KEYBRD
-				BPL	:2
-				JSR	CPARER1
-				BNE	:1
-				JMP	RDKEY
-
-LINE_SUB		PHA
-				LDA	#$40
-				STA	PAGE
-				JSR	CLEAR2
-				JSR	NOSCAN
-				PLA
-				PHA
-				TAY
-				LDA	#BLACK1
-				STA	COLOR
-				JSR	LINER
-				PLA
-				TAY
-				INY
-				LDA	#WHITE1
-				STA	COLOR
-				JSR	LINER
-				STA	SCNDARY
-				JSR	MOVETO1
-				STA	PRIMARY
-				RTS
 
 *-------------------------------
 

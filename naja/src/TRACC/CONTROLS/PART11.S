@@ -1,4 +1,4 @@
-				DW	ELEVATOR		;0
+				DW	ELEVATOR_345	;0
 				DW	SPECDOOR		;1
 				DW	SHIPSND			;2
 				DW	PRESSUIT		;3
@@ -15,6 +15,7 @@
 				DW	NOENCNT			;E
 				DW	SCANGENT		;F
 				DW	NOISYDOR		;10
+				DW	ELEVATOR_FAR	;11
 
 FACE1			DB	$03,$05,$05
 				DB	$43,$07,$05
@@ -29,8 +30,8 @@ FACE1			DB	$03,$05,$05
 FACE2			DB	$26,$09,$0F
 				DB	$49,$06,$0B
 				DB	$12,$12,$FF
-FACE3			DB	$02,$06,$00
-				DB	$02,$07,$00
+FACE3			DB	$02,$06,$00		; elevator 345
+				DB	$02,$07,$11		; elevator far
 				DB	$05,$03,$06
 				DB	$45,$07,$04
 				DB	$06,$0B,$10
@@ -67,26 +68,6 @@ FACE6			DB	$C4,$01,$02
 				DB	$12,$12,$FF
 FACE7			DB	$12,$12,$FF
 
-LINER			TYA
-				ASL
-				TAY
-				LDA	LINES,Y
-				STA	POINTL
-				LDA	LINES+1,Y
-				STA	POINTH
-				JMP	LINEOUT
-LINES			DB	$FF,$FF
-				DB	$FF,$FF
-				DW	BLKLINE
-				DW	EBOX
-				DW	BLKLIN2
-				DW	EBOX2
-
-TEXTS			DW	CRITICAL_TEXT
-				DW	RUNDOWN_TEXT
-				DW	CURED_TEXT
-				DW	CONTAG_TEXT
-
 ***tor = 0
 
 FILE_TABLE
@@ -109,46 +90,18 @@ SCANGENT		NOP
 NOISYDOR		NOP
 				LDA	#$00
 				RTS
-*************
-ELEVATOR		LDA	#$40
-				STA	PAGE
-				JSR	CLEAR2
-				JSR	NOSCAN
-				LDA	#BLACK1
-				STA	COLOR
-				LDA	YPOS
-				SEC
-				SBC	#$05
-				ASL
-				TAY
-				PHA
-				JSR	LINER
-				LDA	#WHITE1
-				STA	COLOR
-				PLA
-				TAY
-				INY
-				JSR	LINER
-				STA	SCNDARY
-				JSR	MOVETO1
-				STA	PRIMARY
-				LDA	YPOS
-				CMP	#$07
-				BEQ	FARELEV
+
+*-------------------------------
+
+ELEVATOR_345	LDA	#0				; BLKLIN, EBOX
+				JSR	EV_LINE_SUB
 				JSR	SET_CAMPFILES
-				LDA	CAMP_HERE
-				AND	#bit_Diagnose!$FF				;! means XOR
-				STA	CAMP_HERE
 				LDX	#cElevator
-				JSR	SLOAD_FILE
-				LDA	#$01			;Elevator 345 flag
+				JSR	SLOAD_SPECIAL
+				LDA	#$01			; elevator 345 flag
 				JMP	$9000
-FARELEV			BIT	UNSTROB
-:LOOP1			LDA	KEYBRD
-				BPL	:LOOP1
-				JSR	CPARER1
-				BNE	FARELEV
-				JMP	RDKEY
+
+*-------------------------------
 
 SHELL11
 			do ORIGINAL

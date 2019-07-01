@@ -61,7 +61,7 @@ LEAVE			JSR	CLEAR1
 ALIEN_EDITOR	LDA	#$88
 				STA	SSTOREH
 				LDY	#$02
-				LDX	#$08
+				LDX	#$18
 				LDA	#$18
 				JSR	SLOAD
 				JMP	$8800

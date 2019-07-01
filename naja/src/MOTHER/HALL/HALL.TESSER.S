@@ -351,8 +351,8 @@ GOTACT			JSR	MOVETO1
 				STA	DISK_SIDE
 				LDA	#$9D
 				STA	SSTOREH
-				LDX	#<$0220
-				LDY	#>$0220
+				LDX	#<$01D0
+				LDY	#>$01D0
 				LDA	#2
 				JSR	SLOADER
 				JMP	$9D00

@@ -1,20 +1,22 @@
-				DW	EVATOR			;0
+				DW	ELEVATOR_123	;0
 				DW	ROTCUBE			;1
 				DW	SHIPSND			;2
 				DW	IN1WAY			;3
 				DW	GREEN_NET		;4
 				DW	AIRLOCK			;5
-				DW	VPORT			;6
-				DW	DSIGN			;7
+				DW	VIEWPORT		;6
+				DW	DOOR_SIGN		;7
 				DW	DCCOMP			;8
 				DW	WPFOUND			;9
-				DW	THRONE			;A
+				DW	KING_RUUIK		;A
 				DW	KILROY			;B
-				DW	ORBGRD			;C
+				DW	ORB_GUARD		;C
 				DW	AUTOEN			;D
 				DW	DUMMY			;E NEVER USED
 				DW	ISDOOR			;F
 				DW	NOTDOOR			;10
+				DW	ELEVATOR_FAR	;11
+				DW	ORB_PEDESTAL	;12
 
 FACE1			DB	$C2,$11,$04
 				DB	$23,$0B,$0D
@@ -52,7 +54,7 @@ FACE4			DB	$C1,$03,$04
 				DB	$51,$03,$04
 				DB	$11,$05,$04
 				DB	$12,$12,$FF
-FACE5			DB	$C1,$09,$07
+FACE5			DB	$C1,$09,$07			; door sign
 				DB	$22,$0A,$10
 				DB	$22,$0E,$10
 				DB	$23,$0E,$0F
@@ -60,12 +62,12 @@ FACE5			DB	$C1,$09,$07
 				DB	$24,$10,$10
 				DB	$25,$0C,$10
 				DB	$26,$0D,$10
-				DB	$C8,$09,$0A			; king ruuik throne
+				DB	$C8,$09,$0A			; king ruuik
 				DB	$28,$10,$10
-				DB	$49,$01,$07
+				DB	$49,$01,$07			; door sign
 				DB	$C9,$01,$04
 				DB	$29,$08,$0B
-				DB	$09,$11,$07
+				DB	$09,$11,$07			; door sign
 				DB	$2A,$02,$10
 				DB	$8B,$01,$04
 				DB	$2C,$05,$10
@@ -75,14 +77,14 @@ FACE5			DB	$C1,$09,$07
 				DB	$2F,$04,$0F
 				DB	$30,$04,$10
 				DB	$30,$08,$10
-				DB	$91,$09,$07
+				DB	$91,$09,$07			; door sign
 				DB	$12,$12,$FF
-FACE6			DB	$83,$0D,$00
+FACE6			DB	$83,$0D,$00			; elevator 123
 				DB	$24,$01,$0E
 				DB	$24,$02,$0E
 				DB	$44,$08,$04
 				DB	$44,$0A,$04
-				DB	$84,$0D,$00
+				DB	$84,$0D,$11			; far elevator
 				DB	$25,$01,$0E
 				DB	$25,$02,$0E
 				DB	$26,$01,$0E
@@ -94,22 +96,22 @@ FACE6			DB	$83,$0D,$00
 				DB	$06,$11,$04
 				DB	$27,$01,$0E
 				DB	$27,$02,$0E
-				DB	$27,$0F,$0C
-				DB	$27,$10,$0C
+				DB	$27,$0F,$0C			; orb guard
+				DB	$27,$10,$0C			; orb guard
 				DB	$28,$01,$0E
 				DB	$28,$02,$0E
 				DB	$28,$07,$01
 				DB	$28,$0A,$0D
 				DB	$28,$0B,$01
 				DB	$28,$0C,$0D
-				DB	$28,$0E,$0C
-				DB	$28,$0F,$0C
-				DB	$28,$10,$0C
-				DB	$28,$11,$0C
+				DB	$28,$0E,$0C			; orb guard
+				DB	$28,$0F,$0C			; orb guard
+				DB	$48,$10,$12			; orb pedestal
+				DB	$28,$11,$0C			; orb guard
 				DB	$29,$01,$0E
 				DB	$29,$02,$0E
-				DB	$29,$0F,$0C
-				DB	$29,$10,$0C
+				DB	$29,$0F,$0C			; orb guard
+				DB	$29,$10,$0C			; orb guard
 				DB	$2A,$0A,$0D
 				DB	$2A,$0B,$01
 				DB	$2A,$0C,$0D
@@ -129,44 +131,37 @@ FACE6			DB	$83,$0D,$00
 				DB	$2F,$0A,$02
 FACE7			DB	$12,$12,$FF
 
-TEXTS			DW	CRITICAL_TEXT
-				DW	RUNDOWN_TEXT
-				DW	CURED_TEXT
-				DW	CONTAG_TEXT
-				DW	TEXT3
-
-sThrone			=	0
-sVPort			=	1
+sKingRuuik		=	0
+sViewPort		=	1
 sDCComp			=	2
-sOrbPed			=	3
+sOrbPedestal	=	3
+sOrbGuard		=	4
+sDoorSign		=	5
 
-*** DestH,SectL,SectH,Length
 FILE_TABLE
-				DB	$90							; 0 - sThrone
-				DW	$0180
+				DB	$90					; 0 - sKingRuuik
+				DW	$01E0
 				DB	$10
 
-				DB	$99,$99,$99,$99				; 1 - sVPort
-				DB	$99,$99,$99,$99				; 2 - sDCComp
-				DB	$99,$99,$99,$99				; 3 - sOrbPed
+				DB	$90					; 1 - sViewPort
+				DW	$020B
+				DB	$0D
 
-LINER			TYA
-				ASL
-				TAY
-				LDA	LINES,Y
-				STA	POINTL
-				LDA	LINES+1,Y
-				STA	POINTH
-				JMP	LINEOUT
-LINES			DW	HOLEDAT
-				DW	BOXDATA
-				DW	BLKLINE
-				DW	EBOX
-				DW	BLKLIN2
-				DW	EBOX2
-				DW	NET_EDGES
+				DB	$90					; 2 - sDCComp
+				DW	$0200
+				DB	$0B
 
-TEXT3			PLOTAT	101;45;(OUT_OF_ENERGY)+
+				DB	$9C					; 3 - sOrbPedestal
+				DW	$01C8
+				DB	$04
+
+				DB	$90					; 4 - sOrbGuard
+				DW	$01F0
+				DB	$0E
+
+				DB	$90					; 5 - sDoorSign
+				DW	$01CD
+				DB	$03
 
 SHIPSND			NOP
 IN1WAY			NOP
@@ -175,41 +170,36 @@ KILROY			NOP
 AUTOEN			NOP
 DUMMY			LDA	#$00			;PERMANENT
 				RTS
-**************
-THRONE			LDA	#$00
-				STA	CAMP_HERE		;This has to be fixed
-				LDX	#sThrone
-				JSR	SLOAD_FILE
+
+*-------------------------------
+
+KING_RUUIK		LDX	#sKingRuuik
+				JSR	SLOAD_SPECIAL
 				JMP	$9000
-**************
-DCCOMP			LDA	#$00
-				STA	CAMP_HERE		;This has to be fixed
-				LDA	PROGON
-				CMP	#$DC
-				BEQ	NODCLOD
-				LDX	#sDCComp
-				JSR	SLOAD_FILE
-NODCLOD			JMP	$9000
-**************
-AIRLOCK			NOP					;FALL THROUGH
-VPORT			LDA	#$00
-				STA	CAMP_HERE		;This has to be fixed
-				LDA	PROGON
-				CMP	#$EB
-				BEQ	ISINMEM
-				LDX	#sVPort
-				JSR	SLOAD_FILE
-				LDA	#$EB
-				STA	PROGON
+
+*-------------------------------
+
+DCCOMP			LDX	#sDCComp
+				JSR	SLOAD_SPECIAL
+				JMP	$9000
+
+*-------------------------------
+
+AIRLOCK			LDX	#sViewPort
+				JSR	SLOAD_SPECIAL
+				LDA	#$01
+				JMP	$9000
+
+VIEWPORT		LDX	#sViewPort
+				JSR	SLOAD_SPECIAL
 				LDA	#$00
-				STA	PICKON
-ISINMEM			LDY	COUNT
-*LDA TYPE,Y      ;FIX THIS LATER
 				JMP	$9000
-**************
+
+*-------------------------------
+
 ROTCUBE			LDA	FLAG12
 				CMP	#$02
-				BEQ	NOTING
+				BEQ	:1
 				JSR	RNDMIZE
 				LDA	RANDOM1
 				AND	#$03
@@ -217,17 +207,19 @@ ROTCUBE			LDA	FLAG12
 				LDA	DRECTS,Y
 				STA	DIRECTN
 				JSR	GETNSEW
-NOTING			LDA	#$00
+:1				LDA	#$00
 				RTS
-DRECTS			DB	$00,$0F,$F0
-				DB	$FF
-**************
+
+DRECTS			DB	$00,$0F,$F0,$FF
+
+*-------------------------------
+
 ISDOOR			LDX	#$00
-				BEQ	DOORCOM
+				BEQ	DOORCOM		; always
 NOTDOOR			LDX	#$08
 DOORCOM			LDA	#$00
 				STA	COUNT
-DCOM2			LDY	COUNT
+:1				LDY	COUNT
 				LDA	PLACES,Y
 				TAY
 				LDA	DOORS,X
@@ -236,385 +228,64 @@ DCOM2			LDY	COUNT
 				LDA	COUNT
 				INC	COUNT
 				CMP	#$07
-				BNE	DCOM2
+				BNE	:1
 				JSR	GETNSEW
 				LDA	#$00
 				RTS
+
 PLACES			DB	$16,$2B,$3A
 				DB	$4E,$5F,$74
 				DB	$83,$98
+
 DOORS			DB	$3B,$BC,$E3
 				DB	$F2,$F8,$B0
 				DB	$FB,$B3
 				DB	$3F,$FC,$F3
 				DB	$F3,$FC,$F0
 				DB	$FF,$F3
-**************
-ORBGRD			LDA	XPOS
-				CMP	#$08
-				BNE	NOTORB
-				LDA	DIRECTN
-				CMP	#$0F
-				BNE	NOTORB
-				LDA	YPOS
-				CMP	#$0E
-				BEQ	MAYBGRD
-				CMP	#$10
-				BEQ	MAYBORB
-				BNE	NOTORB
-MAYBGRD			LDA	ORBHERE
-				BNE	NOTORB
-*LDA TRACER+2     ;FIX THIS LATER
-				AND	#$40
-				BNE	NOTORB
+
+*-------------------------------
+
+ORB_GUARD		LDA	GUARD_DEAD
+				BNE	NO_GUARD
+				LDA	#$FF
+				STA	GUARD_DEAD
 				JSR	PICK_HALLTYPE
-********************************
-				DO	0
-********************************
-				LDA	#$90
-				STA	SSTOREH
-				LDA	#$1D
-				STA	STRACK
-				LDA	#$02
-				STA	SSECTOR
-				LDA	#$0E
-				STA	READNUM
-				STA	ORBHERE
-				JSR	SREADIT
-********************************
-				FIN
-********************************
-				LDA	#$00
-				STA	CAMP_HERE		;This has to be fixed
+				LDX	#sOrbGuard
+				JSR	SLOAD_SPECIAL
 				JMP	$9000
-NOTORB			LDA	#$00
+
+NO_GUARD		LDA	#$00
 				RTS
-MAYBORB			LDA	PROGON
-				CMP	#$B7
-				BEQ	NORBLOD
-				LDA	CAMP_HERE		;This has to be fixed
-				AND	#$78
-				STA	CAMP_HERE		;This has to be fixed
-				LDX	#sOrbPed
-				JSR	SLOAD_FILE
-NORBLOD			JMP	$9C00
-**************
-EVATOR			LDA	#$40
-				STA	PAGE
-				JSR	CLEAR2
-				JSR	NOSCAN
-				LDA	#BLACK1
-				STA	COLOR
-				LDA	XPOS
-				SBC	#$02
-				ASL
-				TAY
-				PHA
-				JSR	LINER
-				LDA	#WHITE1
-				STA	COLOR
-				PLA
-				TAY
-				INY
-				JSR	LINER
-				STA	SCNDARY
-				JSR	MOVETO1
-				STA	PRIMARY
-				LDA	XPOS
-				CMP	#$03
-				BNE	FARELEV
+
+ORB_PEDESTAL	LDX	#sOrbPedestal
+				JSR	SLOAD_SPECIAL
+				JMP	$9C00
+
+*-------------------------------
+
+ELEVATOR_123	LDA	#0				; BLKLIN, EBOX
+				JSR	EV_LINE_SUB
 				JSR	SET_CAMPFILES
 				LDX	#cElevator
-				JSR	SLOAD_FILE
-				LDA	CAMP_HERE
-				AND	#bit_Diagnose!$FF				;! means XOR
-				STA	CAMP_HERE
-				LDA	#$00						;Elevator 123 flag
+				JSR	SLOAD_SPECIAL
+				LDA	#$00			; Elevator 123 flag
 				JMP	$9000
-FARELEV			BIT	UNSTROB
-:LOOP1			LDA	KEYBRD
-				BPL	:LOOP1
-				JSR	CPARER1
-				BNE	FARELEV
-				JMP	RDKEY					; TODO: should RTS instead of jumping
-**************
-DSIGN			JSR	HGR
-********************************
-				DO	0
-********************************
-				JSR	NOSCAN
-				LDA	DOORED
-				BEQ	DOORER
-				JMP	NODOORD
-DOORER			JSR	MOVETO2
-				LDA	#RED
-				STA	COLOR
-				LDY	#$06
-				JSR	LINER
-				LDA	#<WRITPIC
-				STA	TBLPNTL
-				LDA	#>WRITPIC
-				STA	TBLPNTH
-				JSR	EXPANDR
-				LDA	#$00
-				STA	COUNT
-ROLOOP			JSR	POINTIT
-				LDY	#$0D
-				LDA	(CHARDL),Y
-				AND	#$F0
-				CMP	#$10
-				BEQ	GOTROID
-				INC	COUNT
-				LDA	COUNT
-				CMP	GRPNUMB
-				BNE	ROLOOP
-				BEQ	NOASK
-GOTROID			JSR	QUESTIN
-				LDA	#$00
-				STA	MAXTEXT
-				JSR	INPUT2
-REKEYER			LDA	TEXTBUF
-				CMP	#$D9
-				BEQ	DYES
-				CMP	#$CE
-				BEQ	DNO
-				CMP	#$8D
-				BNE	NORETTN
-				JSR	CHAROUT
-NORETTN			JSR	RECALL
-				JMP	REKEYER
-DYES			LDA	#$40
-				STA	PAGE
-				LDA	#$FF
-				STA	DOORED
-				LDY	#$00
-				JSR	TEXTER
-				LDY	#$06
-				JSR	LINER
-				STA	SCNDARY
-				LDA	#$20
-				STA	PAGE
-				JSR	MOVETO1
-				STA	PRIMARY
-				JMP	NOASK
-DNO				JSR	CHAROUT
-				JSR	QUESTIN
-				JMP	NOASK
-NODOORD			LDA	#RED
-				STA	COLOR
-				LDY	#$06
-				JSR	LINER
-				LDY	#$00
-				JSR	TEXTER
-NOASK			PLA
-				PLA
-NOKEY			LDA	KEYBRD
-				BPL	NOKEY
-				JSR	CPARER1
-				BEQ	GORD
-				BIT	UNSTROB
-				JMP	NOKEY
-GORD			JMP	RDKEY					; TODO: should RTS instead of jumping
-TOWORD			DB	$0A,$1E,$19
-				DB	$8D
-QUESTIN			LDY	#$01
-				JSR	TEXTER
-				LDY	#$09
-ANLOOP			LDA	(CHARDL),Y
-				STA	TEXTBUF,Y
-				DEY
-				BPL	ANLOOP
-				LDY	#$09
-SPLOOP			LDA	TEXTBUF,Y
-				CMP	#$0A
-				BNE	GOTASP
-				DEY
-				BPL	SPLOOP
-GOTASP			INY
-				LDX	#$00
-TOLOOP			LDA	TOWORD,X
-				STA	TEXTBUF,Y
-				INY
-				INX
-				CPX	#$04
-				BNE	TOLOOP
-				JSR	LINE2
-				LDY	#$02
-				JMP	TEXTER
 
-OLINE			DB	$00,$39,$2F
-				DB	$00,$DB,$2F
-				DB	$00,$DB,$51
-				DB	$00,$39,$51
-				DB	$00,$39,$30
-				DB	$00,$D9,$30
-				DB	$00,$D9,$50
-				DB	$00,$3B,$50
-				DB	$00,$3B,$30
-				DB	$FF
-TEXT0			DB	$09,$04,$34
-				DB	$1E,$12,$13
-				DB	$1D,$0A,$17
-				DB	$0B,$1C,$15
-				DB	$1D,$0A,$1E
-				DB	$12,$0F,$0A
-				DB	$0C,$19,$1C
-				DB	$0E,$0F,$1C
-				DB	$0A,$19,$10
-				DB	$8D,$0A,$06
-				DB	$3D,$0F,$17
-				DB	$1A,$0F,$1C
-				DB	$19,$1C,$0A
-				DB	$1C,$1F,$1F
-				DB	$13,$15,$28
-				DB	$1D,$0A,$1C
-				DB	$19,$23,$0B
-				DB	$16,$8D,$11
-				DB	$03,$46,$0E
-				DB	$19,$17,$0B
-				DB	$13,$18,$8D
-				DB	$FF
-TEXT1			DB	$09,$01,$7E
-				DB	$0E,$19,$0A
-				DB	$23,$19,$1F
-				DB	$0A,$21,$0B
-				DB	$18,$1E,$0A
-				DB	$8D,$FF
-TEXT2			DB	$09,$01,$86
-				DB	$1E,$1C,$0B
-				DB	$18,$1D,$16
-				DB	$0B,$1E,$0F
-				DB	$0A,$1E,$12
-				DB	$0F,$0A,$21
-				DB	$1C,$13,$1E
-				DB	$13,$18,$11
-				DB	$33,$0A,$8D
-				DB	$FF
-WRITPIC			DB	$34,$4B,$0A
-				DB	$1D,$FE,$09
-				DB	$00,$FE,$06
-				DB	$0F,$FE,$14
-				DB	$00,$18,$18
-				DB	$FE,$05,$00
-				DB	$FE,$06,$1E
-				DB	$FE,$09,$00
-				DB	$3C,$3C,$30
-				DB	$30,$0C,$0C
-				DB	$00,$00,$00
-				DB	$3C,$3C,$00
-				DB	$00,$0C,$0C
-				DB	$FE,$09,$00
-				DB	$19,$19,$60
-				DB	$60,$79,$79
-				DB	$00,$00,$00
-				DB	$01,$01,$79
-				DB	$79,$01,$01
-				DB	$FE,$09,$00
-				DB	$40,$40,$03
-				DB	$03,$70,$70
-				DB	$00,$00,$00
-				DB	$73,$73,$70
-				DB	$70,$73,$73
-				DB	$FE,$09,$00
-				DB	$01,$01,$66
-				DB	$66,$07,$07
-				DB	$00,$00,$00
-				DB	$67,$67,$FE
-				DB	$04,$61,$FE
-				DB	$09,$00,$4F
-				DB	$4F,$0F,$0F
-				DB	$4F,$4F,$00
-				DB	$00,$00,$4C
-				DB	$4C,$4F,$4F
-				DB	$4C,$4C,$FE
-				DB	$06,$01,$00
-				DB	$00,$00,$06
-				DB	$06,$1E,$1E
-				DB	$06,$06,$00
-				DB	$00,$00,$1E
-				DB	$1E,$06,$06
-				DB	$1E,$1E,$FE
-				DB	$04,$43,$4C
-				DB	$4C,$FE,$05
-				DB	$00,$0C,$0C
-				DB	$3C,$3C,$FE
-				DB	$05,$00,$3C
-				DB	$3C,$00,$00
-				DB	$1E,$1E,$18
-				DB	$18,$06,$06
-				DB	$00,$00,$00
-				DB	$18,$18,$78
-				DB	$78,$79,$79
-				DB	$00,$00,$00
-				DB	$79,$79,$61
-				DB	$61,$79,$79
-				DB	$FE,$06,$0C
-				DB	$00,$00,$00
-				DB	$33,$33,$30
-				DB	$30,$43,$43
-				DB	$00,$00,$00
-				DB	$70,$70,$73
-				DB	$73,$70,$70
-				DB	$01,$01,$79
-				DB	$79,$01,$01
-				DB	$00,$00,$00
-				DB	$06,$06,$01
-				DB	$01,$66,$66
-				DB	$00,$00,$00
-				DB	$61,$61,$FE
-				DB	$04,$67,$40
-				DB	$40,$70,$70
-				DB	$40,$40,$00
-				DB	$00,$00,$0F
-				DB	$0F,$43,$43
-				DB	$0F,$0F,$00
-				DB	$00,$00,$4F
-				DB	$4F,$43,$43
-				DB	$4F,$4F,$FE
-				DB	$09,$00,$FE
-				DB	$06,$1E,$00
-				DB	$00,$00,$1E
-				DB	$1E,$18,$18
-				DB	$06,$06,$FE
-				DB	$09,$00,$3C
-				DB	$3C,$0C,$0C
-				DB	$3C,$3C,$00
-				DB	$00,$00,$FE
-				DB	$06,$0C,$FE
-				DB	$09,$00,$01
-				DB	$01,$79,$79
-				DB	$FE,$05,$00
-				DB	$78,$78,$79
-				DB	$79,$78,$78
-				DB	$FE,$09,$00
-				DB	$43,$43,$70
-				DB	$70,$30,$30
-				DB	$00,$00,$00
-				DB	$30,$30,$70
-				DB	$70,$33,$33
-				DB	$FE,$09,$00
-				DB	$FE,$04,$67
-				DB	$60,$60,$00
-				DB	$00,$00,$61
-				DB	$61,$67,$67
-				DB	$06,$06,$FE
-				DB	$09,$00,$FE
-				DB	$04,$43,$03
-				DB	$03,$00,$00
-				DB	$00,$FE,$04
-				DB	$4C,$0F,$0F
-				DB	$FE,$09,$00
-				DB	$1E,$1E,$FE
-				DB	$04,$06,$FE
-				DB	$09,$00
-********************************
-				FIN
-********************************
+*-------------------------------
 
-**************
-ORBHERE			DB	$00
+DOOR_SIGN		LDX	#sDoorSign
+				JSR	SLOAD_SPECIAL
+				JMP	$9000
+
+*-------------------------------
+
+GOT_ORB			DB	$00				; TODO: eventually save to disk
+GUARD_DEAD		DB	$00				; TODO: eventually save to disk
 DOORED			DB	$00
-**************
+VP_IS_OPEN		DB	$00				; does not need to be saved to disk
+
+*-------------------------------
 
 SHELL17
 F1				HEX	3DFDDFFFF0

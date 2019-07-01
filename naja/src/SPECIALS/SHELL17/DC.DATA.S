@@ -1,81 +1,40 @@
-TEXT0			DFB	$04,$04,$0C
-				DFB	$09,$09,$0A
-				DFB	$19,$10,$0A
-				DFB	$01,$06,$0A
-				DFB	$0E,$0B,$1E
-				DFB	$0B,$0A,$0B
-				DFB	$1C,$0F,$0B
-				DFB	$1D,$0A,$12
-				DFB	$0B
-HAVEHAS			DFB	$20,$0F
-				DFB	$0A,$0C,$0F
-				DFB	$0F,$18,$0A
-				DFB	$10,$13,$16
-				DFB	$16,$0F,$0E
-				DFB	$8D,$03,$02
-				DFB	$27,$1D,$0F
-				DFB	$16,$0F,$0D
-				DFB	$1E,$0A,$17
-				DFB	$0F,$17,$19
-				DFB	$1C,$23,$2E
-				DFB	$0D,$0B,$1C
-				DFB	$0E,$0A,$1E
-				DFB	$19,$0A,$0C
-				DFB	$0F,$0A,$1C
-				DFB	$0F,$0B,$0E
-				DFB	$8D
-				DFB	$1D,$06,$1D
-				DFB	$0C,$06,$05
-				DFB	$8D
-				DFB	$1D,$06,$27
-				DFB	$0C,$06,$05
-				DFB	$8D
-				DFB	$1D,$06,$31
-				DFB	$0C,$06,$05
-				DFB	$8D,$04,$01
-				DFB	$42,$0D,$0A
-				DFB	$0E,$0F,$18
-				DFB	$19,$1E,$0F
-				DFB	$1D,$0A,$0E
-				DFB	$0B,$1E,$0B
-				DFB	$0A,$10,$1C
-				DFB	$19,$17,$0A
-				DFB	$23,$19,$1F
-				DFB	$1C,$0A,$0D
-				DFB	$0B,$1C,$0E
-				DFB	$1D,$8D,$04
-				DFB	$01,$4B,$17
-				DFB	$0A,$0E,$0F
-				DFB	$18,$19,$1E
-				DFB	$0F,$1D,$0A
-				DFB	$0E,$0B,$1E
-				DFB	$0B,$0A,$13
-				DFB	$18,$0A,$17
-				DFB	$0F,$17,$19
-				DFB	$1C,$23,$8D
-				DFB	$04,$01,$54
-				DFB	$29,$0A,$0E
-				DFB	$0F,$18,$19
-				DFB	$1E,$0F,$1D
-				DFB	$0A,$17,$13
-				DFB	$1D,$1D,$13
-				DFB	$18,$11,$0A
-				DFB	$0E,$0B,$1E
-				DFB	$0B,$8D	
-				DFB	$1E,$05,$54
-				DFB	$16,$32,$0F	
-				DFB	$0B,$20,$0F	
-				DFB	$8D,$FF	
-TEXT1			DFB	$20,$03,$EE
+
+DC_DATA			DW	DC_TEXTS
+				DW	DC_LINES
+				DW	DC_PICTS
+
+DC_TEXTS		DW	DC_TEXT0
+				DW	DC_TEXT1
+
+DC_TEXT0		PLOTAT	32;12;(99_OF_16_DATA_AREAS_HA)-
+HAVEHAS			USR(VE)-
+				USR(_BEEN_FILLED)
+
+				PLOTAT	23;23;(SELECT_MEMORY/CARD_TO_BE_READ)
+				PLOTAT	209;29;(B65)
+				PLOTAT	209;39;(B65)
+				PLOTAT	209;49;(B65)
+				PLOTAT	29;66;(C_DENOTES_DATA_FROM_YOUR_CARDS)
+				PLOTAT	29;75;(M_DENOTES_DATA_IN_MEMORY)
+				PLOTAT	29;84;(*_DENOTES_MISSING_DATA)
+				PLOTAT	215;84;(L>EAVE)+
+
+DC_TEXT1		DFB	$20,$03,$EE
 				DFB	$EE,$EE,$0A
 				DFB	$EE,$8D,$FF
-LINE0			DFB	$00,$17,$07
+
+DC_LINES		DW	:LINE0
+				DW	:LINE1
+				DW	:LINE2
+
+:LINE0			DFB	$00,$17,$07
 				DFB	$00,$17,$5F
 				DFB	$FE
 				DFB	$00,$FF,$07
 				DFB	$00,$FF,$5F
 				DFB	$FF
-LINE1			DFB	$00,$10,$08
+
+:LINE1			DFB	$00,$10,$08
 				DFB	$01,$06,$08
 				DFB	$01,$06,$5E
 				DFB	$00,$10,$5E
@@ -85,12 +44,18 @@ LINE1			DFB	$00,$10,$08
 				DFB	$00,$12,$5D
 				DFB	$00,$12,$09
 				DFB	$FF
-LINE2			DFB	$00,$CD,$25
+
+:LINE2			DFB	$00,$CD,$25
 				DFB	$00,$F1,$25
 				DFB	$00,$F1,$2F
 				DFB	$00,$CD,$2F
 				DFB	$00,$CD,$25
 				DFB	$FF
+
+DC_PICTS		DW	PFORM
+				DW	CARD
+				DW	HAND
+
 CARD			DFB	$00,$0C,$11
 				DFB	$16,$36,$3E
 				DFB	$36,$3E,$37
@@ -530,4 +495,3 @@ PFORM			DFB	$73,$B9,$0A
 				DFB	$E0,$FE,$05
 				DFB	$C0,$FE,$1E
 				DFB	$80
-ZZMARK			NOP
