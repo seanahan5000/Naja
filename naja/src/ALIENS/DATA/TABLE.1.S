@@ -38,7 +38,7 @@ BEGIN_17
 				DB	pAIR_SWIMMER
 				DB	pLITTLE_BUG
 				DB	pCEILING_FAN
-				DB	pRUUIKS_MEN
+				DB	pRUUIKS_MEN			; if not index $23, change RUUIK.S
 				DB	pBIRD_INSECT
 				DB	pCLAPPER
 				DB	pCLUBBER

@@ -17,8 +17,6 @@ B_COUNT			EQU	$15
 ENDLINE			EQU	$15
 FLAG12			EQU	$20				;MOVE THESE LATER !!!
 ELSLECT			EQU	$21				;MOVE THESE LATER !!!
-PROGON			EQU	$4079
-PICKON			EQU	$407A
 
 north			=	%00000000
 south			=	%01000000
@@ -191,7 +189,11 @@ FIND_ENCOUNTR
 				BIT	$C062				;TEMP *** right-option/alt
 				BMI	:FORCE_EQUIPMENT	;TEMP ***
 
+			do 0
 				JSR	RNDMIZE
+			else
+				JMP	NORMAL_MOVE
+			fin
 				LDA	RANDOM1
 				AND	#$7F
 				CMP	ENCODDS
@@ -361,6 +363,9 @@ OC_COM2			STX	MESSAGE_COLOR
 				PHA
 				TXA
 				PHA
+				LDX	#<COMMON_TEXT
+				LDA	#>COMMON_TEXT
+				JSR	SET_TEXT
 				LDX	#<MESSAGE_BOX
 				LDY	#>MESSAGE_BOX
 				JSR	INIT_BOX
@@ -417,10 +422,37 @@ MESSAGE_BOX		DDB	53
 MESSAGE_COLOR	DB	RED
 				DB	wspace
 
+COMMON_TEXT		DW	CRITICAL_TEXT
+				DW	RUNDOWN_TEXT
+				DW	CURED_TEXT
+				DW	CONTAG_TEXT
+				DW	ENERGY_TEXT
+
+CRITICAL_TEXT	PLOTAT	64;37;(XXXXXXXXXX_IS_IN_CRITICAL)
+				PLOTAT	64;45;(CONDITION.)+
+
+RUNDOWN_TEXT	PLOTAT	64;37;(XXXXXXXXXX_HAS_RUN_OUT_OF)
+				PLOTAT	64;45;(ENERGY.)+
+
+CURED_TEXT		PLOTAT	64;37;(XXXXXXXXXX_IS_NO_LONGER)
+				PLOTAT	64;45;()+
+
+CONTAG_TEXT		PLOTAT	64;37;(XXXXXXXXXX_IS_BEGINNING)
+				PLOTAT	64;45;(TO_FEEL_ILL.)+
+
+ENERGY_TEXT		PLOTAT	101;45;(OUT_OF_ENERGY)+
+
+; Line data for elevator, included here to pad out to end of page
+;
+EV_LINES		DW	BLKLINE
+				DW	EBOX
+				DW	BLKLIN2
+				DW	EBOX2
 
 BLKLINE			DB	$00,$45,$65
 				DB	$00,$D2,$65
 				DB	$FF
+
 EBOX			DB	$00,$4F,$41
 				DB	$00,$4F,$89
 				DB	$00,$C7,$89
@@ -439,6 +471,7 @@ EBOX			DB	$00,$4F,$41
 BLKLIN2			DB	$00,$66,$74
 				DB	$00,$AE,$74
 				DB	$FF
+
 EBOX2			DB	$00,$6D,$86
 				DB	$00,$6D,$62
 				DB	$00,$65,$74
@@ -451,20 +484,6 @@ EBOX2			DB	$00,$6D,$86
 				DB	$00,$6D,$62
 				DB	$00,$A7,$62
 				DB	$FF
-
-
-CRITICAL_TEXT	PLOTAT	64;37;(XXXXXXXXXX_IS_IN_CRITICAL)
-				PLOTAT	64;45;(CONDITION.)+
-
-RUNDOWN_TEXT	PLOTAT	64;37;(XXXXXXXXXX_HAS_RUN_OUT_OF)
-				PLOTAT	64;45;(ENERGY.)+
-
-CURED_TEXT		PLOTAT	64;37;(XXXXXXXXXX_IS_NO_LONGER)
-				PLOTAT	64;45;()+
-
-CONTAG_TEXT		PLOTAT	64;37;(XXXXXXXXXX_IS_BEGINNING)
-				PLOTAT	64;45;(TO_FEEL_ILL.)+
-
 				DS	\,$EE
 
 			do ORIGINAL
@@ -560,14 +579,142 @@ SHELL_INFO
 
 			fin
 
+*-------------------------------
+
+SET_TLP_DATA	STX	POINTL
+				STY	POINTH
+
+				LDY	#0
+				LDA	(POINTL),Y
+				TAX
+				INY
+				LDA	(POINTL),Y
+				JSR	SET_TEXT
+				INY
+				LDA	(POINTL),Y
+				TAX
+				INY
+				LDA	(POINTL),Y
+				JSR	SET_LINES
+				INY
+				LDA	(POINTL),Y
+				TAX
+				INY
+				LDA	(POINTL),Y
+				; fall through
+
+SET_PICS		STX	PICKER_MOD0+1
+				STX PICKER_MOD1+1
+				STA	PICKER_MOD0+2
+				STA PICKER_MOD1+2
+				RTS
+
+SET_TEXT		STX	TEXTER_MOD0+1
+				STX TEXTER_MOD1+1
+				STA	TEXTER_MOD0+2
+				STA TEXTER_MOD1+2
+				RTS
+
+SET_LINES		STX	LINER_MOD0+1
+				STX LINER_MOD1+1
+				STA	LINER_MOD0+2
+				STA LINER_MOD1+2
+				RTS
+
 TEXTER			TYA
-				ASL
+				ASL	A
 				TAY
-				LDA	TEXTS,Y
-				STA	POINTL	
-				LDA	TEXTS+1,Y
+TEXTER_MOD0		LDA	$FFFF,Y
+				STA	POINTL
+				INY
+TEXTER_MOD1		LDA	$FFFF,Y
 				STA	POINTH
 				JMP	TEXTOUT
+
+LINER			TYA
+				ASL	A
+				TAY
+LINER_MOD0		LDA	$FFFF,Y
+				STA	POINTL
+				INY
+LINER_MOD1		LDA	$FFFF,Y
+				STA	POINTH
+				JMP	LINEOUT
+
+PICKER2			LDX	#1				; decompress picture with transparency
+				BNE	PICKER_COM		; always
+PICKER			LDX	#0
+PICKER_COM		TYA
+				ASL	A
+				TAY
+PICKER_MOD0		LDA	$FFFF,Y
+				STA	TBLPNTL
+				INY
+PICKER_MOD1		LDA	$FFFF,Y
+				STA	TBLPNTH
+				TXA
+				BNE	:1
+				JMP	EXPANDR
+:1				JMP	EXPANDR2
+
+*-------------------------------
+
+SLOAD_SPECIAL	LDA	CAMP_HERE
+				AND	#bit_Diagnose		; camp code from $8600 to $9700
+				BEQ	:1
+				LDA	#$FF				; camp was loaded over special
+				STA	SPECIAL_LOADED
+				BNE	:2					; always
+:1				CPX	SPECIAL_LOADED		; same special already loaded
+				BEQ	:3
+:2				STX	SPECIAL_LOADED
+				LDA	CAMP_HERE			; overwriting camp code
+				AND	#bit_Diagnose!$FF	;! means XOR
+				STA	CAMP_HERE
+				JSR	SLOAD_FILE
+:3				RTS
+
+SPECIAL_LOADED	DB	$FF
+
+*-------------------------------
+
+; Code common to elevator special on every level
+
+ELEVATOR_FAR	LDA	#2				; BLKLIN2, EBOX2
+				JSR	EV_LINE_SUB
+:1				BIT	UNSTROB
+:2				LDA	KEYBRD
+				BPL	:2
+				JSR	CPARER1
+				BNE	:1
+				JMP	RDKEY			;*** need to RTS
+
+EV_LINE_SUB		PHA
+				LDX	#<EV_LINES
+				LDA	#>EV_LINES
+				JSR	SET_LINES
+				LDA	#$40
+				STA	PAGE
+				JSR	CLEAR2
+				JSR	NOSCAN
+				PLA
+				PHA
+				TAY
+				LDA	#BLACK1
+				STA	COLOR
+				JSR	LINER
+				PLA
+				TAY
+				INY
+				LDA	#WHITE1
+				STA	COLOR
+				JSR	LINER
+				STA	SCNDARY
+				JSR	MOVETO1
+				STA	PRIMARY
+				RTS
+
+*-------------------------------
 
 FILE_VECTOR		DW	FILE_TABLE
 

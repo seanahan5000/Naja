@@ -1,6 +1,6 @@
 @echo off
 
-set ROOT=%~dp0\..
+set ROOT=%~dp0..
 set BUILD=%ROOT%\build
 set SRC=%ROOT%\src
 set OBJ=%ROOT%\obj
@@ -16,11 +16,10 @@ if not exist %BIN% mkdir %BIN%
 %ASM% FIGHT\AWARDER			ASM.AWARDER.S
 %ASM% FIGHT\DEAD			ASM.DEAD.S
 
-%ASM% TRACC					ASM.CAMP.S
-%ASM% TRACC					ASM.TUNNELS.S
+%ASM% TRACC					ASM.CAMP.S		 -list CAMP.LST
+%ASM% TRACC					ASM.TUNNELS.S	 -list TUNNELS.LST
 %ASM% TRACC\EDITOR			SELECT.OPTION.S
 %ASM% TRACC\EDITOR			NEW.EDITOR.S     -list ALIEN.EDITOR.LST -sym %BIN%\editor.sym
-%ASM% SPECIALS\ELEVATOR		THE.ELEVATOR.S   -list ELEVATOR.LST
 %ASM% SPECIALS\FINDMENT		FINDMENT.S
 
 REM ---------------------------------------
@@ -75,19 +74,26 @@ REM ---------------------------------------
 REM TRACC shell 17
 REM ---------------------------------------
 
-%ASM% ALIENS                    ASM.DATA.17.S
-%ASM% ALIENS                    ASM.PICS.17.S
+%ASM% ALIENS					ASM.DATA.17.S
+%ASM% ALIENS					ASM.PICS.17.S
 
-%ASM% TRACC                     ASM.17.S
+%ASM% .							TRACC\ASM.17.S	  	-list CONTROL17.LST
 
 set A2NIB=a2nib -disk %BIN%\tracc1.nib
 %A2NIB% -create -volume 1
 
-%A2NIB% %OBJ%\ALIEN.DATA.17     -t 00 -s 00 -c 1C
-%A2NIB% %OBJ%\ALIEN.PICS.17     -t 02 -s 00 -c 7B
+%A2NIB% %OBJ%\ALIEN.DATA.17		-t 00 -s 00 -c 1C
+%A2NIB% %OBJ%\ALIEN.PICS.17		-t 02 -s 00 -c 7B
 
-%A2NIB% %OBJ%\CONTROL17         -t 1B -s 00 -c 10
-%A2NIB% %OBJ%\LOADER17          -t 22 -s 00 -c 0D
+%A2NIB% %OBJ%\ORB.GREEN			-t 1C -s 08 -c 04
+%A2NIB% %OBJ%\DOOR.SIGN			-t 1C -s 0D -c 03
+%A2NIB% %OBJ%\RUUIK				-t 1E -s 00 -c 10
+%A2NIB% %OBJ%\GUARD				-t 1F -s 00 -c 0E
+%A2NIB% %OBJ%\DC.COMPUTER		-t 20 -s 00 -c 0B
+%A2NIB% %OBJ%\VIEW.PORT			-t 20 -s 0B -c 0D
+
+%A2NIB% %OBJ%\CONTROL17			-t 1B -s 00 -c 10
+%A2NIB% %OBJ%\LOADER17			-t 1D -s 00 -c 0D
 
 call :TRACC_COMMON
 
@@ -152,18 +158,21 @@ REM ---------------------------------------
 REM TRACC shell 9
 REM ---------------------------------------
 
-%ASM% ALIENS                    ASM.DATA.9.S -list ALIEN.DATA.9.LST
-%ASM% ALIENS                    ASM.PICS.9.S -list ALIEN.PICS.9.LST
+%ASM% ALIENS					ASM.DATA.9.S
+%ASM% ALIENS					ASM.PICS.9.S
 
-%ASM% TRACC                     ASM.9.S -list CONTROL9.LST
+%ASM% TRACC						ASM.9.S
+
+%ASM% SPECIALS\SHELL9			ASM.DOOR.S
 
 set A2NIB=a2nib -disk %BIN%\tracc5.nib
 %A2NIB% -create -volume 5
 
-%A2NIB% %OBJ%\ALIEN.DATA.9      -t 00 -s 00 -c 0c
-%A2NIB% %OBJ%\ALIEN.PICS.9      -t 02 -s 00 -c 52
+%A2NIB% %OBJ%\ALIEN.DATA.9		-t 00 -s 00 -c 0c
+%A2NIB% %OBJ%\ALIEN.PICS.9		-t 02 -s 00 -c 52
 
-%A2NIB% %OBJ%\CONTROL9          -t 1B -s 00 -c 10
+%A2NIB% %OBJ%\CONTROL9			-t 1B -s 00 -c 10
+%A2NIB% %OBJ%\ORB.DOOR			-t 1D -s 00 -c 0D
 
 call :TRACC_COMMON
 
@@ -178,15 +187,15 @@ REM ---------------------------------------
 %A2NIB% %OBJ%\FIGHT.NARRATOR    -t 0F -s 00 -c 4D
 %A2NIB% %OBJ%\AWARDER           -t 14 -s 00 -c 0E
 %A2NIB% %OBJ%\DEAD.GROUP        -t 15 -s 00 -c 10
-%A2NIB% %OBJ%\FINDMENT          -t 16 -s 00 -c 08
-%A2NIB% %OBJ%\ELEVATOR          -t 17 -s 00 -c 0C
 
-%A2NIB% %OBJ%\CAMP.7800         -t 1C -s 00 -c 1F
-%A2NIB% %OBJ%\CAMP.B000         -t 1E -s 00 -c 0B
-%A2NIB% %OBJ%\TUNNELS           -t 1F -s 00 -c 18
+%A2NIB% %OBJ%\TUNNELS           -t 16 -s 00 -c 18
+%A2NIB% %OBJ%\CAMP.7800         -t 17 -s 08 -c 1F
+%A2NIB% %OBJ%\CAMP.B000         -t 19 -s 08 -c 0B
+%A2NIB% %OBJ%\ELEVATOR          -t 1A -s 04 -c 0C
+%A2NIB% %OBJ%\FINDMENT          -t 1C -s 00 -c 08
 
-%A2NIB% %OBJ%\ALIEN.EDITOR      -t 20 -s 08 -c 18
-%A2NIB% %OBJ%\SELECT.OPTION     -t 22 -s 0D -c 03
+%A2NIB% %OBJ%\SELECT.OPTION     -t 1D -s 0D -c 03
+%A2NIB% %OBJ%\ALIEN.EDITOR      -t 21 -s 08 -c 18
 
 exit /B
 

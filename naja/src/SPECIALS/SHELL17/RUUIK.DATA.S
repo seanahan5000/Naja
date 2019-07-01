@@ -1,243 +1,68 @@
-TEXTER			TYA
-				ASL	A
-				TAY
-				LDA	TEXTS,Y
-				STA	POINTL
-				LDA	TEXTS+1,Y
-				STA	POINTH
-				JMP	TEXTOUT
-TEXTS			DW	TEXT0
-				DW	TEXT1
-				DW	TEXT2
-				DW	TEXT3
-				DW	TEXT4
-				DW	TEXT5
-				DW	TEXT6
-				DW	TEXT7
-TEXT0			DFB	$08,$04,$03
-				DFB	$13,$0A,$0B
-				DFB	$17,$0A,$1C
-				DFB	$1F,$1F,$13
-				DFB	$15,$2B,$0A
-				DFB	$1D,$1F,$1A
-				DFB	$1C,$0F,$17
-				DFB	$0F,$0A,$0F
-				DFB	$17,$1A,$19
-				DFB	$1C,$0F,$1C
-				DFB	$8D,$08,$04
-				DFB	$0C,$19,$10
-				DFB	$0A,$1E,$12
-				DFB	$13,$1D,$0A
-				DFB	$1A,$16,$0B
-				DFB	$18,$0F,$1E
-				DFB	$2D,$0A,$0E
-				DFB	$19,$0A,$23
-				DFB	$19,$1F,$0A
-				DFB	$1D,$0F,$0F
-				DFB	$15,$8D,$08
-				DFB	$04,$15,$1E
-				DFB	$12,$0F,$0A
-				DFB	$1D,$0F,$0D
-				DFB	$1C,$0F,$1E
-				DFB	$0A,$0D,$19
-				DFB	$0E,$0F,$0A
-				DFB	$18,$1F,$17
-				DFB	$0C,$0F,$1C
-				DFB	$0A,$1E,$19
-				DFB	$8D,$08,$04
-				DFB	$1E,$1E,$12
-				DFB	$0F,$0A,$11
-				DFB	$1C,$0F,$0F
-				DFB	$18,$0A,$18
-				DFB	$0F,$1E,$0A
-				DFB	$0C,$0B,$1C
-				DFB	$1C,$13,$0F
-				DFB	$1C,$1D,$33	
-				DFB	$0A,$8D,$FF
-TEXT1			DFB	$08,$04,$03
-				DFB	$13,$18,$0A
-				DFB	$0F,$22,$0D
-				DFB	$12,$0B,$18
-				DFB	$11,$0F,$0A
-				DFB	$10,$19,$1C
-				DFB	$0A,$1E,$12
-				DFB	$0F,$0A,$0D
-				DFB	$19,$0E,$0F
-				DFB	$2B,$0A,$13
-				DFB	$8D,$08,$04
-				DFB	$0C,$0E,$0F
-				DFB	$17,$0B,$18
-				DFB	$0E,$0A,$10
-				DFB	$19,$1F,$1C
-				DFB	$0A,$16,$13
-				DFB	$11,$12,$1E
-				DFB	$0A,$1C,$13
-				DFB	$10,$16,$0F
-				DFB	$1D,$2D,$8D
-				DFB	$FF
-TEXT2			DFB	$08,$04,$15
-				DFB	$1D,$13,$18
-				DFB	$0D,$0F,$0A
-				DFB	$23,$19,$1F
-				DFB	$0A,$0E,$19
-				DFB	$18,$28,$1E
-				DFB	$0A,$12,$0B
-				DFB	$20,$0F,$0A
-				DFB	$1E,$12,$0F
-				DFB	$17,$2B,$8D
-				DFB	$08,$04,$1E
-				DFB	$13,$0A,$1D
-				DFB	$1F,$11,$11
-				DFB	$0F,$1D,$1E
-				DFB	$0A,$23,$19
-				DFB	$1F,$0A,$11
-				DFB	$19,$0A,$11
-				DFB	$0F,$1E,$0A
-				DFB	$1D,$19,$17
-				DFB	$0F,$25,$8D
-				DFB	$FF
-TEXT3			DFB	$08,$04,$15
-				DFB	$13,$0A,$1D
-				DFB	$0F,$0F,$0A
-				DFB	$1E,$12,$0B
-				DFB	$1E,$0A,$23
-				DFB	$19,$1F,$0A
-				DFB	$12,$0B,$20
-				DFB	$0F,$0A,$1E
-				DFB	$12,$0F,$17
-				DFB	$2D,$8D,$08
-				DFB	$04,$1E,$13
-				DFB	$1D,$0A,$13
-				DFB	$1E,$0A,$0B
-				DFB	$0A,$0E,$0F
-				DFB	$0B,$16,$33	
-				DFB	$0A,$8D,$FF
-TEXT4			DFB	$08,$04,$05
-				DFB	$13,$0A,$15
-				DFB	$18,$0F,$21
-				DFB	$0A,$23,$19
-				DFB	$1F,$0A,$21
-				DFB	$19,$1F,$16
-				DFB	$0E,$18,$28	
-				DFB	$1E,$0A,$1C
-				DFB	$0F,$10,$1F
-				DFB	$1D,$0F,$25	
-				DFB	$8D,$08,$04
-				DFB	$10,$1E,$12
-				DFB	$0F,$0A,$18
-				DFB	$0F,$1E,$0A
-				DFB	$0D,$19,$0E
-				DFB	$0F,$0A,$13
-				DFB	$1D,$0A,$11
-				DFB	$18,$2C,$02	
-				DFB	$08,$0A,$0B
-				DFB	$18,$0E,$8D
-				DFB	$08,$04,$1B
-				DFB	$1E,$12,$0F
-				DFB	$0A,$1C,$19
-				DFB	$23,$0B,$16
-				DFB	$0A,$1A,$0B
-				DFB	$1D,$1D,$21
-				DFB	$19,$1C,$0E
-				DFB	$0A,$13,$1D
-				DFB	$0A,$0D,$1C
-				DFB	$1F,$1F,$8D
-				DFB	$FF
-TEXT5			DFB	$08,$04,$05
-				DFB	$1E,$12,$0F
-				DFB	$18,$0A,$23
-				DFB	$19,$1F,$0A
-				DFB	$18,$0F,$0F
-				DFB	$0E,$0A,$1E
-				DFB	$12,$0F,$0A
-				DFB	$1C,$13,$10
-				DFB	$16,$0F,$1D
-				DFB	$8D,$08,$04
-				DFB	$0F,$17,$19
-				DFB	$1C,$0F,$0A
-				DFB	$1E,$12,$0B
-				DFB	$18,$0A,$13
-				DFB	$0A,$0E,$19
-				DFB	$2D,$2D,$2D	
-				DFB	$8D,$FF
-TEXT6			DFB	$10,$02,$1B
-				DFB	$11,$1F,$0B
-				DFB	$1C,$0E,$1D
-				DFB	$25,$25,$25	
-				DFB	$8D,$FF
-TEXT7			DFB	$08,$04,$03
-				DFB	$13,$0A,$12
-				DFB	$0B,$20,$0F
-				DFB	$0A,$18,$19
-				DFB	$0A,$19,$1E
-				DFB	$12,$0F,$1C
-				DFB	$0A,$13,$18
-				DFB	$10,$19,$1C
-				DFB	$17,$0B,$1E
-				DFB	$13,$19,$18
-				DFB	$8D,$08,$04
-				DFB	$0C,$10,$19
-				DFB	$1C,$0A,$23
-				DFB	$19,$1F,$2B	
-				DFB	$0A,$1D,$19
-				DFB	$0A,$16,$0F
-				DFB	$0B,$20,$0F
-				DFB	$0A,$17,$23
-				DFB	$0A,$0E,$19
-				DFB	$17,$0B,$13
-				DFB	$18,$8D,$08
-				DFB	$04,$15,$21
-				DFB	$13,$1E,$12
-				DFB	$0A,$23,$19
-				DFB	$1F,$1C,$0A
-				DFB	$16,$13,$20
-				DFB	$0F,$1D,$0A
-				DFB	$0C,$0F,$10
-				DFB	$19,$1C,$0F
-				DFB	$0A,$13,$8D
-				DFB	$08,$04,$1E
-				DFB	$0D,$12,$0B
-				DFB	$18,$11,$0F
-				DFB	$0A,$17,$23
-				DFB	$0A,$17,$13
-				DFB	$18,$0E,$25	
-				DFB	$8D,$FF
-LINER			TYA
-				ASL	A
-				TAY
-				LDA	LINES,Y
-				STA	POINTL
-				LDA	LINES+1,Y
-				STA	POINTH
-				JMP	LINEOUT
-LINES			DW	LINE0
-				DW	LINE1
-LINE0			DFB	$00,$36,$00
+
+RU_DATA			DW	RU_TEXT
+				DW	RU_LINES
+				DW	RU_PICS
+
+RU_TEXT			DW	:TEXT0
+				DW	:TEXT1
+				DW	:TEXT2
+				DW	:TEXT3
+				DW	:TEXT4
+				DW	:TEXT5
+				DW	:TEXT6
+				DW	:TEXT7
+
+:TEXT0			PLOTAT	60;3;(I_AM_RUUIK,_SUPREME_EMPORER)
+				PLOTAT	60;12;(OF_THIS_PLANET._DO_YOU_SEEK)
+				PLOTAT	60;21;(THE_SECRET_CODE_NUMBER_TO)
+				PLOTAT	60;30;(THE_GREEN_NET_BARRIERS?_)+
+
+:TEXT1			PLOTAT	60;3;(IN_EXCHANGE_FOR_THE_CODE,_I)
+				PLOTAT	60;12;(DEMAND_FOUR_LIGHT_RIFLES.)+
+
+:TEXT2			PLOTAT	60;21;(SINCE_YOU_DON'T_HAVE_THEM,)
+				PLOTAT	60;30;(I_SUGGEST_YOU_GO_GET_SOME!)+
+
+:TEXT3			PLOTAT	60;21;(I_SEE_THAT_YOU_HAVE_THEM.)
+				PLOTAT	60;30;(IS_IT_A_DEAL?_)+
+
+:TEXT4			PLOTAT	60;5;(I_KNEW_YOU_WOULDN'T_REFUSE!)
+				PLOTAT	60;16;(THE_NET_CODE_IS_GN-28_AND)
+				PLOTAT	60;27;(THE_ROYAL_PASSWORD_IS_CRUU)+
+
+:TEXT5			PLOTAT	60;5;(THEN_YOU_NEED_THE_RIFLES)
+				PLOTAT	60;15;(MORE_THAN_I_DO...)+
+
+:TEXT6			PLOTAT	114;27;(GUARDS!!!)+
+
+:TEXT7			PLOTAT	60;3;(I_HAVE_NO_OTHER_INFORMATION)
+				PLOTAT	60;12;(FOR_YOU,_SO_LEAVE_MY_DOMAIN)
+				PLOTAT	60;21;(WITH_YOUR_LIVES_BEFORE_I)
+				PLOTAT	60;30;(CHANGE_MY_MIND!)+
+
+RU_LINES		DW	:LINE0
+				DW	:LINE1
+
+:LINE0			DFB	$00,$36,$00
 				DFB	$00,$E2,$00
 				DFB	$00,$E2,$27
 				DFB	$00,$36,$27
 				DFB	$00,$36,$00
 				DFB	$FF
-LINE1			DFB	$00,$9B,$18
+
+:LINE1			DFB	$00,$9B,$18
 				DFB	$00,$B9,$18
 				DFB	$FE
 				DFB	$00,$BF,$23
 				DFB	$00,$D7,$23
 				DFB	$FF
-UNPACK			TYA
-				ASL	A
-				TAY
-				LDA	PICKS,Y
-				STA	TBLPNTL
-				LDA	PICKS+1,Y
-				STA	TBLPNTH
-				JMP	EXPANDR
-PICKS			DW	PICK0
-				DW	PICK1
-				DW	PICK2
-				DFB	$FF,$FF	
-				DW	PICK4
-PICK2			DFB	$75,$90,$00
+
+RU_PICS			DW	:PIC0
+				DW	:PIC1
+				DW	:PIC2
+				DW	:PIC3
+
+:PIC2			DFB	$75,$90,$00
 				DFB	$02,$2B,$FE
 				DFB	$05,$2E,$FE
 				DFB	$05,$3A,$FE
@@ -262,7 +87,7 @@ PICK2			DFB	$75,$90,$00
 				DFB	$68,$20,$FE
 				DFB	$04,$00,$80
 				DFB	$80,$C0,$C0
-PICK4			DFB	$72,$8F,$10
+:PIC3			DFB	$72,$8F,$10
 				DFB	$13,$7A,$02
 				DFB	$0A,$0A,$22
 				DFB	$28,$2A,$2A
@@ -297,7 +122,7 @@ PICK4			DFB	$72,$8F,$10
 				DFB	$7F,$FE,$04
 				DFB	$00,$01,$01
 				DFB	$03,$02,$06
-PICK1			DFB	$4D,$90,$0F
+:PIC1			DFB	$4D,$90,$0F
 				DFB	$18,$60,$6A
 				DFB	$40,$2A,$00
 				DFB	$2A,$00,$2A
@@ -481,7 +306,7 @@ PICK1			DFB	$4D,$90,$0F
 				DFB	$05,$06,$03
 				DFB	$01,$01,$00
 				DFB	$00
-PICK0			DFB	$01,$BF,$00
+:PIC0			DFB	$01,$BF,$00
 				DFB	$13,$D5,$D5
 				DFB	$80,$FE,$04
 				DFB	$D5,$80,$D5

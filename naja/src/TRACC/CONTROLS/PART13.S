@@ -1,4 +1,4 @@
-				DW	ELEVATOR		;0
+				DW	ELEVATOR_123	;0
 				DW	ROTCUBE			;1
 				DW	SHIPSND			;2
 				DW	TELEPORT		;3
@@ -19,6 +19,8 @@
 				DW	TPDATAC			;12
 				DW	NETCODE			;13
 				DW	STOROOM			;14
+				DW	ELEVATOR_345	;15
+				DW	ELEVATOR_FAR	;16
 
 FACE1			DB	$46,$03,$12
 				DB	$27,$09,$05
@@ -45,8 +47,8 @@ FACE2			DB	$22,$07,$10
 				DB	$27,$09,$03
 				DB	$27,$0A,$03
 				DB	$12,$12,$FF
-FACE3			DB	$83,$07,$00
-				DB	$84,$07,$00
+FACE3			DB	$83,$07,$15		; elevator 345
+				DB	$84,$07,$16		; elevator far
 				DB	$2A,$05,$10
 				DB	$2A,$06,$10
 				DB	$2A,$08,$10
@@ -123,8 +125,8 @@ FACE5			DB	$82,$02,$07
 				DB	$0B,$0B,$08
 				DB	$2C,$04,$13
 				DB	$12,$12,$FF
-FACE6			DB	$01,$0B,$00
-				DB	$01,$0C,$00
+FACE6			DB	$01,$0B,$00		; elevator 123
+				DB	$01,$0C,$16		; elevator far
 				DB	$C1,$0C,$04
 				DB	$06,$06,$09
 				DB	$29,$06,$02
@@ -141,29 +143,9 @@ FACE6			DB	$01,$0B,$00
 				DB	$2D,$08,$02
 FACE7			DB	$12,$12,$FF
 
-TEXTS			DW	CRITICAL_TEXT
-				DW	RUNDOWN_TEXT
-				DW	CURED_TEXT
-				DW	CONTAG_TEXT
-
 ***tor = 0
 
 FILE_TABLE
-
-LINER			TYA
-				ASL
-				TAY
-				LDA	LINES,Y
-				STA	POINTL
-				LDA	LINES+1,Y
-				STA	POINTH
-				JMP	LINEOUT
-LINES			DB	$FF,$FF
-				DB	$FF,$FF
-				DW	BLKLINE
-				DW	EBOX
-				DW	BLKLIN2
-				DW	EBOX2
 
 ROTCUBE			NOP
 SHIPSND			NOP
@@ -197,57 +179,22 @@ STOROOM			LDA	#$90
 *STA READNUM
 *JSR SREAD
 				JMP	$9000
-*************
-ELEVATOR		LDA	#$40
-				STA	PAGE
-				JSR	CLEAR2
-				JSR	NOSCAN
-				LDA	#BLACK1
-				STA	COLOR
-				LDA	#$01
-				STA	ELSLECT
-				LDA	XPOS
-				SEC
-				SBC	#$02
-				BPL	FNCOM
-				LDA	YPOS
-				SEC
-				SBC	#$0A
-				LDY	#$00
-				STY	ELSLECT
-FNCOM			ASL
-				TAY
-				PHA
-				JSR	LINER
-				LDA	#WHITE1
-				STA	COLOR
-				PLA
-				TAY
-				INY
-				JSR	LINER
-				STA	SCNDARY
-				JSR	MOVETO1
-				STA	PRIMARY
-				LDA	XPOS
-				CMP	#$04
-				BEQ	FARELEV
-				LDA	YPOS
-				CMP	#$0C
-				BEQ	FARELEV
+
+*-------------------------------
+
+ELEVATOR_123	LDA	#$00
+				BEQ	ELEVATOR		; always
+ELEVATOR_345	LDA	#$01
+ELEVATOR		PHA
+				LDA	#0				; BLKLIN, EBOX
+				JSR	EV_LINE_SUB
 				JSR	SET_CAMPFILES
-				LDA	CAMP_HERE
-				AND	#bit_Diagnose!$FF				;! means XOR
-				STA	CAMP_HERE
 				LDX	#cElevator
-				JSR	SLOAD_FILE
-				LDA	ELSLECT			;Elevator 123/345 flag
+				JSR	SLOAD_SPECIAL
+				PLA					; elevator 123/345 flag
 				JMP	$9000
-FARELEV			BIT	UNSTROB
-:LOOP1			LDA	KEYBRD
-				BPL	:LOOP1
-				JSR	CPARER1
-				BNE	FARELEV
-				JMP	RDKEY
+
+*-------------------------------
 
 SHELL13
 			do ORIGINAL

@@ -197,13 +197,12 @@ KEYREAD			JSR	PULSE
 				RTS
 :RETURN			JSR	CHAROUT
 				PLA
-				TAX	
+				STA	HOLDIT
+				TAX
 				LDA	#$8D
 				STA	TEXTBUF,X		;STORE RETURN AT END OF LINE BUFFER
 				RTS
 
-				NOP					;*
-				NOP					;*
 				NOP					;*
 				NOP					;*
 				NOP					;*

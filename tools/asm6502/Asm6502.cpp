@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 			assembler.SetRootDir(str);
 			setRoot = true;
 		}
-		else if (_stricmp(str, "-srcbase") == 0 || _stricmp(str, "-base") == 0)
+		else if (_stricmp(str, "-srcbase") == 0)
 		{
 			if (argc == 0)
 			{
@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
 		}
 		else if (str[0] == '-')
 		{
-			printf("Unknown option\n\n");
+			printf("Unknown option \"%s\"\n\n", str);
 			goto usage;
 		}
 		else if (!fileName)

@@ -1424,8 +1424,8 @@ TESBACK
 				STA	CAMP_HERE		;TEMP
 				LDA	#$78			;TEMP
 				STA	SSTOREH			;TEMP
-				LDY	#$02			;TEMP
-				LDX	#$2D			;TEMP
+				LDY	#$01			;TEMP
+				LDX	#$DD			;TEMP
 				LDA	#$03			;TEMP
 				JSR	SLOAD			;TEMP
 				JMP	$7800			;TEMP

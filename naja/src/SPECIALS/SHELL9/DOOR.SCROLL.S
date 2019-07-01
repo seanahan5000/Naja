@@ -1,17 +1,10 @@
 
 ; - draw "DO YOU WANT TO INSERT ORBS?" as text
 ;		instead of LOADER image data
-; - add ERR to prevent page crossing in WAIT
-; - get EXPANDR2 equate from NCOM.VARS.S
+; - add ERR to prevent page crossing in DELAY
 
-EXPANDR2		=	$0C63			;expand without $00 transparency
-TBLPNTL			=	$0D
-TBLPNTH			=	$0E
-
-DESTINL			EQU	$0D
 LOADL			EQU	$0D
 DATAL			EQU	$0D
-DESTINH			EQU	$0E
 LOADH			EQU	$0E
 DATAH			EQU	$0E
 POINTER			EQU	$11
@@ -29,44 +22,42 @@ INDEX			EQU	$14		; DRAW_DOOR
 BYTENUM			EQU	$15
 FROMCNT			EQU	$16
 TOCNT			EQU	$17
-SCREENL			EQU	$26
-SCREENH			EQU	$27
-PAGE			EQU	$E6		; DRAW_DOOR
-LOBYTES			EQU	$0800
-HIBYTES			EQU	$08C0
-KEYBRD			EQU	$C000
-UNSTROB			EQU	$C010
-CLICK			EQU	$C030
-BEGLINS			EQU	$58
-ENDLINS			EQU	$66
-LINEBEG			EQU	$B7
-LINEEND			EQU	$BF
-ROWBEG			EQU	$08
-ROWEND			EQU	$1F
 
-				ORG	$8000
+; constants
+BEGLINS			=	$58
+ENDLINS			=	$66
+LINEBEG			=	$B7
+LINEEND			=	$BF
+ROWBEG			=	$08
+ROWEND			=	$1F
 
 				LDA	#$20
 				STA	PAGE
 				JSR	DRAW_DOOR
-				
+
+				; TODO: Check for presence of all orbs, and give a different
+				;	message if not all there.
+
 				JSR	SWITCH
 ASKER			BIT	KEYBRD
 				BPL	ASKER
 				LDA	KEYBRD
 				BIT	UNSTROB
-				CMP	#$D9
+				CMP	#"Y"
 				BNE	YNO
 				JSR	SWITCH
-				LDY	#$02	
-GOAGAIN			LDA	#$FF	
-				JSR	WAIT
+				LDY	#$02
+GOAGAIN			LDA	#$FF
+				JSR	DELAY
 				DEY
 				BNE	GOAGAIN
-				JMP	ORBS
-YNO				CMP	#$CE
+				JSR	ORBS
+				SEC					; door opened
+				RTS
+YNO				CMP	#"N"
 				BNE	ASKER
 				JSR	SWITCH
+				CLC					; door not opened
 				RTS
 
 SWITCH			LDA	#LINEBEG
@@ -79,7 +70,7 @@ POINT1			LDX	LINENUM
 				LDA	HIBYTES,X
 				ORA	#$20
 				STA	SCREENH
-				LDX	#ROWBEG	
+				LDX	#ROWBEG
 POINT2			LDY	BYTENUM
 				LDA	LOADER,Y
 				PHA
@@ -120,14 +111,14 @@ LOOP1B			LDX	LINENUM
 				ORA	#$20
 				STA	SCREENH
 				LDY	POINTER
-				LDX	BEGROWS,Y	
+				LDX	BEGROWS,Y
 LOOP2			LDY	BYTENUM
 				LDA	(LOADL),Y
 				PHA
 				TXA
 				TAY
 				PLA
-				STA	(SCREENL),Y	
+				STA	(SCREENL),Y
 				INC	BYTENUM
 				LDY	POINTER
 				TXA
@@ -139,7 +130,7 @@ NEXTLIN			LDA	LINENUM
 				CMP	#ENDLINS
 				BEQ	NEXTPIC
 				INC	LINENUM
-				JMP	LOOP1B	
+				JMP	LOOP1B
 NEXTPIC			LDA	LOADL
 				CLC
 				ADC	BYTENUM
@@ -150,20 +141,20 @@ NEXTPIC			LDA	LOADL
 				STA	LOADH
 				JSR	SOUND
 				LDY	#$03
-REPEAT			LDA	#$FF	
-				JSR	WAIT
+REPEAT			LDA	#$FF
+				JSR	DELAY
 				DEY
 				BNE	REPEAT
 				LDA	POINTER
 				CMP	#$04
 				BNE	NOLEAVE
-				JMP	HATCHES	
+				JMP	HATCHES
 NOLEAVE			INC	POINTER
 				JMP	LOOP1A
 
-SOUND			LDX	#$30	
-AGAIN1			LDY	#$10	
-AGAIN2			PHA	
+SOUND			LDX	#$30
+AGAIN1			LDY	#$10
+AGAIN2			PHA
 				PLA
 				DEY
 				BNE	AGAIN2
@@ -212,22 +203,22 @@ SPOT3			LDY	BYTENUM
 				INC	BYTENUM
 				CPX	LASTROW
 				BEQ	LINOVER
-				INX	
+				INX
 				JMP	SPOT3
 LINOVER			LDA	LINENUM
 				CMP	#$6F
 				BEQ	NEXTONE
 				INC	LINENUM
 				JMP	SPOT2
-NEXTONE			LDA	#$50	
-				JSR	WAIT
+NEXTONE			LDA	#$50
+				JSR	DELAY
 				LDA	FRSTLIN
 				CMP	#$50
 				BEQ	ONEDONE
 				DEC	FRSTLIN
 				JMP	SPOT1B
 ONEDONE			LDA	#$FF
-				JSR	WAIT
+				JSR	DELAY
 				LDA	LASTROW
 				CMP	#$22
 				BEQ	PANELS
@@ -239,7 +230,7 @@ ONEDONE			LDA	#$FF
 				ADC	#$06
 				STA	FRSTROW
 				LDA	DATAL
-				CLC	
+				CLC
 				ADC	BYTENUM
 				STA	DATAL
 				LDA	#$00
@@ -282,7 +273,7 @@ DOWNA			NOP
 NOENDAD			RTS
 
 UPG				NOP
-				LDY	#$0C	
+				LDY	#$0C
 				JSR	UP2
 				CMP	#$01
 				BNE	NOENDGU
@@ -302,7 +293,7 @@ NOENDGD			RTS
 UPB				NOP
 				LDY	#$02
 				JSR	UP1
-				CMP	#$00	
+				CMP	#$00
 				BNE	NOENDBU
 				LDA	#$60
 				STA	UPB
@@ -311,7 +302,7 @@ NOENDBU			RTS
 DOWNB			NOP
 				LDY	#$03
 				JSR	DOWN1
-				CMP	#$BF	
+				CMP	#$BF
 				BNE	NOENDBD
 				LDA	#$60
 				STA	DOWNB
@@ -320,7 +311,7 @@ NOENDBD			RTS
 UPC				NOP
 				LDY	#$04
 				JSR	UP1
-				CMP	#$00			
+				CMP	#$00
 				BNE	NOENDCU
 				LDA	#$60
 				STA	UPC
@@ -329,7 +320,7 @@ NOENDCU			RTS
 DOWNC			NOP
 				LDY	#$05
 				JSR	DOWN1
-				CMP	#$BF	
+				CMP	#$BF
 				BNE	NOENDCD
 				LDA	#$60
 				STA	DOWNC
@@ -338,7 +329,7 @@ NOENDCD			RTS
 UPD				NOP
 				LDY	#$06
 				JSR	UP1
-				CMP	#$00	
+				CMP	#$00
 				BNE	NOENDDU
 				LDA	#$60
 				STA	UPD
@@ -347,7 +338,7 @@ NOENDDU			RTS
 DOWND			NOP
 				LDY	#$07
 				JSR	DOWN1
-				CMP	#$BF	
+				CMP	#$BF
 				BNE	NOENDDD
 				LDA	#$60
 				STA	DOWND
@@ -356,7 +347,7 @@ NOENDDD			RTS
 UPE				NOP
 				LDY	#$08
 				JSR	UP1
-				CMP	#$00	
+				CMP	#$00
 				BNE	NOENDEU
 				LDA	#$60
 				STA	UPE
@@ -365,7 +356,7 @@ NOENDEU			RTS
 DOWNE			NOP
 				LDY	#$09
 				JSR	DOWN1
-				CMP	#$BF	
+				CMP	#$BF
 				BNE	NOENDED
 				LDA	#$60
 				STA	DOWNE
@@ -374,7 +365,7 @@ NOENDED			RTS
 UPF				NOP
 				LDY	#$0A
 				JSR	UP1
-				CMP	#$00	
+				CMP	#$00
 				BNE	NOENDFU
 				PLA
 				PLA
@@ -383,7 +374,7 @@ NOENDFU			RTS
 DOWNF			NOP
 				LDY	#$0B
 				JSR	DOWN1
-				CMP	#$BF	
+				CMP	#$BF
 				BNE	NOENDFD
 				LDA	#$60
 				STA	DOWNF
@@ -403,12 +394,12 @@ ENDROW			DFB	$04,$04
 				DFB	$1C,$1C
 				DFB	$22,$22
 				DFB	$27,$27
-ENDLINES		DFB	$5F,$60	
-				DFB	$87,$88	
-				DFB	$37,$38	
-				DFB	$87,$88	
-				DFB	$37,$38	
-				DFB	$87,$88	
+ENDLINES		DFB	$5F,$60
+				DFB	$87,$88
+				DFB	$37,$38
+				DFB	$87,$88
+				DFB	$37,$38
+				DFB	$87,$88
 				DFB	$5F,$60
 
 UP1				LDA	#$01
@@ -426,7 +417,7 @@ STARTUP			STY	POINTER
 				BNE	CONTINU
 				LDA	ENDLINES,Y
 				JMP	FINISH
-CONTINU			LDA	#$00	
+CONTINU			LDA	#$00
 				STA	TOCNT
 LOOPA			LDX	FROMCNT
 				LDA	LOBYTES,X
@@ -451,13 +442,13 @@ LOOPB			LDA	(SCREENL),Y
 				INY
 				JMP	LOOPB
 SKIP1			LDY	POINTER
-				LDA	ENDLINES,Y	
-				CMP	FROMCNT	
+				LDA	ENDLINES,Y
+				CMP	FROMCNT
 				BEQ	FINISH
 				INC	FROMCNT
 				INC	TOCNT
 				JMP	LOOPA
-FINISH			PHA	
+FINISH			PHA
 				LDA	ENDLINES,Y
 				SEC
 				SBC	NUMUP
@@ -473,17 +464,17 @@ LOOPC			LDX	TOCNT
 				LDA	HIBYTES,X
 				PHA
 				ORA	#$20
-				STA	DESTINH	
+				STA	DESTINH
 				PLA
 				ORA	#$40
-				STA	SCREENH	
+				STA	SCREENH
 				LDA	ENDROW,Y
 				STA	ENDSAVE
 				LDA	BEGROW,Y
 				TAY
 LOOPD			LDA	(SCREENL),Y
 				STA	(DESTINL),Y
-				CPY	ENDSAVE	
+				CPY	ENDSAVE
 				BEQ	SKIP2
 				INY
 				JMP	LOOPD
@@ -494,7 +485,7 @@ SKIP2			LDA	FROMCNT
 				INC	TOCNT
 				LDY	POINTER
 				JMP	LOOPC
-DONE			PLA	
+DONE			PLA
 				RTS
 
 DOWN1			LDA	#$01
@@ -508,12 +499,12 @@ STARTDN			STY	POINTER
 				STA	TOCNT
 				SEC
 				SBC	NUMUP
-				STA	FROMCNT	
+				STA	FROMCNT
 				LDA	#$BF
 				SEC
 				SBC	ENDLINES,Y
 				CMP	NUMUP
-				BCS	LOOPE	
+				BCS	LOOPE
 				LDA	ENDLINES,Y
 				JMP	FINISH2
 LOOPE			LDX	FROMCNT
@@ -547,7 +538,7 @@ SKIP3			LDY	POINTER
 				JMP	LOOPE
 FINISH2			PHA
 				LDA	ENDLINES,Y
-				CLC	
+				CLC
 				ADC	NUMUP
 				STA	ENDLINES,Y
 				STA	TOCNT
@@ -577,7 +568,7 @@ LOOPH			LDA	(SCREENL),Y
 				JMP	LOOPH
 SKIP4			LDA	FROMCNT
 				CMP	#$01
-				BEQ	DONE2	
+				BEQ	DONE2
 				DEC	FROMCNT
 				DEC	TOCNT
 				LDY	POINTER
@@ -607,23 +598,24 @@ COMMON			LDA	NUMUP
 				LSR	A
 				PHA
 WAITER			PLA
-				TAX	
+				TAX
 LOOPER			CPX	#$00
 				BEQ	OUT
 				BIT	CLICK
-				LDA	#$02	
-				JSR	WAIT	
-				DEX	
+				LDA	#$02
+				JSR	DELAY
+				DEX
 				JMP	LOOPER
 OUT				RTS
 
-WAIT			SEC
-WAIT2			PHA
-WAIT3			SBC	#$01
-				BNE	WAIT3
+; NOTE: different than global WAIT because it does not check for key press
+DELAY			SEC
+:1				PHA
+:2				SBC	#$01
+				BNE	:2
 				PLA
 				SBC	#$01
-				BNE	WAIT2
+				BNE	:1
 				RTS
 ;
 ; Programmatically generate orb door
@@ -675,7 +667,7 @@ DRAW_BREAKS		LDX	#$00
 				INX
 				CPX	#7
 				BNE	:1
-				
+
 ; draw the five orb pedestals
 DRAW_PEDS		LDX	#0
 :1				LDA	PED_PATTERN+0,X
@@ -698,7 +690,7 @@ DRAW_PEDS		LDX	#0
 				CPX	#20
 				BNE	:1
 				RTS
-				
+
 DOOR_STRIPES	HEX	ABD5AAD5BAABD5AAD5AAF5562A552A553AABD5AA
 				HEX	D5AAF5562A552A553AABD5AAD5AAF5D6AAD5AAB5
 

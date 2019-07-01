@@ -1,19 +1,34 @@
-LINE0			DFB	$00,$2F,$00
+
+VP_DATA			DW	VP_TEXT
+				DW	VP_LINES
+				DW	VP_PICTS
+
+VP_TEXT			DW	TEXT0
+
+TEXT0			DFB	$04,$04,$06
+				USR(NO_ONE_CAN_TRANSLATE_THE_WRITING._DO)
+
+				DFB	$04,$04,$0F
+				USR(YOU_WANT_TO_TRY_PRESSING_BUTTONS?_)+
+
+VP_LINES		DW	VP_LINE0
+				DW	VP_LINE1
+				DW	VP_LINE2
+				DW	VP_LINE3
+				DW	VP_LINE4
+				DW	VP_LINE5
+				DW	VP_LINE6
+
+VP_LINE0		DFB	$00,$2F,$00
 				DFB	$00,$E7,$00
 				DFB	$FF
-LINE1			DFB	$00,$FF,$35	
-				DFB	$00,$FF,$57	
-				DFB	$FE	
-LINE1X			DFB	$00,$FF,$73
-				DFB	$00,$FF,$95
+VP_LINE1		DFB	$00,$FF,$35
+				DFB	$00,$FF,$57
 				DFB	$FF
-LINE2			DFB	$00,$2E,$45	
-				DFB	$00,$E8,$45	
-				DFB	$FE
-				DFB	$00,$2E,$83
-				DFB	$00,$E8,$83
+VP_LINE2		DFB	$00,$2E,$45
+				DFB	$00,$E8,$45
 				DFB	$FF
-LINE3			DFB	$00,$00,$01
+VP_LINE3		DFB	$00,$00,$01
 				DFB	$01,$16,$01
 				DFB	$FE
 				DFB	$00,$00,$65
@@ -28,48 +43,33 @@ LINE3			DFB	$00,$00,$01
 				DFB	$01,$01,$01
 				DFB	$01,$01,$BD
 				DFB	$FF
-LINE4			DFB	$00,$00,$60
+VP_LINE4		DFB	$00,$00,$60
 				DFB	$00,$00,$64
 				DFB	$FE
 				DFB	$00,$00,$66
 				DFB	$00,$00,$6A
 				DFB	$FF
-LINE5			DFB	$01,$16,$60
+VP_LINE5		DFB	$01,$16,$60
 				DFB	$01,$16,$64
 				DFB	$FE
 				DFB	$01,$16,$66
 				DFB	$01,$16,$6A
 				DFB	$FF
-LINE6			DFB	$00,$42,$65
+VP_LINE6		DFB	$00,$42,$65
 				DFB	$00,$45,$65
 				DFB	$FF
-TEXT0			DFB	$04,$04,$06
-				DFB	$18,$19,$0A
-				DFB	$19,$18,$0F
-				DFB	$0A,$0D,$0B
-				DFB	$18,$0A,$1E
-				DFB	$1C,$0B,$18
-				DFB	$1D,$16,$0B
-				DFB	$1E,$0F,$0A
-				DFB	$1E,$12,$0F
-				DFB	$0A,$21,$1C
-				DFB	$13,$1E,$13
-				DFB	$18,$11,$2D
-				DFB	$0A,$0E,$19
-				DFB	$8D,$04,$04
-				DFB	$0F,$23,$19
-				DFB	$1F,$0A,$21
-				DFB	$0B,$18,$1E
-				DFB	$0A,$1E,$19
-				DFB	$0A,$1E,$1C
-				DFB	$23,$0A,$1A
-				DFB	$1C,$0F,$1D
-				DFB	$1D,$13,$18
-				DFB	$11,$0A,$0C
-				DFB	$1F,$1E,$1E
-				DFB	$19,$18,$1D
-				DFB	$33,$0A,$8D
-				DFB	$FF
+
+VP_PICTS		DW	MPORT		; 0
+				DW	LPORT		; 1
+				DW	RPORT		; 2
+				DW	WRITING		; 3
+				DW	BUTTONS		; 4
+				DW	STARST		; 5
+				DW	STARSB		; 6
+				DW	ALET		; 7 (airlock A)
+				DW	INFINT		; 8 (airlock infinity)
+				DW	LLET		; 9 (airlock L)
+
 MPORT			DFB	$2D,$5F,$04
 				DFB	$23,$8A,$89
 				DFB	$88,$89,$88

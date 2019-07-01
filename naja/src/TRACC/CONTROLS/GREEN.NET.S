@@ -1,7 +1,10 @@
 GREEN_NET		BIT	OPEN1
 				BVS	:1
 				JMP	NO_SPECIAL
-:1				LDA	SRANGE
+:1				LDX	#<GN_DATA
+				LDY	#>GN_DATA
+				JSR	SET_TLP_DATA
+				LDA	SRANGE
 				PHA
 				LDA	#$40
 				STA	PAGE
@@ -24,7 +27,7 @@ NETHERE			STA	SCNDARY
 				LDA	#$8F
 				LDY	#$A9
 				JSR	INPUT
-				LDY	#$05	
+				LDY	#$05
 CHCKMOR			LDA	TEXTBUF,Y
 				JSR	CONVERT
 				TXA
@@ -64,14 +67,14 @@ GDASH28			USR	(GN-28)-
 
 CLOSE_NET		LDA	#WHITE1
 				STA	COLOR
-				LDY	#6				;Net edges
+				LDY	#2				;Net edges
 				JSR	LINER
 				LDY	#0
-				JSR	LINER	
+				JSR	LINER
 				LDA	#GREEN
 				STA	COLOR
 				LDA	#$36
-				STA	ALINE	
+				STA	ALINE
 				LDA	#$A2
 				STA	BLINE
 				LDA	#0
@@ -89,7 +92,7 @@ DONET			LDY	ALINE
 				LDY	BLINE
 				LDX	B_COUNT
 				JSR	NET_LINE
-				LDA	#$FF	
+				LDA	#$FF
 				STA	PITCH
 				LDA	#$10
 				STA	LENGTH
@@ -127,7 +130,7 @@ NET_LINE		STX	COUNT
 				JSR	HLIN
 
 				LDX	COUNT
-				LDA	NUMBER,X	
+				LDA	NUMBER,X
 				BEQ	OUTN
 				PHA
 				LDA	#WHITE1
@@ -141,51 +144,51 @@ NET_LINE		STX	COUNT
 				CMP	#$01
 				BEQ	ONLY1
 				LDX	#0
-				LDA	#$7B	
+				LDA	#$7B
 				STA	SCRATCH
 				LDY	YPNT
 				JSR	HLIN
 				LDA	COUNT
 				SEC
-				SBC	#$0B	
+				SBC	#$0B
 				ASL
 				CLC
-				ADC	#$7D	
+				ADC	#$7D
 				TAX
 				LDA	YPNT
 				LDY	#0
 				JSR	HPOSN
 ONLY1			LDA	COUNT
-				CMP	#$14	
+				CMP	#$14
 				BCC	ALLREST
-				LDA	#$A7	
+				LDA	#$A7
 				JMP	USE169
 ALLREST			SEC
 				SBC	#$05
 				ASL
-				ADC	#$7D	
-USE169			STA	SCRATCH	
+				ADC	#$7D
+USE169			STA	SCRATCH
 				LDY	YPNT
 				LDX	#0
 				JSR	HLIN
 				PLA
 				CMP	#$03
 				BCC	OUTN
-				LDX	#$9B	
+				LDX	#$9B
 				LDA	YPNT
 				LDY	#0
 				JSR	HPOSN
 				LDA	COUNT
-				CMP	#$10	
+				CMP	#$10
 				BCS	ONE69
 				SEC
-				SBC	#$0D	
+				SBC	#$0D
 				ASL
 				ASL
 				CLC
-				ADC	#$B3	
+				ADC	#$B3
 				JMP	USEIT2
-ONE69			LDA	#$A7	
+ONE69			LDA	#$A7
 USEIT2			STA	SCRATCH
 				LDY	YPNT
 				LDX	#0
@@ -233,13 +236,13 @@ SHIFTS			LSR
 				STA	CLICK
 				STA	CLICK
 NEXTBIT			DEX
-				BNE	SHIFTS	
+				BNE	SHIFTS
 				LDX	PITCH
 DELAY			DEX
 				BNE	DELAY
 				INY
 				DEC	LENGTH
-				BNE	BYTE	
+				BNE	BYTE
 				RTS
 
 BOXIN			LDA	#$20
@@ -247,8 +250,8 @@ BOXIN			LDA	#$20
 				JSR	CLEAR1
 				LDA	#WHITE1
 BOXIN2			STA	COLOR
-				LDY	#$01	
-				JSR	LINER	
+				LDY	#1
+				JSR	LINER
 				LDY	#$04
 MORCODE			LDA	CODEWRD,Y
 				STA	TEXTBUF,Y
@@ -317,13 +320,13 @@ MORUP2			LDY	LINENUM
 MORUP3			LDA	(SCREENL),Y
 				STA	(DESTINL),Y
 				INY
-				CPY	#$1A	
+				CPY	#$1A
 				BNE	MORUP3
 				INX
 				INC	LINENUM
 				CPX	#$B1
 				BNE	MORUP2
-				LDA	#$60	
+				LDA	#$60
 				JSR	WAIT
 				LDA	BEGLINE
 				DEC	BEGLINE
@@ -350,7 +353,7 @@ MORDWN2			LDA	LOBYTES,X
 MORDWN3			LDA	(SCREENL),Y
 				STA	(DESTINL),Y
 				INY
-				CPY	#$1A	
+				CPY	#$1A
 				BNE	MORDWN3
 				CPX	ENDLINE
 				BEQ	NOMORDW
@@ -375,13 +378,13 @@ CLRLINE			LDA	#$00
 				LDY	#$0E
 CLRLIN2			STA	(SCREENL),Y
 				INY
-				CPY	#$1A	
-				BNE	CLRLIN2	
+				CPY	#$1A
+				BNE	CLRLIN2
 				RTS
 
 OPEN_NET		LDA	SRANGE
 				PHA
-				LDA	#$20	
+				LDA	#$20
 				STA	PAGE
 				LDA	#$60
 				STA	BISTOP
@@ -394,7 +397,7 @@ OPEN_NET		LDA	SRANGE
 				LDA	#$01
 				STA	SRANGE
 				JSR	NOSCAN
-				LDY	#6				;Net edges
+				LDY	#2				;Net edges
 				JSR	LINER
 				LDA	#$9E
 				STA	ALINE
@@ -426,7 +429,7 @@ DONET2			LDX	ALINE
 				BNE	DONET2
 				LDA	#BLACK1
 				STA	COLOR
-				LDY	#6				;Net edges
+				LDY	#2				;Net edges
 				JSR	LINER
 				PLA
 				STA	SRANGE
@@ -459,6 +462,7 @@ HOLEDAT			DB	$00,$5F,$AF
 				DB	$00,$5A,$B2
 				DB	$00,$5F,$AF
 				DB	$FF
+
 BOXDATA			DB	$00,$62,$A7
 				DB	$00,$62,$B0
 				DB	$00,$63,$B0
@@ -468,5 +472,13 @@ BOXDATA			DB	$00,$62,$A7
 				DB	$00,$B5,$B0
 				DB	$00,$B5,$A7
 				DB	$FF
+
+GN_DATA			DW	0
+				DW	GN_LINES
+				DW	0
+
+GN_LINES		DW	HOLEDAT
+				DW	BOXDATA
+				DW	NET_EDGES
 
 OPEN1			DB	$FF

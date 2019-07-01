@@ -1,4 +1,4 @@
-				DW	ELEVATOR		;0
+				DW	ELEVATOR_345	;0
 				DW	ROTROOM			;1
 				DW	SHIPSND			;2
 				DW	GRAFITI			;3
@@ -13,16 +13,17 @@
 				DW	ORBGRD			;C
 				DW	AUTOEN			;D
 				DW	NOENCNT			;E
-				DB	$FF,$FF			;F
+				DW	$FFFF			;F
 				DW	NOTDOOR			;10
 				DW	FAKEFC			;11
-				DB	$FF,$FF			;12
-				DB	$FF,$FF			;13
-				DB	$FF,$FF			;14
-				DB	$FF,$FF			;15
-				DW	ORBDOOR			;16
-				DW	NAJADOR			;17
+				DW	$FFFF			;12
+				DW	$FFFF			;13
+				DW	$FFFF			;14
+				DW	$FFFF			;15
+				DW	ORB_DOOR		;16
+				DW	NAJA_DOOR		;17
 				DW	FAKE2			;18
+				DW	ELEVATOR_FAR	;19
 
 FACE1			DB	$42,$07,$01
 				DB	$83,$08,$01
@@ -34,8 +35,8 @@ FACE2			DB	$02,$03,$01
 				DB	$26,$06,$0B
 				DB	$26,$07,$05
 				DB	$12,$12,$FF
-FACE3			DB	$41,$04,$00
-				DB	$41,$05,$00
+FACE3			DB	$41,$04,$19		; elevator far
+				DB	$41,$05,$00		; elevator 345
 				DB	$C2,$03,$04
 				DB	$42,$04,$04
 				DB	$23,$06,$02
@@ -79,7 +80,7 @@ FACE5			DB	$01,$03,$03
 				DB	$08,$03,$01
 				DB	$12,$12,$FF
 FACE6			DB	$21,$04,$0E
-				DB	$82,$05,$11
+				DB	$82,$05,$11		; fake face change
 				DB	$26,$09,$07
 				DB	$27,$04,$02
 				DB	$27,$05,$02
@@ -89,34 +90,16 @@ FACE6			DB	$21,$04,$0E
 				DB	$29,$03,$02
 				DB	$29,$07,$02
 				DB	$12,$12,$FF
-FACE7			DB	$87,$04,$17
-				DB	$89,$05,$16
-				DB	$C9,$05,$18
+FACE7			DB	$87,$04,$17		; naja door
+				DB	$89,$05,$16		; orb door
+				DB	$C9,$05,$18		; fake face change 2
 				DB	$12,$12,$FF
 
-TEXTS			DW	CRITICAL_TEXT
-				DW	RUNDOWN_TEXT
-				DW	CURED_TEXT
-				DW	CONTAG_TEXT
+sOrbDoor		=	0
 
-***tor = 0
-
-FILE_TABLE
-
-LINER			TYA
-				ASL
-				TAY
-				LDA	LINES,Y
-				STA	POINTL
-				LDA	LINES+1,Y
-				STA	POINTH
-				JMP	LINEOUT
-LINES			DB	$FF,$FF
-				DB	$FF,$FF
-				DW	BLKLIN2
-				DW	EBOX2
-				DW	BLKLINE
-				DW	EBOX
+FILE_TABLE		DB	$90				;0 - sOrbDoor
+				DW	$01D0
+				DB	$0D
 
 SHIPSND			NOP
 GRAFITI			NOP
@@ -127,7 +110,7 @@ INFROOM			NOP
 ORBGRD			NOP
 AUTOEN			NOP
 NOENCNT			NOP
-NAJADOR			NOP
+NAJA_DOOR		NOP
 				LDA	#$00
 				RTS
 *************
@@ -204,10 +187,12 @@ ROTSPOT			DB	$03,$08,$F0,$01
 				DB	$02,$03,$00,$02
 				DB	$08,$03,$00,$05
 				DB	$07,$02,$FF,$05
-*************
+
+*-------------------------------
+
 NET				LDA	FLAG12
 *****TEMP*****
-				LDA	$BC80
+				LDA	$BC80			; TODO: figure out what this is
 				CMP	#$0C
 				BNE	NOOPEN
 				LDA	#$00
@@ -233,12 +218,12 @@ WAVER2			STA	PRIMARY
 				BPL	WAVER2
 				JSR	CPARER2
 				BNE	WAVER1
-				JMP	RDKEY
+				JMP	RDKEY			; TODO: should RTS instead of jumping
 NETDRAW			LDA	YPOS
-				ORA	#$D0
-				CMP	PICKON
-				BEQ	NETOUT
-				STA	PICKON
+			;	ORA	#$D0
+			;	CMP	PICKON
+			;	BEQ	NETOUT
+			;	STA	PICKON
 				JSR	MOVETO2
 				LDA	#$0D
 				STA	DATAPNT
@@ -269,64 +254,43 @@ NOMODULO		INC	LINENUM
 				CMP	#$B3
 				BNE	NETTER1
 NETOUT			RTS
+
 DATABYTE		DB	$40,$88,$80
 				DB	$10,$00,$A0
 				DB	$80,$44,$84
 				DB	$82,$00,$01
 				DB	$80,$80
+
 EORTABLE		DB	$48,$08,$10
 				DB	$10,$20,$20
 				DB	$40,$44,$04
 				DB	$02,$02,$01
 				DB	$01,$40
-*************
-ELEVATOR		LDA	#$40
-				STA	PAGE
-				JSR	CLEAR2
-				JSR	NOSCAN
-				LDA	#BLACK1
-				STA	COLOR
-				LDA	YPOS
-				SEC
-				SBC	#$03
-				ASL
-				TAY
-				PHA
-				JSR	LINER
-				LDA	#WHITE1
-				STA	COLOR
-				PLA
-				TAY
-				INY
-				JSR	LINER
-				STA	SCNDARY
-				JSR	MOVETO1
-				STA	PRIMARY
-				LDA	YPOS
-				CMP	#$04
-				BEQ	FARELEV
-				JSR	SET_CAMPFILES
-				LDA	CAMP_HERE
-				AND	#bit_Diagnose!$FF				;! means XOR
-				STA	CAMP_HERE
-				LDX	#cElevator
-				JSR	SLOAD_FILE
-				LDA	#$01			;Elevator 345 flag
-				JMP	$9000
-FARELEV			BIT	UNSTROB
-:LOOP1			LDA	KEYBRD
-				BPL	:LOOP1
-				JSR	CPARER1
-				BNE	FARELEV
-				JMP	RDKEY
 
+*-------------------------------
+
+ELEVATOR_345	LDA	#0				; BLKLIN, EBOX
+				JSR	EV_LINE_SUB
+				JSR	SET_CAMPFILES
+				LDX	#cElevator
+				JSR	SLOAD_SPECIAL
+				LDA	#$01			; elevator 345 flag
+				JMP	$9000
+
+*-------------------------------
+
+; Fake face change to get to orb door/core
+;
 FAKEFC			JSR	FAKER
 				LDA	#$07
 				STA	FACE
 				LDA	#$09
 				STA	XPOS
 				JSR	GETNSEW
-				JMP	ORB2
+				JMP	ORB_DOOR
+
+; Fake face change to get back from orb door/core
+;
 FAKE2			JSR	FAKER
 				LDA	#$06
 				STA	FACE
@@ -334,8 +298,10 @@ FAKE2			JSR	FAKER
 				STA	XPOS
 				JSR	GETNSEW
 				JSR	CLEAR1
-				JSR	NOSCAN
-				JMP	RDKEY
+				JMP	NOSCAN			; implicit RTS
+
+; Wait for forward keypress to cross fake face change
+;
 FAKER			LDA	FLAG12
 				CMP	#$02
 				BNE	GONOF
@@ -352,27 +318,57 @@ GOFAKE			BIT	KEYBRD
 				BEQ	GORDKEY
 				BIT	UNSTROB
 				JMP	GOFAKE
-GORDKEY			JMP	RDKEY
+GORDKEY			PLA
+				PLA
+				LDA	#$FF			; read key before redrawing tunnel
+				RTS
 GOFORWD			BIT	UNSTROB
 				RTS
-ORBED			DB	$00
-ORBDOOR			BIT	ORBED
-				BVS	DUMMY2			;TEMP
+
+; Orb door animation
+;
+ORB_DOOR		BIT	DOOR_OPEN
+				BVS	:IS_OPEN
+
+				; draw destination tunnel on page 2
+				;	to be revealed by door animation
+				;
+				LDA	#$40
+				STA	PAGE
+				JSR	CLEAR2
+				JSR	NOSCAN
+
+				LDX	#sOrbDoor
+				JSR	SLOAD_SPECIAL
+				JSR	$9000
+				BCC	:NOT_OPENED
 				LDA	#$FF
-				STA	ORBED
-ORB2			LDA	#$04
-*STA STRACK
-*LDA #$00
-*STA SSECTOR
-*LDA #$10
-*STA READNUM
-*LDA #$88
-*STA SSTOREH
-*JSR SREAD
-				JSR	$8800
-				JMP	RDKEY
-DUMMY2			LDA	#$00
+				STA	DOOR_OPEN
+				BNE	:IS_OPEN		; always
+
+:NOT_OPENED		JSR	TURN_AWAY
+:IS_OPEN		LDA	#$FF			; read key before redrawing tunnel
 				RTS
+
+DOOR_OPEN		DB	$00				; TODO: should be stored someplace permanent
+
+*-------------------------------
+
+; TODO: this should be part of COMMON.S
+; TODO: reconcile with CPARER1, CPAPER2
+
+RETURN_AWAY		BIT	UNSTROB
+TURN_AWAY		LDA	KEYBRD
+				BPL	TURN_AWAY
+				JSR	CHECK_DOWN
+				BEQ	:1
+				JSR	CHECK_LEFT
+				BEQ	:1
+				JSR	CHECK_RIGHT
+				BNE	RETURN_AWAY
+:1				RTS
+
+*-------------------------------
 
 SHELL9
 			do ORIGINAL
@@ -485,7 +481,7 @@ F6				HEX	3FDDF0
 				HEX	3F0CF0
 				HEX	63CF30
 				HEX	333E00
-				HEX	C0E330
+				HEX	D0E330
 				HEX	3CC000
 				HEX	CF3330
 				HEX	3B0FF0
