@@ -4,8 +4,9 @@
 - fix editor write/exit
 - test info seller
 
-- Tesseract to TRACC hangs if tracc1.nib not in drive
+- Tesseract to TRACC hangs if tracc1.nib not in drive (sometimes)
 - Topviews on shell 11 are too low vertically
+- Fix alien heap overflow on shell 9
 
 
 Tools
@@ -14,15 +15,6 @@ Tools
 	Level Editor
 	
 		- Fix flickering issues while drawing
-	
-	Emulator/Debugger
-	
-		- Get building from source and checked in.
-		- Attach custom debugger
-			- Symbol support
-			- Stack crawl
-			- Way to toggle screens (see what's being drawn offscreen)
-			- copy/paste a2 memory as text to clipboard
 
 Game
 ----
