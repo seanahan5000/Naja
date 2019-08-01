@@ -1,48 +1,4 @@
 
-MAP_DATA		DW	MAP_FACE_0
-				DW	MAP_FACE_1
-				DW	MAP_FACE_2
-				DW	MAP_FACE_3
-				DW	MAP_FACE_4
-				DW	MAP_FACE_5
-
-				DW	#17*0
-				DW	#17*1
-				DW	#17*2
-				DW	#17*3
-				DW	#17*4
-				DW	#17*5
-				DW	#17*6
-				DW	#17*7
-				DW	#17*8
-				DW	#17*9
-				DW	#17*10
-				DW	#17*11
-				DW	#17*12
-				DW	#17*13
-				DW	#17*14
-				DW	#17*15
-				DW	#17*16
-
-
-
-MAP_SIZE		=	ZBLOCK+$0
-MAP_FACE		=	ZBLOCK+$1			; must be sequential
-MAP_X			=	ZBLOCK+$2			; must be sequential
-MAP_Y			=	ZBLOCK+$3			; must be sequential
-MAP_DIR			=	ZBLOCK+$4			; must be sequential
-MAP_PTR_L		=	ZBLOCK+$5			; must be sequential
-MAP_PTR_H		=	ZBLOCK+$6			; must be sequential
-
-MAP_INDEX		DS	1					;*** ZPAGE INSTEAD?
-MAP_BUFFER		DS	24					;*** HOW MUCH SPACE NEEDED?
-
-DATA_TEMP		=	$00
-DATA_LEFT		=	$01
-DATA_CENTER		=	$02
-DATA_RIGHT		=	$03
-
-
 ;*** WOULD IT BE MORE EFFICIENT IF DATA WAS STORED NN.EE.SS.WW ? ***
 	;*** EASIER TO TEST NORTH USING BIT INSTRUCTION ***
 
@@ -132,7 +88,8 @@ SWAP_STATE		LDX	#5
 :1				LDY	MAP_FACE,X
 				LDA	SAVED_STATE,X
 				STA	MAP_FACE,X
-				STY	SAVED_STATE,X
+				TYA
+				STA	SAVED_STATE,X			;*** no STY $0000,X?
 				DEX
 				BPL	:1
 				RTS
@@ -263,7 +220,7 @@ CHANGE_FACE		LDA	MAP_X
 				LDA	MAP_FACE
 				ASL
 				ASL					; four entries per source face
-				ADD	MAP_DIR			; (carry always clear)
+				ADC	MAP_DIR			; (carry always clear)
 				ASL					; two entries per direction
 				TAX
 				LDA	FACE_DATA+0,X
