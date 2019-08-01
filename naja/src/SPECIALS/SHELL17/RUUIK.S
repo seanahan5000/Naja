@@ -4,6 +4,10 @@
 COLUMN			EQU	$01
 TOTAL			EQU	$0F
 
+				LDX	#<RU_DATA
+				LDY	#>RU_DATA
+				JSR	SET_TLP_DATA
+
 				JSR	CLEAR2
 				LDA	#$40
 				STA	PAGE
