@@ -1329,6 +1329,56 @@ south			=	$0F
 west			=	$F0
 east			=	$FF
 
+			do ORIGINAL
+
+;	+---+
+;	| 1 |
+;	+---+---+---+---+
+;	| 2 | 3 | 4 | 5 |
+;	+---+---+---+---+
+;	| 6 |
+;	+---+
+
+DESTDAT			DB	4,south,$42		; from face 1
+				DB	2,south,$02
+				DB	5,south,$12
+				DB	3,south,$52
+
+				DB	1,north,$03		; from face 2
+				DB	6,south,$02
+				DB	5,west, $31
+				DB	3,east, $21
+
+				DB	1,west, $34		; from face 3
+				DB	6,west, $30
+				DB	2,west, $31
+				DB	4,east, $21
+
+				DB	1,south,$42		; from face 4
+				DB	6,north,$43
+				DB	3,west, $31
+				DB	5,east, $21
+
+				DB	1,east, $20		; from face 5
+				DB	6,east, $24
+				DB	4,west, $31
+				DB	2,east, $21
+
+				DB	2,north,$03		; from face 6
+				DB	4,north,$43
+				DB	5,north,$53
+				DB	3,north,$13
+
+			else
+
+;	    +---+
+;	    | 1 |
+;	+---+---+---+---+
+;	| 2 | 3 | 4 | 5 |
+;	+---+---+---+---+
+;	    | 6 |
+;	    +---+
+
 DESTDAT			DB	5,south,$42		;FROM FACE 1
 				DB	3,south,$02
 				DB	2,south,$12
@@ -1353,6 +1403,7 @@ DESTDAT			DB	5,south,$42		;FROM FACE 1
 				DB	5,north,$43
 				DB	2,north,$53
 				DB	4,north,$13
+			fin
 
 BLIP			LDX	#$50
 BLIP2			STA	CLICK
