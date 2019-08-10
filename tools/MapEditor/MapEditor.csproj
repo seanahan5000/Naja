@@ -89,6 +89,7 @@
     <Compile Include="Map.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Map2.cs" />
     <Compile Include="MapControl.cs">
       <SubType>Component</SubType>
     </Compile>

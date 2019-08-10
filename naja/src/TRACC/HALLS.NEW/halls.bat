@@ -13,4 +13,4 @@ if not exist %BIN% mkdir %BIN%
 %ASM% TRACC\HALLS.NEW   ASM.HALLS.S    -list HALLS.LST -sym %BIN%\halls.sym
 
 dos33 -create -d %BIN%\HALLS.DSK
-dos33 -bsave %OBJ%\HALLS -d %BIN%\HALLS.DSK -a 6000
+dos33 -bsave  -d %BIN%\HALLS.DSK %OBJ%\HALLS -a 6000

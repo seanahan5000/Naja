@@ -55,7 +55,7 @@ namespace MapEditor
 
         #region Component Designer generated code
         /// <summary>
-        /// Required method for Designer support - do not modify 
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
@@ -188,18 +188,31 @@ namespace MapEditor
 
         private Point PointToMap(int x, int y)
         {
-            return new Point((x - _margin.X + _scale / 2) / _scale + _corner.X,
-                             (y - _margin.Y + _scale / 2) / _scale + _corner.Y);
+            return new Point(
+                (x - _margin.X + _scale / 2) / _scale + _corner.X,
+                (y - _margin.Y + _scale / 2) / _scale + _corner.Y);
         }
 
         public string Copy()
         {
+#if false
+            Map2 map2 = new Map2();
+            map2.MapToMap(_map);
+            return map2.MapToText();
+#else
             return _map.MapToText();
+#endif
         }
 
         public void Paste(string text)
         {
+#if false
+            Map2 map2 = new Map2();
+            map2.TextToMap(text);
+            _map.MapToMap(map2);
+#else
             _map.TextToMap(text);
+#endif
             this.Invalidate();
         }
 
