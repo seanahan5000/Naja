@@ -2,7 +2,7 @@
 *
 *===============================
 
-PICK_ALIENS		LDA	#>DATA_BUFR
+LOAD_TABLE		LDA	#>DATA_BUFR
 				STA	SSTOREH
 				LDY	SHELL
 				LDA	DATA_LENGTHS-1,Y
@@ -11,7 +11,10 @@ PICK_ALIENS		LDA	#>DATA_BUFR
 				LDA	DATA_SECTH-1,Y
 				TAY
 				PLA
-				JSR	FLOADER
+				JMP	FLOADER
+
+PICK_ALIENS		JSR	LOAD_TABLE
+
 				LDX	FACE
 				LDA	FACE_MASKS-1,X
 				STA	FMASK
@@ -49,17 +52,17 @@ RERAND			JSR	RNDMIZE
 				BCS	RERAND
 				LDA	RARITY,Y
 ********************************
-				BIT	$C062
-				BPL	:2
-				LDX	FACE
-				CPX	#2
-				BNE	:1
-				LDA	#$08			;BURROWING TAAN
-				BNE	:2				;Always
-:1				CPX	#3
-				BNE	:2
-				LDA	#$10			;FROBOT
-:2
+*				BIT	$C062
+*				BPL	:2
+*				LDX	FACE
+*				CPX	#2
+*				BNE	:1
+*				LDA	#$08			;BURROWING TAAN
+*				BNE	:2				;Always
+*:1				CPX	#3
+*				BNE	:2
+*				LDA	#$10			;FROBOT
+*:2
 ********************************
 				STA	ALIEN1
 				TAY

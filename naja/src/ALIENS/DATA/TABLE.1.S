@@ -21,7 +21,7 @@ BEGIN_17
 				DB	pWIERD_ALIEN
 				DB	pFROG_BOT
 				DB	pTWISTER
-				DB	0				;Barackade
+				DB	$FF			;Barackade
 				DB	pWORMS
 				DB	pPROBOT
 				DB	pARMOR_ALIEN

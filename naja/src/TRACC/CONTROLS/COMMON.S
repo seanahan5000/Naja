@@ -1,4 +1,5 @@
 FIGHT_LOADER	=	$7800
+ALIEN_VIEWER	=	$7806			; debug-only
 EQUIP_FINDER	=	$9800
 
 LINENUM			EQU	$00
@@ -184,22 +185,31 @@ TAKE_DAMAGE		LDA	#$00
 				BNE	:LOOP1
 
 FIND_ENCOUNTR
-				BIT	$C061				;TEMP *** left-option/alt
-				BMI	:FORCE_ENCOUNTER	;TEMP ***
-				BIT	$C062				;TEMP *** right-option/alt
-				BMI	:FORCE_EQUIPMENT	;TEMP ***
+;************************************************
+				BIT	$C061				; left-option/alt
+				BMI	:FORCE_ENCOUNTER
+				BIT	$C062				; right-option/alt
+				BPL	:NORMAL
+				LDA	:TOGGLE
+				EOR	#$FF
+				STA	:TOGGLE
+				BMI	:FORCE_ENCOUNTER
+				BPL	:FORCE_EQUIPMENT	; always
+:TOGGLE			DB	$00
+:NORMAL
+;************************************************
 
 			do 0
 				JSR	RNDMIZE
-			else
-				JMP	NORMAL_MOVE
-			fin
 				LDA	RANDOM1
 				AND	#$7F
 				CMP	ENCODDS
 				BCS FIND_ENCOUNTR
 				CMP #$01
 				BNE :FIND_EQUIPMNT
+			else
+				JMP	NORMAL_MOVE
+			fin
 
 :FORCE_ENCOUNTER
 				JSR	PICK_HALLTYPE
@@ -212,14 +222,26 @@ FIND_ENCOUNTR
 				JSR	SET_FGHTFILES
 				LDX	#fLoader1
 				JSR	SLOADER_FILE
+
+;************************************************
+				BIT	$C062				; right-option/alt
+				BPL	:GO_FIGHT
+				JMP	ALIEN_VIEWER
+:GO_FIGHT
+;************************************************
+
 				JMP	FIGHT_LOADER
 
+			do 0
 :FIND_EQUIPMNT
 				JSR	RNDMIZE			;Can't find equipment if
 				LDA RANDOM1 		;   the random number isn't right...
 				AND	#$3F			;????????
 				CMP	#$13			;temp?
 				BNE NORMAL_MOVE
+			else
+				DS	5
+			fin
 
 :FORCE_EQUIPMENT
 				LDA	BUFFER+4		;   or they're facing a wall...
