@@ -161,6 +161,7 @@ ADD_TOPVIEWS	LDA	LPTR2
 				BNE	:LOOP1
 
 :LOOP0			INY
+				LDA	(DATPNTL),Y
 				PHA
 				LSR
 				LSR
@@ -172,13 +173,14 @@ ADD_TOPVIEWS	LDA	LPTR2
 				STA	TV_HEIGHTS,X
 				TXA
 				CLC
-				ADC	#6
-				TAX
+				ADC	#6				; offset to TV_TYPES,TV_SEQUENCES
+				TAX					;	 then TV_REPEATS,TV_SPEEDS
 				CPY	#3
 				BNE	:LOOP0
 				TYA
 				SEC					;+1
 				ADC	DATPNTL
+				STA	DATPNTL
 				BCC	:LOOP1
 				INC	DATPNTH
 
@@ -303,7 +305,7 @@ MOVE_BYTES		LDA	LPTR3
 :SKIPA			LDA	ALIEN1								;**
 				LDY	ALIEN2								;**
 				LDX	ALIEN3								;**
-				DEBUG	"Alien heap full"					;**
+				DEBUG	"Alien heap full"				;**
 				LDX	ALIEN_NUMBER
 				LDA	#$FF
 :1				STA	ALIEN1,X
