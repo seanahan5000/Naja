@@ -28,17 +28,17 @@ FACE2			DB	$C2,$0A,$04
 				DB	$12,$12,$FF
 FACE3			DB	$C1,$11,$04
 				DB	$83,$11,$04
-				DB	$24,$11,$05
-				DB	$25,$11,$06
-				DB	$26,$11,$06
-				DB	$27,$11,$06
-				DB	$28,$11,$06
-				DB	$29,$11,$06
-				DB	$2A,$11,$06
-				DB	$2B,$11,$06
-				DB	$2C,$11,$06
-				DB	$2D,$11,$06
-				DB	$2E,$11,$05
+				DB	$24,$11,$05			; airlock
+				DB	$25,$11,$06			; viewport
+				DB	$26,$11,$06			; viewport
+				DB	$27,$11,$06			; viewport
+				DB	$28,$11,$06			; viewport
+				DB	$29,$11,$06			; viewport
+				DB	$2A,$11,$06			; viewport
+				DB	$2B,$11,$06			; viewport
+				DB	$2C,$11,$06			; viewport
+				DB	$2D,$11,$06			; viewport
+				DB	$2E,$11,$05			; airlock
 				DB	$CF,$11,$04
 				DB	$D0,$09,$08
 				DB	$91,$11,$04
