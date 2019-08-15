@@ -48,6 +48,10 @@ GOTUNL			JSR	NOSCAN
 
 				LDX	ALIEN1
 				LDA	DATA_BUFR+4,X	;PICTURE #'S
+
+				CMP	#$FF
+				BEQ	:NO_PICT		; sets carry
+
 				PHA
 				LDA	#>PICT_BUFR
 				STA	SSTOREH
@@ -79,7 +83,9 @@ GOTUNL			JSR	NOSCAN
 				STA	TBLPNTL
 				LDA	#>PICT_BUFR
 				STA	TBLPNTH
-				JMP	EXPANDR
+				JSR	EXPANDR
+				CLC					; clear carry if picture was drawn
+:NO_PICT		RTS
 
 SRANGE_TABLE	DB	3				;# of entries
 				DB	3				;bytes per entry

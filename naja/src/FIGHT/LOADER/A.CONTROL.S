@@ -1,3 +1,7 @@
+				JMP	FIGHT_LOADER
+				JMP	SPECIAL_LOAD
+				JMP	ALIEN_VIEWER	; debug-only
+
 FIGHT_LOADER	LDX	#%11111111
 				LDY	#%11110000
 				LDA	#%00000000
@@ -29,7 +33,7 @@ SPECIAL_LOAD	STX	OPTIONS1		;Calling routine must clear
 				CLC					;TEMP
 				BCC	NOEXIT
 
-				LDA	DIRHOLD
+EXIT_EARLY		LDA	DIRHOLD
 				STA	DIRECTN
 				LDA	#$20
 				STA	PAGE
@@ -71,3 +75,45 @@ OPTIONS1		DS	1
 OPTIONS2		DS	1
 FORCE_SUPRISE	DS	1
 TWINS_FLAG		DS	1
+
+;-----------------------------------------------------
+; Debug-only code to cycle through all alien pictures
+;-----------------------------------------------------
+
+ALIEN_VIEWER	LDA	#$00
+				STA	CAMP_HERE
+
+				JSR	LOAD_TABLE		; drive is spinning
+
+				LDA	#$01
+				STA	ALIEN1
+				BNE	:FIRST_ALIEN	; always
+
+:NEXT_ALIEN		JSR	DRIVE_ON
+:FIRST_ALIEN	JSR	DRAW_PICTURE
+				PHP
+				JSR	DRIVE_OFF
+				PLP
+				BCS	:NO_PICT
+
+				STA	SCNDARY
+				LDA	DIRHOLD
+				STA	DIRECTN
+
+:GET_KEY		LDA	KEYBRD
+				BPL	:GET_KEY
+				BIT	UNSTROB
+
+				STA	PRIMARY
+
+				CMP	#$9B			; escape
+				BEQ	:EXIT
+
+:NO_PICT		LDA	ALIEN1
+				INC	ALIEN1
+				CMP	DATA_BUFR+0		; # of aliens
+				BNE	:NEXT_ALIEN
+
+:EXIT			JMP	EXIT_EARLY
+
+;-----------------------------------------------------

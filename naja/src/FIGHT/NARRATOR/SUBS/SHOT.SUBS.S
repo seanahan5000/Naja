@@ -285,6 +285,7 @@ NOT_A_WALL		BIT	MC_FLAG
 				CMP	#$80
 				BCS	:SKIPC
 				BCC	:SKIPB			;Always
+
 :SKIPA			LDA	YCRD			;Character shot blocked by character
 				CMP	#$7F
 				BCC	:SKIPC
@@ -323,18 +324,17 @@ GET_SQUARE		LDX	#5
 				CMP	#$80
 				BCS	:SKIPA
 				CLC					;Adjust Y coordinate if in
-				ADC	#$37			;   character part of grid
+				ADC	#$37			;   monster part of grid
 				LDX	#0
 :SKIPA			STX	TEMP
 
 				LDY	#4
 :LOOP1			CMP	YPNTS,Y			;Look up row based on
-				BEQ	:SKIPB			;   Y coordinate
-				BCS	:SKIPC
-:SKIPB			DEY
+				BCS	:SKIPB			;   Y coordinate
+				DEY
 				BPL	:LOOP1
 
-:SKIPC			TYA					;Reverse order
+:SKIPB			TYA					;Reverse order
 				CLC
 				ADC	TEMP
 				STA	TEMP
@@ -354,19 +354,19 @@ GET_SQUARE		LDX	#5
 				LDA	HMASK
 				AND	#%01111111
 :LOOP2			LSR
-				BCS	:SKIPD
+				BCS	:SKIPC
 				INY
 				BNE	:LOOP2
-:SKIPD			TYA
+:SKIPC			TYA
 				CLC
 				ADC	TEMP
 
 				LDY	#4
 :LOOP3			CMP	XPNTS,Y			;Look up column based
-				BCS	:SKIPE			;   on X coordinate
+				BCS	:SKIPD			;   on X coordinate
 				DEY
 				BPL	:LOOP3
-:SKIPE			INY
+:SKIPD			INY
 				TYA
 				ASL
 				ASL
