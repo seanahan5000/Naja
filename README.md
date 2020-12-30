@@ -29,8 +29,8 @@ Sources are assembled using Asm6502 -- a Merlin assembler clone written from scr
 To build, open a Windows command prompt:
 ```
 setenv.bat
-cd naja\build>
-boot.bat
+cd naja
+build.bat
 ```
 
 Build output can be found in naja\bin.
