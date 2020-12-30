@@ -1,7 +1,6 @@
 @echo off
 
-set ROOT=%~dp0..
-set BUILD=%ROOT%\build
+set ROOT=%~dp0
 set SRC=%ROOT%\src
 set OBJ=%ROOT%\obj
 set BIN=%ROOT%\bin
@@ -10,16 +9,16 @@ set ASM=asm6502 -root %SRC% -objbase ..\obj -srcbase
 if not exist %OBJ% mkdir %OBJ%
 if not exist %BIN% mkdir %BIN%
 
-%ASM% FIGHT\LOADER			ASM.LOADER.S   -list FIGHT.LOADER.LST
+%ASM% FIGHT\LOADER			ASM.LOADER.S   -list %OBJ%\FIGHT.LOADER.LST
 %ASM% FIGHT\COMMAND			ASM.COMMAND.S
 %ASM% FIGHT\NARRATOR		ASM.NARRATOR.S
 %ASM% FIGHT\AWARDER			ASM.AWARDER.S
 %ASM% FIGHT\DEAD			ASM.DEAD.S
 
-%ASM% TRACC					ASM.CAMP.S		 -list CAMP.LST
-%ASM% TRACC					ASM.TUNNELS.S	 -list TUNNELS.LST
+%ASM% TRACC					ASM.CAMP.S		 -list %OBJ%\CAMP.LST
+%ASM% TRACC					ASM.TUNNELS.S	 -list %OBJ%\TUNNELS.LST
 %ASM% TRACC\EDITOR			SELECT.OPTION.S
-%ASM% TRACC\EDITOR			NEW.EDITOR.S     -list ALIEN.EDITOR.LST -sym %BIN%\editor.sym
+%ASM% TRACC\EDITOR			NEW.EDITOR.S     -list %OBJ%\ALIEN.EDITOR.LST -sym %BIN%\editor.sym
 %ASM% SPECIALS\FINDMENT		FINDMENT.S
 
 REM ---------------------------------------
@@ -77,7 +76,7 @@ REM ---------------------------------------
 %ASM% ALIENS					ASM.DATA.17.S
 %ASM% ALIENS					ASM.PICS.17.S
 
-%ASM% .							TRACC\ASM.17.S	  	-list CONTROL17.LST
+%ASM% .							TRACC\ASM.17.S	  	-list %OBJ%\CONTROL17.LST
 
 set A2NIB=a2nib -disk %BIN%\tracc1.nib
 %A2NIB% -create -volume 1
