@@ -185,7 +185,7 @@ TAKE_DAMAGE		LDA	#$00
 				BNE	:LOOP1
 
 FIND_ENCOUNTR
-;************************************************
+			do	DEBUG_KEYS
 				BIT	$C061				; left-option/alt
 				BMI	:FORCE_ENCOUNTER
 				BIT	$C062				; right-option/alt
@@ -197,8 +197,9 @@ FIND_ENCOUNTR
 				BPL	:FORCE_EQUIPMENT	; always
 :TOGGLE			DB	$00
 :NORMAL
-;************************************************
+			fin
 
+			;*** TODO: need to put random encounters back in ***
 			do 0
 				JSR	RNDMIZE
 				LDA	RANDOM1
@@ -223,12 +224,12 @@ FIND_ENCOUNTR
 				LDX	#fLoader1
 				JSR	SLOADER_FILE
 
-;************************************************
+			do	DEBUG_KEYS
 				BIT	$C062				; right-option/alt
 				BPL	:GO_FIGHT
 				JMP	ALIEN_VIEWER
 :GO_FIGHT
-;************************************************
+			fin
 
 				JMP	FIGHT_LOADER
 

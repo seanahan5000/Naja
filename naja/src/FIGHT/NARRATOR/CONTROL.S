@@ -210,7 +210,7 @@ ROUND_OVER		JSR	ABANDON
 				BEQ	BATTLE_OVER2
 				LDA	#0
 				STA	SUPRISED_FLAG
-				JSR	OPEN_FRONTS		;Doesn't always return here
+				JSR	OPEN_FRONTS		;Does not always return here
 				INC	ROUND
 				BNE	:1
 				DEC	ROUND
@@ -236,12 +236,22 @@ BATTLE_OVER2	JSR	RESTOR_POSITN
 				BIT	GROUP_STATUS
 				BVS	ALL_DEAD
 
+			do	DEBUG_KEYS
+				BIT	$C061				; left-option/alt
+				BMI	FORCE_DEAD
+			fin
+
 				LDA	#$8F
 				PHA
 				LDA	#$FF
 				PHA
 				LDX	#fAwarder
 				JMP	SLOADER_FILE
+
+			do	DEBUG_KEYS
+FORCE_DEAD		LDA	#$00
+				STA	GRPNUMB
+			fin
 
 ALL_DEAD		LDA	#$7F
 				PHA

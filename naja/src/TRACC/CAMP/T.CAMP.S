@@ -318,7 +318,7 @@ FILL_FRONT		JSR	RESET_CHRLIST
 				INX
 				BNE	:SKIPA
 				JMP	GOFORM
-*** Calculate max sight range based on robot's max 2
+*** Calculate max sight range based on robots max 2
 :SKIPA			JSR	CALC_SRANGE
 				JMP	GET_OUT
 
@@ -431,8 +431,7 @@ DCARD_ORBS		LDA	(CHARDL),Y
 CALC_SRANGE		JSR	RESET_CHRLIST
 				LDA	#robot*16
 				JSR	CSCAN_PROF
-				LDA	#6				;TEMP****
-*LDA #2
+				LDA #2
 				BCC	:SKIPB
 				LDX	#$00
 :LOOP1			LDA	CHAR_LIST,X
