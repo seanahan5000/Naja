@@ -1,22 +1,22 @@
-# Naja #
+# Naja (Tactical Force Alliance) #
 
-**Naja** is a futuristic fantasy role-playing game for the Apple ][, designed by Sean Callahan (programming) and Richard Nielsen (artwork).  We started on it as 16 year olds in the spring of 1982, and worked through our Senior year of high school.  Development continued full-time from 1983 to 1985, with additional work being done part-time through 1989.
+**Naja** is a futuristic fantasy role-playing game for the Apple ][, designed by Sean Callahan (programming) and Richard Nielsen (artwork).  We started on it as 16 year olds in the spring of 1982 and worked through our Senior year of high school.  Development continued full-time from 1983 to 1985, with additional work being done part-time through 1989.
+
+The title Naja comes from the game's villain, which is also the genus name of cobra snakes.  It was later renamed to the easier to understand "Tactical Force Alliance".
 
 The game was originally designed for the Apple ][+ with 48K memory, but was eventually upgraded to require an 80 column card or Apple //e with 64K.  It covered three floppy disks, six sides total, with its own custom copy protection system.
 
 Naja's design was heavily influenced by the game Wizardry by Sir-Tech.  The use of line tunnels, hand-drawn maps on graph paper, and text-based fight narration are conventions that we adopted from Wizardry and, to a lesser degree, Ultima.  After many hours playing Wizardry, we thought we could do better and added features we considered innovative for the time.
 
-* A futuristic sci-fi theme and new classes instead of typical D&D/LotR theme.
+* A futuristic sci-fi theme and new classes instead of a typical D&D/LotR theme.
 * Full-screen, six-sided tunnels.
 * Monster/alien graphics integrated into the tunnels instead of just overlaid.
 * Use of animations and transition effects.
 * A unique mapping scheme where each game level is wrapped on the outside of a cube to approximate a spherical space station.  Each cube level contained smaller cube levels, like a Russian nesting doll.
 
-The word Naja comes from the game's villain, which is also the genus name of cobra snakes.  It was later renamed to the easier to understand "Tactical Force Alliance".
+**Graphics Simulations Software** was incorporated in 1982 with the original intent of self-publishing Naja.  We eventually decided to publish through an established game company but didn't start actively looking for a publisher until 1988.  We demonstrated the game for publishers at the second-ever Computer Game Developer's Conference (Milpitas, California Holiday Inn, 1988), and then formally submitted it to Electronic Arts, Mediagenic/Activision, Epyx, New World Computing (Might and Magic), and Origin Systems (Ultima).  While we received positive responses to the game, most weren't interested in publishing because it was Apple ][-only and they had moved to simultaneous multi-platform releases.  The Apple ][ was considered a dying platform compared to the PC at that point.  Only Origin Systems showed any interest and started a contract conversation with us, but that later fell through.
 
-**Graphics Simulations Software** was incorporated in 1982 with the original intent of self-publishing Naja.  We eventually decided to publish through an established game company but didn't start actively looking for a publisher until 1988.  We demonstrated the game for publishers at the second-ever Computer Game Developer's Conference (Milpitas, California Holiday Inn, 1988), and then formally submitted it to Electronic Arts, Mediagenic/Activision, Epyx, New World Computing (Might and Magic), and Origin Systems (Ultima).  While we received positive responses to the game, most weren't interested in publishing because it was Apple ][-only and they had moved to simultaneous multi-platform releases, and the Apple ][ was considered a dying platform compared to the PC at that point.  Only Origin Systems showed any interest and started a contract conversation with us, but that later fell through.
-
-A capture of the video tape submitted to publishers can be found at https://www.youtube.com/watch?v=HZTUacbMBF4&t=346s.  Additional materials included the game itself, instruction manual, and a demo disk of aliens and other graphics, all of which is found in this repo.
+A capture of the video tape submitted to publishers can be found at https://www.youtube.com/watch?v=HZTUacbMBF4&t=346s.  Other submitted materials included the game itself, instruction manual, and a demo disk of aliens and other graphics, all of which can be found in this repo.
 
 The sources here are a snapshot of the game in its original/classic form and playable state.  Later modifications attempting to update the look of the game, redo all the maps, and collapse it down to fewer disks have been removed.  The original disk copy protection system has been stripped out so the game will work on standard floppies and under emulation.
 
@@ -24,16 +24,16 @@ Some special encounters (listed below) have been implemented and can be found th
 
 ## Building
 
-Sources are assembled using Asm6502 -- a Merlin assembler clone written from scratch.
+Prebuilt disk images can be found in naja\bin.
 
-To build, open a Windows command prompt:
+To rebuild images, open a Windows command prompt:
 ```
 setenv.bat
 cd naja
 build.bat
 ```
 
-Build output can be found in naja\bin.
+Naja sources are assembled using Asm6502, which is a Merlin assembler clone written from scratch.  Sources can be found in tools\asm6502.
 
 ## Running
 
@@ -83,22 +83,42 @@ NOTE: Naja assumes all upper case input so caps-lock must be enabled at all time
 
 ### TRACC Station
 
-Miscellaneous Instructions:
+#### Miscellaneous Keys
 
 - S: Stats, enter camp
 - T: Tesseract back to Mothership (Only works on shell 1, any face)
-- Alt/Option-T: Bringing up alien editor, debug teleporter
 - F: Show output of "face tracker", giving current shell and face information
-- R: Change tunnel view range
+- R: Change tunnel view range (hold Alt/Option to force maximum range, independent of Android equipment)
+
+#### Debugging Keys
+
+- Left Alt/Option+T: Bring up alien editor, debug teleporter menu
+- Left Alt/Option+<step>: Force alien encounter
+- Left Alt/Option at end of encounter: Force dead group sequence
+- Right Alt/Option+<step>: Force equipment find
+- Left+Right Alt/Option+<step>: View all aliens
+    - `<space`>: Next alien
+    - `<escape`>: Leave alien viewer
+
+#### Alien Editor
+
+- `<left-arrow`>,`<right-arrow`>: Cycle through aliens
+- `<space`>: Select value to edit
+- `<escape`>: Back to previous screen
+- Left Alt/Option+J: Jump to alien
+- Left Alt/Option+S: Save
+- Left Alt/Option+Q: Quit
+
+#### Teleporter
+
+* Space bar to change numbers
+* All numbers are hex values
+
+    NOTE: You may need to turn left/right/around and possibly take a step forward to see the actual special encounter after teleportation.
 
 ### Special Encounters
 
-Use Alt/Option-T to bring up debug teleporter
-* Space bar to change numbers
-* All numbers are hex values
-* Alt/Option-T does not work when facing a special encounter
-
-NOTE: You may need to turn left/right/around and possibly take a step forward to see the actual special encounter after teleportation.
+Below are most of the special encounters currently implemented in the TRACC station. Teleporter coordinates are in parenthesis.
 
 #### Shell 1
 
@@ -116,7 +136,7 @@ NOTE: You may need to turn left/right/around and possibly take a step forward to
 
 * Door Sign (S: 1, F: 5, X: 1, Y: 9)
 
-    - "DO YOU WANT <android-character> TO TRANSLATE THE WRITING?"
+    - "DO YOU WANT `<android-character`> TO TRANSLATE THE WRITING?"
     - "THIS MARKS THE BORDER OF EMPEROR RUUIK'S ROYAL DOMAIN"
 
 * King Ruuik (S: 1, F: 5, X: 8, Y: 9)

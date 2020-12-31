@@ -1415,6 +1415,14 @@ BLIP2			STA	CLICK
 
 ADJRANG			JSR	BANK_2
 				LDA	MXRANGE
+			do DEBUG_KEYS
+				; force maximum range to 6 when left-option key is pressed
+				BIT	$C061
+				BPL	:1
+				LDA	#6
+				STA	MXRANGE
+:1
+			fin
 				STA	TRANGE+12
 				JSR	BANK_1
 				LDY	#$0F
@@ -1450,17 +1458,23 @@ INRANGE			STA	SRANGE
 				JMP	RDKEY	
 
 TESBACK
-				; button down changes 'T' tesback to select option
-				BIT	$C061			;TEMP
-				BMI	:TEMP			;TEMP
+			do	DEBUG_KEYS
+				; check for left option-T to load debug options
+				BIT	$C061
+				BMI	:DEBUG_OPTIONS
+			else
+				; Tesseract option usually only available from shell 1, face 2
 				LDA	FACE
 				CMP	#$02
 				BNE	:SKIPA
 				LDA	SHELL
 				CMP	#$01
 				BEQ	:SKIPB
-:SKIPA								;JMP RDKEY ;(any face for now)
-:SKIPB			LDA	#side_MS
+:SKIPA			JMP RDKEY
+:SKIPB
+			fin
+
+				LDA	#side_MS
 				STA	DISK_SIDE
 				LDA	#$90
 				STA	SSTOREH
@@ -1470,8 +1484,9 @@ TESBACK
 				JSR	SLOADER
 				JMP	$9000
 
+			do	DEBUG_KEYS
 				; Load SELECT.OPTION
-:TEMP			LDA	#0				;TEMP
+:DEBUG_OPTIONS	LDA	#0				;TEMP
 				STA	CAMP_HERE		;TEMP
 				LDA	#$78			;TEMP
 				STA	SSTOREH			;TEMP
@@ -1480,3 +1495,4 @@ TESBACK
 				LDA	#$03			;TEMP
 				JSR	SLOAD			;TEMP
 				JMP	$7800			;TEMP
+			fin

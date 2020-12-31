@@ -1,5 +1,6 @@
 
 ORIGINAL		=	1
+DEBUG_KEYS		=	1				; enable debug features tied to alt/option keys
 
 human			=	0
 orn				=	1
