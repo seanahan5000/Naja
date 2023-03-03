@@ -1,0 +1,21 @@
+2/7/1988
+
+MOVE
+
+- Add debugging check for characters moving to illegal squares (diagonally or to same square currently in).  These should be taken care of by the code that moves characters against their will.
+
+- Any statuses that would affect movement should have already been filtered out before reaching this point.  But this could change if it makes more sense to check in here.
+
+Is destination square open?
+    • yes,
+       Is the character leaving front row?
+        • yes,
+           Is there anyone else in front row?
+            • yes,
+               EXECUTE MOVE
+            • no,
+               wait 1 time unit
+        • no,
+           EXECUTE MOVE
+    • no,
+       wait 1 time unit

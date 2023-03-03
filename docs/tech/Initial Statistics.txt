@@ -1,0 +1,43 @@
+9/26/1987
+
+
+MINIMUM STATISTICS FOR RACES
+
+                        Lower   Upper   Adaptation  % Organic
+Race    IQ  Strength    Reflex  Reflex  Points      Composition
+Human    7  11          10      11      28-33       25-80
+Orn     13  17           5       6      32-34       35-75
+Stilicx 11  13           9       7      29-38       30-65
+Xxtys   16   6          10      10      31-33       20-60
+Deneb    3   5          14      14      30-35       40-85
+
+
+PROFESSION MINIMUM REQUIREMENTS
+
+                            Lower   Upper   Minimum     % Organic
+Profession  IQ  Strength    Reflex  Reflex  Credits     Composition
+Warrior      6  21          19      20      none        45-80
+Android     25  10          16      15      none        20-40
+Cybernate   22  14          11      11      800         45-70
+Juicer      14  18          17      17      none        30-55
+Physician   23  10          14      19      none        60-85
+
+
+OFFICIAL CODES
+0 - Warrior     0 - Human
+1 - Android     1 - Orn
+2 - Cybernate   2 - Stilicx
+3 - Juicer      3 - Xxtys
+4 - Physician   4 - Deneb
+5 - (Mutant)
+6 - Electro-Medic
+7 - (Genius)
+8 - Robot
+
+
+ORBS
+17 - GREEN
+15 - BLACK
+13 - BLUE
+11 - RED
+ 9 - PURPLE

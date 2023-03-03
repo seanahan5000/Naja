@@ -1,0 +1,44 @@
+10/26/1987
+
+NAJA SCRAPS
+
+• Chances of being surprised is affected by what the sight range is set at.
+
+• Must have I.D SCANNER, ROBOT CONTROLLER, DIAGNOSER for various reasons.
+
+• Explain robot programs and fighting
+    • If level > stats
+        Will fight as well as stats say
+    • If stats > level
+        Will fight as well as program can
+
+• Tell them that it is safer to leave face 2 by way of face3 -- map the rest later.
+
+• Put a phony mail order add tied to the arsenal.
+
+• Tell them to fold maps in cubes if hard to understand (or block of wood).
+
+• Tell them that they can buy incompatible profession equipment
+
+• Hitting a key upon entering a mothership area avoids stuff (e.g. arsenal scrolling text).
+
+• Tell them about the escape key in mothership areas.
+
+• Sell robot weapons at the arsenal.
+
+• Tell them that to stop scrolling text in the arsenal use the return key.
+
+• Robot selling price breakdown is approximate.
+
+• Robot buying -- must have a certain minimum amount of credits or else sale will never be allowed.
+
+• Robot parts can't be bought without trade-ins -- control supply.
+
+• Circuit repairer is also a cell regenerator.
+
+• Might want to tell them to make physicians Denebians so if the rest of the group dead - can carry compressed group.
+
+• Tell them to take needed equipment from character to be compressed.
+arsenal.
+
+• Tell them that to stop scrolling text in the arsenal use the return key.

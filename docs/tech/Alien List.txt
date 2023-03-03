@@ -1,0 +1,189 @@
+1/20/1988
+
+SHELL 17
+
+ #  XX  INDENTIFIED NAME    XX  XX  RA123456    XX  XX  XX  XX   1  2  3  4  5  6  7  8
+==  ==  ================    ==  ==  ========    ==  ==  ==  ==  ==+==+==+==+==+==+==+==+    ========    ==
+ 1  A   SPACE MAN
+ 2  B   "AIR SWIMMER"
+ 3  C   SHIELDED OOMAR
+ 4  D   MONOPTIC HOPPER
+ 5  E   MPC3 ROBOT
+ 6  F   "FROWNER"
+ 7  G   MEERN MUTATION
+ 8  H   BURROWING TANN
+ 9  I   ROBOTROID
+ A  J   JUNGLE SWINGER
+ B  K   ROLLER ALIEN
+ C  L   NUNKI STARBEAST
+ D  M   ELATION TRAITOR
+ E  N   UNKNOWN PLANT
+ F  O   ROLLER ALIEN
+10  P   FROBOT
+11  Q   "TWISTER"
+12  R   "BARACKADE"
+13  S   PHASE WORM
+14  T   PROBE DROID
+15  U   ARMORED ALIEN
+16  V   GRUNTER PACK DOG
+17  W   "DRAGON FLY"
+18  X   "SQUINTER"
+19  Y   BETA CENTAURIAN
+1A  Z   LANTHOSER
+1B  AA  VEGAN WARRIOR
+1C  BB  "OILER"
+1D  CC  "SNOOZER"
+1E  DD  MPC9 ROBOT
+1F  EE  AIMTAK AMPHIBIAN
+20  FF  "AIR SWIMMER"
+21  GG  POISONOUS PEST
+22  HH  TANDEM TENTICLES
+23  II  RUUIK'S SOLDIER
+24  JJ  WINGED "BUG-EYE"
+25  KK  "BLAST CLAPPER"
+26  LL  "LOOP HEAD"
+27  MM  FLYING SAUCER
+28  NN  PHASE WORM
+29  OO  ORGANISM CLOUD
+2A  PP  "HEXICLAW"
+2B  QQ  ACRUXITE
+2C  RR  "FINGERS"
+2D  SS  RIGELIAN SNIPER
+2E  TT  "STINKY"
+2F  UU  PARTICLE MAN
+30  VV  "BARACKADER"
+31  WW  PROBE DROID
+32  XX  VEGAN OFFICER
+33  YY  ROBIEN BRAIN
+34  ZZ  ????????????????
+==  ==  ================    ==  ==  ========    ==  ==  ==  ==  ==+==+==+==+==+==+==+==+    ========    ==
+
+SHELL 15
+
+ #  XX  INDENTIFIED NAME    XX  XX  RA123456    XX  XX  XX  XX   1  2  3  4  5  6  7  8
+==  ==  ================    ==  ==  ========    ==  ==  ==  ==  ==+==+==+==+==+==+==+==+    ========    ==
+ 1  A   SUBZERO             42  10  .1...1.1    45  11  24  --  03 06 FF                    00000000    XX
+ 2  B   REPAIR UNIT 1000    45  11  1....1.1    85  12  24  --  99 FF
+ 3  C   "TWISTER"           22  00  .1...1.1    45  14  22  --  01 06 FF
+ 4  D   BETA CENTAURIAN     43  00  11...1.1    C5  12  22  --  04 FF
+ 5  E   "HEXICLAW"          42  00  .1...1.1    45  24  22  --  08 FF
+ 6  F   TANDEM TENTICLES    22  00  .1...1.1    45  13  22  --  01 03 FF
+ 7  G   SCAVENGER           11  50  .1...1.1    45  35  24  --  04 FF
+ 8  H   MUTANT INSECTOID    43  10  .1...1.1    45  12  24  --  05 FF
+ 9  I   K-60 FIRE UNIT      42  00  1....1.1    85  24  24  --  99 FF
+ A  J   LEASHED GRUNTER     43  00  .1...1.1    45  22  24  --  99 FF
+ B  K   TENTICLES           43  00  .1...1.1    45  11  24  --  99 FF
+--  --  ----------------    --  --  --------    --  --  --  --  --+--+--+--+--+--+--+--+    --------    --
+ C  L   ULLDA NICH          22  00  .11...1.    62  11  22  --  23 FF
+ D  M   MEERN MUTATION      42  00  .11...1.    62  12  22  --  0E 0F 10 11 15 FF
+ E  N   ROBIEN BRAIN        22  00  111...1.    E2  12  22  --  0D 0F 10 11 15 FF
+ F  O   ACRUXITE            42  00  .11...1.    62  13  22  --  0D 0E 10 11 15 FF
+10  P   POINTY HEAD         23  00  .11...1.    62  33  24  --  0D 0E 0F 11 15 FF
+11  Q   NUNKI BLUE DEVIL    42  00  111...1.    E2  13  24  --  0D 0E 0F 10 15 FF
+12  R   AMOEBOID            23  00  .11...1.    62  12  24  --  99 FF
+13  S   "SHOVELER"          43  00  .11...1.    62  11  24  --  99 FF
+14  T   LONG ARMED EPE      43  00  .11...1.    62  11  24  --  0E 10 FF
+15  U   SLICER SPHERE       43  10  .11...1.    62  11  24  --  0D 0E 0F 10 11 FF
+16  V   PROTOTYPE 2000-7    42  10  1.1...1.    A2  24  24  --  99 FF
+--  --  ----------------    --  --  --------    --  --  --  --  --+--+--+--+--+--+--+--+    --------    --
+17  W   ????????????????    53  01  .1.11...    58  11  21  --  1A 1D 1E 20 21 FF
+18  X   "METAL MITES"       22  00  1..11...    48  8C  21  --  99 FF
+19  Y   SCEPTARIAN          42  00  .1.11...    58  12  22  --  1E FF
+1A  Z   "DIZZY"             42  00  .1.11...    58  11  21  --  17 1D 1E 20 21 FF
+1B  AA  PSILOTIS PEDETUM    42  10  .1.11...    58  35  22  --  1C FF
+1C  BB  SPOOR PLANT         43  00  .1.11...    58  12  22  --  1B FF
+1D  CC  ADHARAN LIZARD      23  00  .1.11...    58  22  21  --  17 1A 1E 20 21 FF
+1E  DD  ANKAA STRANGLER     22  00  .1.11...    58  25  21  --  17 1A 1D 20 21 FF
+1F  EE  SPICA V FIGHTER     23  00  1..11...    98  55  21  --  99 FF
+20  FF  MOIKLER             22  00  .1.11...    58  13  21  --  17 1A 1D 1E 21 FF
+21  GG  ENERGY UNLOADER     22  00  .1.11...    58  46  21  --  17 1A 1D 1E 20 FF
+22  HH  WORKER INSECT       23  00  .1.11...    58  8A  22  --  99 FF
+23  II  ULLDA NICH WEB      72  00  ..1...1.    22  11  00  --  0C FF
+==  ==  ================    ==  ==  ========    ==  ==  ==  ==  ==+==+==+==+==+==+==+==+    ========    ==
+
+SHELL 13
+
+ #  XX  INDENTIFIED NAME    XX  XX  RA123456    XX  XX  XX  XX   1  2  3  4  5  6  7  8
+==  ==  ================    ==  ==  ========    ==  ==  ==  ==  ==+==+==+==+==+==+==+==+    ========    ==
+ 1  A   MAGNETIC SWEEPER            1.......    80  11  04  --  06 10 17 FF
+ 2  B   "MISER"                     .1......    40  12  04  --  08 14 15 16 FF
+ 3  C   EBKAL'EE                    .1......    40  11  05  --  99 FF
+ 4  D   "SCREECHER"                 .1......    40  12  05  --  09 0A 0C 13 18 FF
+ 5  E   "MAULER"                    .1......    40  23  05  --  99 FF
+ 6  F   MEM-PLACER ROBOT            1.......    80  11  06  --  01 10 17 FF
+ 7  G   SPARKLE                     ........    00  66  06  --  99 FF
+ 8  H   ENCEPHALOID                 .1......    40  13  06  --  02 14 15 16 FF
+ 9  I   TRANSPERENT                 .1......    40  12  06  --  04 0A 0C 13 18 FF
+ A  J   ACID SPITTER                .1......    40  12  09  --  04 09 0C 13 18 FF
+ B  K   ZETOC                       .1......    40  23  09  --  0E 0F 12 FF
+ C  L   PHASOID                     .1......    40  24  09  --  04 09 0A 13 18 FF
+ D  M   PSEUDOMORT                  .1......    40  11  10  --  99 FF
+ E  N   TANGIBLE GAS                ........    00  11  10  --  0B 0F 12 FF
+ F  O   PUDDLE CREATURE             .1......    40  13  10  --  0B 0E 12 FF
+10  P   ION DIODE ROBOT             1.......    80  13  10  --  01 06 17 FF
+11  Q   VEGAN EXPLODER              ........    00  8C  12  --  99 FF
+12  R   CARNIVORE                   .1......    40  11  12  --  0B 0E 0F FF
+13  S   ATOM ARRANGER               .1......    40  11  12  --  04 09 0A 0C 18 FF
+14  T   LITTLE MEN                  .1......    40  68  13  --  02 08 15 16 FF
+15  U   BETEIGUESEN                 .1......    40  25  14  --  02 08 14 16 FF
+16  V   "SHARP SHOOTER"             .1......    40  22  13  --  02 08 14 15 FF
+17  W   TRIPED IV ROBOT             1.......    80  12  14  --  01 06 10 FF
+18  X   WEBBED PARASITE             .1......    40  24  14  --  04 09 0A 0C 13 FF
+19  Y   WORKER INSECT               .1......    40  45  14  --  1A FF
+1A  Z   FIGHTER INSECT              .1......    40  45  14  --  19 FF
+1B  AA  OKKAR MARSUPIAL             .1......    40  46  10  --  1C FF
+1C  BB  OKKAR PLANT                 .1......    40  46  00  --  1B FF
+==  ==  ================    ==  ==  ========    ==  ==  ==  ==  ==+==+==+==+==+==+==+==+    ========    ==
+
+SHELL 11
+
+ #  XX  INDENTIFIED NAME    XX  XX  RA123456    XX  XX  XX  XX   1  2  3  4  5  6  7  8
+==  ==  ================    ==  ==  ========    ==  ==  ==  ==  ==+==+==+==+==+==+==+==+    ========    ==
+ 1  A   TIME WARP                   ........    00  11  05  --  99 FF
+ 2  B   NAJAN MIND SLAVE            .1......    40  44  18  --  99 FF
+ 3  C   PLASMANOID                  .1......    40  15  15  --  07 0A 0E 0F 11 FF
+ 4  D   BLAST BREATHER              .1......    40  14  18  --  03 07 0A 0E 0F 11 FF
+ 5  E   ASYMMETRIC ALIEN            .1......    40  11  15  --  03 07 0A 0E 0F 11 FF
+ 6  F   RICOCHET MISSILE            11......    C0  59  15  --  99 FF
+ 7  G   CEREBROMORPH                .1......    40  15  15  --  03 0A 0E 0F 11 FF
+ 8  H   "BLINKER"                   .1......    40  11  15  --  99 FF
+ 9  I   MAN IN LEVITATOR            11......    C0  12  18  --  03 07 0A 0E 0F 11 FF
+ A  J   MECHANICO 450               1.......    80  15  22  --  03 07 0E 0F 11 FF
+ B  K   PORTABLE AIRLOCK            1.......    80  11  05  --  03 07 0A 0E 0F 10 11 FF
+ C  L   "THROWER"                   .1......    40  13  09  --  99 FF
+ D  M   "LATCHER"                   .1......    40  13  00  --  99 FF
+ E  N   INVERSION ALIEN             .1......    40  15  12  --  03 07 0A 0F 11 FF
+ F  O   ANTICIPATOR                 .1......    40  15  12  --  03 07 0A 0E 11 FF
+10  P   SNARC                       .1......    40  11  09  --  03 07 0A 0E 0F 11 FF
+11  Q   ALIEN ASSASSIN              .1......    40  15  22  --  03 07 0A 0E 0F FF
+12  R   INFORMER                    .1......    40  24  22  --  99 FF
+==  ==  ================    ==  ==  ========    ==  ==  ==  ==  ==+==+==+==+==+==+==+==+    ========    ==
+
+SHELL 9
+
+ #  XX  INDENTIFIED NAME    XX  XX  RA123456    XX  XX  XX  XX   1  2  3  4  5  6  7  8
+==  ==  ================    ==  ==  ========    ==  ==  ==  ==  ==+==+==+==+==+==+==+==+    ========    ==
+ 1  A   DUALTRONIC ROBOT            1.......    80  13  17  --  02 FF
+ 2  B   CENTAURIAN ROBOT            1.......    80  13  17  --  01 FF
+ 3  C   SLIME CREATURE              .1......    40  14  17  --  14 FF
+ 4  D   TALUMA AND MOUNT            .1......    40  25  17  --  06 0B 0C FF
+ 5  E   SPECTRAMITE                 .1......    40  12  17  --  06 07 0B 0C FF
+ 6  F   "SPIKE"                     .1......    40  23  17  --  05 07 0B 0C FF
+ 7  G   SOLICIAN                    .1......    40  13  17  --  05 06 0B 0C FF
+ 8  H   WANDERING THOUGHT           ........    00  13  10  --  99 FF
+ 9  I   INTRUDER MISSILE            11......    C0  35  12  --  99 FF
+ A  J   "SPEEDO"                    .1......    40  13  12  --  0B FF
+ B  K   SHIFTER                     .1......    40  13  12  --  05 06 07 0C FF
+ C  L   ADHARAN GREMLIN             .1......    40  11  12  --  05 06 07 0B FF
+ D  M   AIR CIRCULATOR              1.......    80  11  06  --  10 FF
+ E  N   STATION DRILLER             1.......    80  11  06  --  02 FF
+ F  O   INVISIBLE ALIEN             ........    00  16  07  --  99 FF
+10  P   COOLING UNIT                1.......    80  11  07  --  0D FF
+11  Q   THERMAL UNIT                1.......    80  11  07  --  16 FF
+12  R   INFRA-FLOURINOID            .1......    40  11  08  --  06 0B 0C FF
+13  S   "GASSER"                    .1......    40  24  08  --  99 FF
+14  T   TRACC FUNGUS                .1......    40  12  08  --  03 FF
+15  U   QUEEN INSECT                .1......    40  11  10  --  17 FF
+16  V   HAMELER HOT HEAD            .1......    40  35  12  --  11 FF
+17  W   FIGHTER INSECT              .1......    40  88  00  --  15 FF
+==  ==  ================    ==  ==  ========    ==  ==  ==  ==  ==+==+==+==+==+==+==+==+    ========    ==

@@ -1,0 +1,70 @@
+1/13/1987
+
+                CHARACTER/ROBOT OFFSET TABLE
+
+      0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F
+      |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+0--  Name========================================Name   St   Lv   Lv   PR  Exp  Exp  --0
+1--  Exp  Exp   ∂   Crd  Crd  Crd  Crd  Str  UpR  LwR  Int  ESh  PSh  Bck   XY  Dmc  --1
+2--  Dmc  Dmx  Dmx  Cmp  Pwc  Pwc  Pwc  Pwx  Pwx  Pwx   PC   PC   ∂    SS   RS  Pex  --2
+3--  Pex   ∂    ∂    ∂    ∂   1=====HEAD=======1  2======SLOT======2  3===UpLft====  --3
+4--  ==3  4=====UpRgt======4  5=====LwLft======5  6=====LwRgt======6  7===BACK1====  --4
+5--  ==7  8=====BACK2======8  9=====BACK3======9  10====BACK4=====10  11==BACK5====  --5
+6--  =11  12====BACK6=====12  13====ARMOR=====13  14=====FEET=====14  ---  ---  ---  --6
+7--  ---   Î    Î    Î    Î   CDC  DLn  IfA  IfN   Î    Î    Î    Î    Î   Msc   Î   --7
+      |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+      0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F
+      |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+8--  Name========================================Name   St   Lv   Lv   PR  Exp  Exp  --8
+9--  Exp  Exp   ∂   ---  ---  ---  ---  Str  UpR  LwR  Int  ESh  PSh  Bck   XY  Dmc  --9
+A--  Dmc  Dmx  Dmx  Cmp  Pwc  Pwc  Pwc  Pwx  Pwx  Pwx   PC   PC   ∂    SS   CS  Pex  --A
+B--  Pex   ∂    ∂    ∂    ∂    MS  HCr  BCr  Pcn  2======SLOT======2  3===LftHand==  --B
+C--  ==3   4======With=====4  5====RgtHand=====5  6======With======6  7===BACK1====  --C
+D--  ==7   8=====BACK2=====8  9=====BACK3======9  10====BACK4=====10  11==BACK5====  --D
+E--  =11  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  ---  15==PROGRAM==  --E
+F--  =15   Î    Î    Î    Î   CDC  DLn  IfA  IfN   Î    Î    Î    Î    Î   Msc   Î   --F
+      |    |    |    |    |    |    |    |    |    |    |    |    |    |    |    |
+      0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F
+
+
+
+NOTE: All multi-byte numbers are HIGH TO LOW.
+
+
+Nam:    Character name
+St:     Status
+Lvl:    Level
+PR:     Profession/Race (high/low)
+Exp:    Experience
+Crd:    Credit
+Str:    Strength
+UpR:    Upper Reflex
+LwR:    Lower Reflex
+Int:    Intelligence
+ESh:    Electrical Shielding
+PSh:    Physical Shielding
+Bck:    Slots on back
+XY:     Position in grid
+Dmc:    Damage current level
+Dmx:    Damage maximum
+Cmp:    Composition (organic only)
+Pwc:    Power current level
+Pwx:    Power maximum
+PC:     Power consumption
+SS:     Sector/Segment location on disk
+RS:     Sector/Segment location of cybernate's robot
+CS:     Sector/Segment location of robot's cybernate
+Pex:    Power current level extra digits (fraction)
+MS:     Movement/Sight range
+HC:     Head shielding cursor (used in Robot Repair)
+BC:     Body shielding cursor (used in Robot Repair)
+Msc:    Miscellaneous flag byte (ABCDEFGH)
+            A= Is a clone (0=no, 1=yes)
+CDC:    Current delay count (1 BCD byte)
+DLn:    Delay length (1 BCD byte)
+IfA:    Infliction amount (1 BCD byte) when delay count hits zero
+IfN:    Number of afflictions (1 BCD byte) before illness wears off
+            ($00 means it already has - notify them)
+            ($FF means it never does)
+        Miscellaneous flag byte (ABCDEFGH)
+            A= Is a clone (0=no, 1=yes)

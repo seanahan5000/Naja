@@ -1,0 +1,251 @@
+10/24/1987
+
+                                                                          U U   S F H
+BEAM WEAPONS:                                                             E D   E A A
+                                                            *** ***       | |   | | |   G E R P J C A W
+BLUE BEAM DAGGER    48 00 00 AD   _ _ 0 0.1 0 0 0   _ _ _ _.0 0 0 0   0 0 0 0.0 0 0 0   1 0 1 0.1 1 0 1   000,060    10/SWING   BEAM WEAPON        7F
+GREEN BEAM DAGGR    48 01 00 AD   _ _ 0 0.1 0 0 0   _ _ _ _.0 0 0 1   0 0 0 0.0 0 0 0   1 0 1 0.1 1 0 1   000,100    30/SWING   BEAM WEAPON        7F
+BLUE BEAM SWORD     48 04 00 21   _ _ 0 0.1 0 0 0   _ _ _ _.0 1 0 0   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 1   000,300    40/SWING   BEAM WEAPON        18
+GREEN BEAM SWORD    48 05 00 01   _ _ 0 0.1 0 0 0   _ _ _ _.0 1 0 1   0 0 0 0.0 0 0 0   0 0 0 0.0 0 0 1   006,000    60/SWING   BEAM WEAPON        00
+RED BEAM SWORD      48 06 00 21   _ _ 0 0.1 0 0 0   _ _ _ _.0 1 1 0   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 1   010,000    80/SWING   BEAM WEAPON        FF
+LASBEAM SWORD       48 07 00 21   _ _ 0 0.1 0 0 0   _ _ _ _.0 1 1 1   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 1   100,000   120/SWING   LASER SWORD        FF
+LASER WHIP          48 0B 00 01   _ _ 0 0.1 0 0 0   _ _ _ _.1 0 1 1   0 0 0 0.0 0 0 0   0 0 0 0.0 0 0 1   050,000    60/SWING   LASER WEAPON       FF
+
+                                                                          U U   S F H
+BLASTING WEAPONS:                                                         E D   E A A
+                                                              *****       | |   | | |   G E R P J C A W
+FLY PISTOL          4C 00 00 A7   _ _ 0 0.1 1 0 0   _ _ _ _._ 0 0 0   0 0 0 0.0 0 0 0   1 0 1 0.0 1 1 1   000,100     3/SHOT    LASER PISTOL       7F
+LIGHT PISTOL        4C 01 00 A5   _ _ 0 0.1 1 0 0   _ _ _ _._ 0 0 1   0 0 0 0.0 0 0 0   1 0 1 0.0 1 0 1   000,220     6/SHOT    LASER PISTOL       7F
+MEDIUM PISTOL       4C 02 00 A1   _ _ 0 0.1 1 0 0   _ _ _ _._ 0 1 0   0 0 0 0.0 0 0 0   1 0 1 0.0 0 0 1   009,000    15/SHOT    LASER PISTOL       00
+HEAVY PISTOL        4C 03 00 A1   _ _ 0 0.1 1 0 0   _ _ _ _._ 0 1 1   0 0 0 0.0 0 0 0   1 0 1 0.0 0 0 1   040,000    30/SHOT    LASER PISTOL       FF
+ZIFFER'S PISTOL     4C 05 00 21   _ _ 0 0.1 1 0 0   _ _ _ _._ 1 0 1   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 1   090,000    40/SHOT    LARGE PISTOL       FF
+-----------------
+LIGHT RIFLE         4D 00 00 A1   _ _ 0 0.1 1 0 1   _ _ _ _._ 0 0 0   0 0 0 0.0 0 0 0   1 0 1 0.0 0 0 1   000,900    40/SHOT    LASER RIFLE        7F
+MEDIUM RIFLE        4D 01 00 21   _ _ 0 0.1 1 0 1   _ _ _ _._ 0 0 1   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 1   002,550    60/SHOT    LASER RIFLE        18
+HEAVY RIFLE         4D 03 04 21   _ _ 0 0.1 1 0 1   _ _ _ _._ 0 1 1   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 1   100,000    90/SHOT    LASER RIFLE        00
+ULTRA RIFLE         4D 05 05 01   _ _ 0 0.1 1 0 1   _ _ _ _._ 1 0 1   0 0 0 0.0 0 0 1   0 0 0 0.0 0 0 1   500,000   120/SHOT    LARGE RIFLE        FF
+-----------------
+LIGHT CANNON        4E 00 05 01   _ _ 0 0.1 1 1 0   _ _ _ _._ _ _ 0   0 0 0 0.0 1 0 1   0 0 0 0.0 0 0 1   750,000   200/SHOT    SHOULDER RIFLE     FF
+HEAVY CANNON        4E 01 05 01   _ _ 0 0.1 1 1 0   _ _ _ _._ _ _ 1   0 0 0 0.0 1 0 1   0 0 0 0.0 0 0 1   900,000   250/SHOT    SHOULDER RIFLE     FF
+
+                                                                          U U   S F H
+MISC WEAPONS:                                                             E D   E A A
+                                                                          | |   | | |   G E R P J C A W
+GYRO BOOMERANG      4F 01 00 01   _ _ 0 0.1 1 1 1   _ _ _ _.0 0 0 1   0 0 0 0.0 0 0 0   0 0 0 0.0 0 0 1   200,000    ??/THROW   CURVED OBJECT      FF
+DISINTEGRATOR       4F 04 05 01   _ _ 0 0.1 1 1 1   _ _ _ _.0 1 0 0   0 0 0 0.0 1 0 1   0 0 0 0.0 0 0 1   999,000    ??/SHOT    SHOULDER WEAPON    FF
+BRAIN JAMMER        4F 05 00 01   _ _ 0 0.1 1 1 1   _ _ _ _.0 1 0 1   0 0 0 0.0 0 0 0   0 0 0 0.0 0 0 1   075,000    ??/SHOT    SMALL PISTOL       FF
+IMMOBILIZER         4F 06 00 89   _ _ 0 0.1 1 1 1   _ _ _ _.0 1 1 0   0 0 0 0.0 0 0 0   1 0 0 0.1 0 0 1   005,000    ??/THROW   THROWABLE OBJECT   FF
+SONIC GRENADE       4F 07 00 89   _ _ 0 0.1 1 1 1   _ _ _ _.0 1 1 1   0 0 0 0.0 0 0 0   1 0 0 0.1 0 0 1   001,000    ??/THROW   THROWABLE OBJECT   20
+ROBOT RESTRAINER    4F 08 00 84   _ _ 0 0.1 1 1 1   _ _ _ _.1 0 0 0   0 0 0 0.0 0 0 0   1 0 0 0.0 1 0 0              ??/SHOT    ELECTRONIC PISTL
+
+                                                                          U U   S F H
+HELMETS:                                                                  E D   E A A
+                                                            *** ***   *   | |   | | |   G E R P J C A W
+BENDER-C HELMET     45 00 00 DF   _ _ 0 0.0 1 0 1   _ _ _ _.0 0 0 0   0 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   000,050     0/ROUND   HELMET             n/a
+BENDER-B HELMET     45 01 80 DF   _ _ 0 0.0 1 0 1   _ _ _ _.0 0 0 1   1 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   000,750     0/ROUND   HELMET             n/a
+BENDER-A HELMET     45 02 00 DF   _ _ 0 0.0 1 0 1   _ _ _ _.0 0 1 0   0 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   003,000     0/ROUND   HELMET             n/a
+MIRAGE-C HELMET     45 04 80 DF   _ _ 0 0.0 1 0 1   _ _ _ _.0 1 0 0   1 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   000,250     0/ROUND   HELMET             n/a
+MIRAGE-B HELMET     45 05 00 DF   _ _ 0 0.0 1 0 1   _ _ _ _.0 1 0 1   0 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   003,750     0/ROUND   HELMET             n/a
+MIRAGE-A HELMET     45 06 80 DF   _ _ 0 0.0 1 0 1   _ _ _ _.0 1 1 0   1 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   015,000     0/ROUND   HELMET             n/a
+IMAGE-C HELMET      45 08 00 DF   _ _ 0 0.0 1 0 1   _ _ _ _.1 0 0 0   0 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   000,500     0/ROUND   HELMET             n/a
+IMAGE-B HELMET      45 09 80 DF   _ _ 0 0.0 1 0 1   _ _ _ _.1 0 0 1   1 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   007,500     0/ROUND   HELMET             n/a
+IMAGE-A HELMET      45 0A 00 DF   _ _ 0 0.0 1 0 1   _ _ _ _.1 0 1 0   0 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   030,000     0/ROUND   HELMET             n/a
+MIRROR-C HELMET     45 0C 80 DF   _ _ 0 0.0 1 0 1   _ _ _ _.1 1 0 0   1 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   001,500     0/ROUND   HELMET             n/a
+MIRROR-B HELMET     45 0D 00 DF   _ _ 0 0.0 1 0 1   _ _ _ _.1 1 0 1   0 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   022,500     0/ROUND   HELMET             n/a
+MIRROR-A HELMET     45 0E 80 DF   _ _ 0 0.0 1 0 1   _ _ _ _.1 1 1 0   1 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   090,000     0/ROUND   HELMET             n/a
+
+                                                                          U U   S F H
+SHIELDS:                                                                  E D   E A A
+                                                                          | |   | | |   G E R P J C A W
+ 5% FORCE SHIELD    46 01 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.0 0 0 1   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+10% FORCE SHIELD    46 02 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.0 0 1 0   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+15% FORCE SHIELD    46 03 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.0 0 1 1   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+20% FORCE SHIELD    46 04 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.0 1 0 0   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+25% FORCE SHIELD    46 05 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.0 1 0 1   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+30% FORCE SHIELD    46 06 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.0 1 1 0   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+35% FORCE SHIELD    46 07 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.0 1 1 1   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+40% FORCE SHIELD    46 08 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.1 0 0 0   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+45% FORCE SHIELD    46 09 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.1 0 0 1   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+50% FORCE SHIELD    46 0A 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.1 0 1 0   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+55% FORCE SHIELD    46 0B 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.1 0 1 1   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+60% FORCE SHIELD    46 0C 20 56   _ _ 0 0.0 1 1 0   _ _ _ _.1 1 0 0   0 0 1 0.0 0 0 0   0 1 0 1.0 1 1 0   ???,???    ??/ROUND   FORCE SHIELD       ??
+
+                                                                          U U   S F H
+ATTACHMENTS:                                                              E D   E A A
+                                                                          | |   | | |   G E R P J C A W
+2% DISSIPATOR       40 08 00 F7   _ _ 0 0.0 0 0 0   _ _ _ 0.1 0 0 0   0 0 0 0.0 0 0 0   1 1 1 1.0 1 1 1   000,200     0/ROUND   METAL ROD          08
+5% DISSIPATOR       40 14 00 F7   _ _ 0 0.0 0 0 0   _ _ _ 1.0 1 0 0   0 0 0 0.0 0 0 0   1 1 1 1.0 1 1 1   000,900     0/ROUND   METAL ROD          03
+7% DISSIPATOR       40 1C 00 F7   _ _ 0 0.0 0 0 0   _ _ _ 1.1 1 0 0   0 0 0 0.0 0 0 0   1 1 1 1.0 1 1 1   004,000     0/ROUND   METAL ROD          FF
+IMAGE GENERATOR     40 01 00 EE   _ _ 0 0.0 0 0 0   _ _ _ _._ _ 0 1   0 0 0 0.0 0 0 0   1 1 1 0.1 1 1 0   175,000    ??/ROUND   GADGET             FF
+BLAST VISOR         40 02 20 8D   _ _ 0 0.0 0 0 0   _ _ _ _._ _ 1 0   0 0 1 0.0 0 0 0   1 0 0 0.1 1 0 1   008,000    ??/ROUND   VISOR              FF
+
+                                                                          U U   S F H
+MISC PROTECTION:                                                          E D   E A A
+                                                                          | |   | | |   G E R P J C A W
+2% GROUNDERS        47 09 04 57   _ _ 0 0.0 1 1 1   _ _ _ 0.1 0 0 1   0 0 0 0.0 1 0 0   0 1 0 1.0 1 1 1   000,250     0/ROUND   RUBBERY BOOTS      06
+5% GROUNDERS        47 15 04 57   _ _ 0 0.0 1 1 1   _ _ _ 1.0 1 0 1   0 0 0 0.0 1 0 0   0 1 0 1.0 1 1 1   001,000     0/ROUND   RUBBERY BOOTS      02
+7% GROUNDERS        47 1D 04 57   _ _ 0 0.0 1 1 1   _ _ _ 1.1 1 0 1   0 0 0 0.0 1 0 0   0 1 0 1.0 1 1 1   005,000     0/ROUND   RUBBERY BOOTS      FF
+EXOSKELETON         47 03 00 89   _ _ 0 0.0 1 1 1   _ _ _ _._ _ 1 1   0 0 0 0.0 0 0 0   1 0 0 0.1 0 0 1   920,000     0/ROUND   STRANGE ARMOR      FF
+
+                                                                          U U   S F H
+MEDICAL EQUIPMENT:                                                        E D   E A A
+                                                                          | |   | | |   G E R P J C A W
+DIAGNOSER           41 00 00 50   _ _ 0 0.0 0 0 1   _ _ _ _.0 0 0 0   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   000,025     ?/USE     DIAGNOSER          7F
+CELL REGENERATOR    61 01 00 50   _ _ 1 0.0 0 0 1   _ _ _ _.0 0 0 1   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   000,060     ?/HEAL    MEDICAL DEVICE     7F
+CIRCUIT REPAIRER    61 02 00 40   _ _ 1 0.0 0 0 1   _ _ _ _.0 0 1 0   0 0 0 0.0 0 0 0   0 1 0 0.0 0 0 0   025,000     ?/HEAL    GADGET             07
+ATOM COMPRESSOR     41 03 00 50   _ _ 0 0.0 0 0 1   _ _ _ _.0 0 1 1   0 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   000,370     ?/USE     GADGET             00
+CAUTERIZER          41 04 00 50   _ _ 0 0.0 0 0 1   _ _ _ _.0 1 0 0   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   010,000     ?/USE     MEDICAL DEVICE     FF
+SIGHT RESTORER      41 06 00 50   _ _ 0 0.0 0 0 1   _ _ _ _.0 1 1 0   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   020,000     ?/USE     LASER GADGET       FF
+BRAIN EQUALIZER     41 07 00 50   _ _ 0 0.0 0 0 1   _ _ _ _.0 1 1 1   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   020,000     ?/USE     HEAD GEAR          00
+DRUG INFUSOR        41 08 00 50   _ _ 0 0.0 0 0 1   _ _ _ _.1 0 0 0   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   000,140     ?/USE     MEDICAL DEVICE     18
+AAAAAAAA CAPSULE    41 09 00 50   _ _ 0 0.0 0 0 1   _ 0 0 0.1 0 0 1   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   ???,???     0/USE     CAPSULE (ANTI-POISON)
+BBBBBBBB CAPSULE    41 19 00 50   _ _ 0 0.0 0 0 1   _ 0 0 1.1 0 0 1   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   ???,???     0/USE     CAPSULE (ANTI-FUNGUS)
+CCCCCCCC CAPSULE    41 29 00 50   _ _ 0 0.0 0 0 1   _ 0 1 0.1 0 0 1   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   ???,???     0/USE     CAPSULE (ANTI-PARASITE)
+DDDDDDDD CAPSULE    41 39 00 50   _ _ 0 0.0 0 0 1   _ 0 1 1.1 0 0 1   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   ???,???     0/USE     CAPSULE
+EEEEEEEE CAPSULE    41 49 00 50   _ _ 0 0.0 0 0 1   _ 1 0 0.1 0 0 1   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   ???,???     0/USE     CAPSULE
+FFFFFFFF CAPSULE    41 59 00 50   _ _ 0 0.0 0 0 1   _ 1 0 1.1 0 0 1   0 0 0 0.0 0 0 0   0 1 0 1.0 0 0 0   ???,???     0/USE     CAPSULE
+
+                                                                          U U   S F H
+SCANNERS:                                                                 E D   E A A
+                                                                          | |   | | |   G E R P J C A W
+I.D. SCANNER        42 00 00 02   _ _ 0 0.0 0 1 0   _ _ _ _._ 0 0 0   0 0 0 0.0 0 0 0   0 0 0 0.0 0 1 0   000,085    ??/USE     SCANNER            7F
+FACE TRACKER        42 01 00 02   _ _ 0 0.0 0 1 0   _ _ _ _._ 0 0 1   0 0 0 0.0 0 0 0   0 0 0 0.0 0 1 0   000,080    ??/USE     SCANNER            00
+ORGANIC DETECTOR    42 02 20 02   _ _ 0 0.0 0 1 0   _ _ _ _._ 0 1 0   0 0 1 0.0 0 0 0   0 0 0 0.0 0 1 0   020,000    ??/ROUND   SCANNER            FF
+ROBOTIC DETECTOR    42 03 20 02   _ _ 0 0.0 0 1 0   _ _ _ _._ 0 1 1   0 0 1 0.0 0 0 0   0 0 0 0.0 0 1 0   007,500    ??/ROUND   SCANNER            FF
+DOOR UNLOCKER       42 04 00 02   _ _ 0 0.0 0 1 0   _ _ _ _._ 1 0 0   0 0 0 0.0 0 0 0   0 0 0 0.0 0 1 0   000,020    ??/USE     GADGET             FF
+VIBRATION SENSOR    42 05 20 02   _ _ 0 0.0 0 1 0   _ _ _ _._ 1 0 1   0 0 1 0.0 1 0 0   0 0 0 0.0 0 1 0   065,000    ??/ROUND   ELECTRONIC BOOTS   FF
+
+                                                                          U U   S F H
+MISCELLANEOUS:                                                            E D   E A A
+                                                                          | |   | | |   G E R P J C A W
+ROBOT CONTROLLER    43 00 20 84   _ _ 0 0.0 0 1 1   _ _ _ _._ 0 0 0   0 0 1 0.0 0 0 0   1 0 0 0.0 1 0 0   000,085    ??/ROUND   ROBOT CONTROLLER   7F
+MUSCLE              63 01 00 DF   _ _ 1 0.0 0 1 1   _ _ _ _.0 0 0 1   0 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   107,828     0/USE     MAROON POWDER      FF
+REFLEX              63 09 00 DF   _ _ 1 0.0 0 1 1   _ _ _ _.1 0 0 1   0 0 0 0.0 0 0 0   1 1 0 1.1 1 1 1   147,828     0/USE     SILVER POWDER      FF
+TERRAN KEY          43 02 20 DF   _ _ 0 0.0 0 1 1   _ _ 0 0.0 0 1 0   0 0 0 1.0 0 0 0   1 1 0 1.1 1 1 1   n/a         0/ROUND   WHITE SAND         n/a
+TOUHTAAN KEY        43 0A 20 DF   _ _ 0 0.0 0 1 1   _ _ 0 0.1 0 1 0   0 0 0 1.0 0 0 0   1 1 0 1.1 1 1 1   n/a         0/ROUND   HEAVY STONE        n/a
+ZINAN KEY           43 12 20 DF   _ _ 0 0.0 0 1 1   _ _ 0 1.0 0 1 0   0 0 0 1.0 0 0 0   1 1 0 1.1 1 1 1   n/a         0/ROUND   CHANGING CRYSTAL   n/a
+!!! KEY             43 1A 20 DF   _ _ 0 0.0 0 1 1   _ _ 0 1.1 0 1 0   0 0 0 1.0 0 0 0   1 1 0 1.1 1 1 1   n/a         0/ROUND   PLASTEEL CIRCUIT   n/a
+GILLOITAN KEY       43 22 20 DF   _ _ 0 0.0 0 1 1   _ _ 1 0.0 0 1 0   0 0 0 1.0 0 0 0   1 1 0 1.1 1 1 1   n/a         0/ROUND   PETRIFIED LEAF     n/a
+COMPRESSD PERSON    43 X3 20 DF   _ _ 0 0.0 0 1 1   C C C C.C 0 1 1   0 0 0 1.0 0 0 0   1 1 0 1.1 1 1 1   n/a         0/ROUND   COMPRESSD PERSON   n/a
+DATA CARD           43 X4 00 DF   _ _ 0 0.0 0 1 1   N N N N.N 1 0 0   0 0 0 ?.0 0 0 0   1 1 0 1.1 1 1 1   n/a         0/ROUND   DATA CARD          n/a
+JUNK                43 05 00 DF   _ _ 0 0.0 0 1 1   _ _ _ _._ 1 0 1   0 0 0 0.0 0 0 0   1 1 1 1.1 1 1 1   n/a         0/ROUND   JUNK               n/a
+
+                                                                          U U   S F H
+ROBOT EQUIPMENT:                                                          E D   E A A
+                                                                          | |   | | |   G E R P J C A W
+ROBO-DAGGER         58 00 00 20   _ _ 0 1.1 0 0 0   0 0 0 0.0 0 0 0   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 0              ??/SWING   ROBOT ATTACHMENT   n/a
+ROBO-SWORD          58 04 00 20   _ _ 0 1.1 0 0 0   0 0 0 0.0 1 0 0   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 0              ??/SWING   ROBOT ATTACHMENT   n/a
+
+ROBO-BLASTER C      5C 00 00 20   _ _ 0 1.1 1 0 0   0 0 0 0.0 0 0 0   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 0              ??/SHOT    ROBOT ATTACHMENT   n/a
+ROBO-BLASTER B      5C 01 00 20   _ _ 0 1.1 1 0 0   0 0 0 0.0 0 0 1   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 0              ??/SHOT    ROBOT ATTACHMENT   n/a
+ROBO-BLASTER A      5C 02 00 20   _ _ 0 1.1 1 0 0   0 0 0 0.0 0 1 0   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 0              ??/SHOT    ROBOT ATTACHMENT   n/a
+
+HAND ATTACHMENT     59 00 20 20   _ _ 0 1.1 0 0 1   0 0 0 0.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0              ??/ROUND   MECHANICAL HAND    n/a
+
+                                                                          U U   S F H
+ARMOR:                                                                    E D   E A A
+                                                        ***** *****   *   | |   | | |   G E R P J C A W
+CLEAR-E ARMOR       44 00 04 89   _ _ 0 0.0 1 0 0   _ _ 0 0.0 0 0 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   000,100    n/a        ARMOR              n/a
+CLEAR-D ARMOR       44 01 04 89   _ _ 0 0.0 1 0 0   _ _ 0 0.0 0 0 1   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   000,500    n/a        ARMOR              n/a
+CLEAR-C ARMOR       44 02 04 89   _ _ 0 0.0 1 0 0   _ _ 0 0.0 0 1 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   002,000    n/a        ARMOR              n/a
+CLEAR-B ARMOR       44 03 04 89   _ _ 0 0.0 1 0 0   _ _ 0 0.0 0 1 1   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   004,000    n/a        ARMOR              n/a
+CLEAR-A ARMOR       44 04 04 89   _ _ 0 0.0 1 0 0   _ _ 0 0.0 1 0 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   007,000    n/a        ARMOR              n/a
+BENDER-E ARMOR      44 08 04 89   _ _ 0 0.0 1 0 0   _ _ 0 0.1 0 0 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   000,500    n/a        ARMOR              n/a
+BENDER-D ARMOR      44 09 04 89   _ _ 0 0.0 1 0 0   _ _ 0 0.1 0 0 1   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   002,500    n/a        ARMOR              n/a
+BENDER-C ARMOR      44 0A 04 89   _ _ 0 0.0 1 0 0   _ _ 0 0.1 0 1 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   010,000    n/a        ARMOR              n/a
+BENDER-B ARMOR      44 0B 04 89   _ _ 0 0.0 1 0 0   _ _ 0 0.1 0 1 1   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   020,000    n/a        ARMOR              n/a
+BENDER-A ARMOR      44 0C 04 89   _ _ 0 0.0 1 0 0   _ _ 0 0.1 1 0 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   035,000    n/a        ARMOR              n/a
+MIRAGE-E ARMOR      44 10 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.0 0 0 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   002,000    n/a        ARMOR              n/a
+MIRAGE-D ARMOR      44 11 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.0 0 0 1   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   010,000    n/a        ARMOR              n/a
+MIRAGE-C ARMOR      44 12 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.0 0 1 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   040,000    n/a        ARMOR              n/a
+MIRAGE-B ARMOR      44 13 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.0 0 1 1   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   080,000    n/a        ARMOR              n/a
+MIRAGE-A ARMOR      44 14 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.0 1 0 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   140,000    n/a        ARMOR              n/a
+IMAGE-E ARMOR       44 18 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 0 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   004,000    n/a        ARMOR              n/a
+IMAGE-D ARMOR       44 19 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 0 1   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   020,000    n/a        ARMOR              n/a
+IMAGE-C ARMOR       44 1A 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 1 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   080,000    n/a        ARMOR              n/a
+IMAGE-B ARMOR       44 1B 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 1 1   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   160,000    n/a        ARMOR              n/a
+IMAGE-A ARMOR       44 1C 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 1 0 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   280,000    n/a        ARMOR              n/a
+MIRROR-E ARMOR      44 20 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 0 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   007,000    n/a        ARMOR              n/a
+MIRROR-D ARMOR      44 21 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 0 1   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   035,000    n/a        ARMOR              n/a
+MIRROR-C ARMOR      44 22 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 1 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   140,000    n/a        ARMOR              n/a
+MIRROR-B ARMOR      44 23 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 1 1   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   280,000    n/a        ARMOR              n/a
+MIRROR-A ARMOR      44 24 04 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 1 0 0   0 0 0 0.0 1 0 0   1 0 0 0.1 0 0 1   490,000    n/a        ARMOR              n/a
+
+                                                                          U U   S F H
+                                                                          E D   E A A
+                                                                      *   | |   | | |   G E R P J C A W
+SMART CLEAR-E       44 00 20 89   _ _ 0 0.0 1 0 0   _ _ 0 0.0 0 0 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   000,150    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART CLEAR-D       44 01 20 89   _ _ 0 0.0 1 0 0   _ _ 0 0.0 0 0 1   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   000,750    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART CLEAR-C       44 02 20 89   _ _ 0 0.0 1 0 0   _ _ 0 0.0 0 1 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   003,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART CLEAR-B       44 03 20 89   _ _ 0 0.0 1 0 0   _ _ 0 0.0 0 1 1   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   006,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART CLEAR-A       44 04 20 89   _ _ 0 0.0 1 0 0   _ _ 0 0.0 1 0 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   010,500    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART BENDER-E      44 08 20 89   _ _ 0 0.0 1 0 0   _ _ 0 0.1 0 0 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   000,750    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART BENDER-D      44 09 20 89   _ _ 0 0.0 1 0 0   _ _ 0 0.1 0 0 1   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   003,750    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART BENDER-C      44 0A 20 89   _ _ 0 0.0 1 0 0   _ _ 0 0.1 0 1 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   015,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART BENDER-B      44 0B 20 89   _ _ 0 0.0 1 0 0   _ _ 0 0.1 0 1 1   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   030,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART BENDER-A      44 0C 20 89   _ _ 0 0.0 1 0 0   _ _ 0 0.1 1 0 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   052,500    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART MIRAGE-E      44 10 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.0 0 0 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   003,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART MIRAGE-D      44 11 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.0 0 0 1   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   015,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART MIRAGE-C      44 12 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.0 0 1 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   060,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART MIRAGE-B      44 13 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.0 0 1 1   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   120,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART MIRAGE-A      44 14 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.0 1 0 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   210,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART IMAGE-E       44 18 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 0 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   006,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART IMAGE-D       44 19 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 0 1   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   030,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART IMAGE-C       44 1A 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 1 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   120,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART IMAGE-B       44 1B 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 1 1   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   240,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART IMAGE-A       44 1C 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 1 0 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   420,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART MIRROR-E      44 20 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 0 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   010,500    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART MIRROR-D      44 21 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 0 1   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   052,500    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART MIRROR-C      44 22 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 1 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   210,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART MIRROR-B      44 23 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 0 1 1   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   420,000    ??/ROUND   MECHANICAL ARMOR   n/a
+SMART MIRROR-A      44 24 20 89   _ _ 0 0.0 1 0 0   _ _ 0 1.1 1 0 0   1 0 1 0.0 0 0 0   1 0 0 0.1 0 0 1   735,000    ??/ROUND   MECHANICAL ARMOR   n/a
+
+
+
+PROGRAMS:
+
+PROGRAM CARD 1      5A 01 20 20   _ _ 0 1.1 0 1 0   0 0 0 0.0 0 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   000,020    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 2      5A 02 20 20   _ _ 0 1.1 0 1 0   0 0 0 0.0 0 1 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   000,080    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 3      5A 03 20 20   _ _ 0 1.1 0 1 0   0 0 0 0.0 0 1 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   000,120    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 4      5A 04 20 20   _ _ 0 1.1 0 1 0   0 0 0 0.0 1 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   000,170    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 5      5A 05 20 20   _ _ 0 1.1 0 1 0   0 0 0 0.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   000,230    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 6      5A 06 20 20   _ _ 0 1.1 0 1 0   0 0 0 0.0 1 1 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   000,290    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 7      5A 07 20 20   _ _ 0 1.1 0 1 0   0 0 0 0.0 1 1 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   000,370    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 10     5A 10 20 20   _ _ 0 1.1 0 1 0   0 0 0 1.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   000,750    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 15     5A 15 20 20   _ _ 0 1.1 0 1 0   0 0 0 1.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   002,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 20     5A 20 20 20   _ _ 0 1.1 0 1 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   004,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 25     5A 25 20 20   _ _ 0 1.1 0 1 0   0 0 1 0.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   006,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 30     5A 30 20 20   _ _ 0 1.1 0 1 0   0 0 1 1.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   010,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 35     5A 35 20 20   _ _ 0 1.1 0 1 0   0 0 1 1.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   017,500    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 40     5A 40 20 20   _ _ 0 1.1 0 1 0   0 1 0 0.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   027,500    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 45     5A 45 20 20   _ _ 0 1.1 0 1 0   0 1 0 0.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   045,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 50     5A 50 20 20   _ _ 0 1.1 0 1 0   0 1 0 1.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   065,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 55     5A 55 20 20   _ _ 0 1.1 0 1 0   0 1 0 1.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   090,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 60     5A 60 20 20   _ _ 0 1.1 0 1 0   0 1 1 0.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   115,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 65     5A 65 20 20   _ _ 0 1.1 0 1 0   0 1 1 0.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   150,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 70     5A 70 20 20   _ _ 0 1.1 0 1 0   0 1 1 1.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   190,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 75     5A 75 20 20   _ _ 0 1.1 0 1 0   0 1 1 1.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   250,000    ??/ROUND   PROGRAM CARD       n/a
+
+                                                    * *****.*******
+PROGRAM CARD 1A     5A 81 20 20   _ _ 0 1.1 0 1 0   1 0 0 0.0 0 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   005,020    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 2A     5A 82 20 20   _ _ 0 1.1 0 1 0   1 0 0 0.0 0 1 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   005,080    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 3A     5A 83 20 20   _ _ 0 1.1 0 1 0   1 0 0 0.0 0 1 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   005,120    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 4A     5A 84 20 20   _ _ 0 1.1 0 1 0   1 0 0 0.0 1 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   005,170    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 5A     5A 85 20 20   _ _ 0 1.1 0 1 0   1 0 0 0.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   005,230    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 6A     5A 86 20 20   _ _ 0 1.1 0 1 0   1 0 0 0.0 1 1 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   005,290    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 7A     5A 87 20 20   _ _ 0 1.1 0 1 0   1 0 0 0.0 1 1 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   005,370    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 10A    5A 90 20 20   _ _ 0 1.1 0 1 0   1 0 0 1.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   005,750    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 15A    5A 95 20 20   _ _ 0 1.1 0 1 0   1 0 0 1.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   007,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 20A    5A A0 20 20   _ _ 0 1.1 0 1 0   1 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   009,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 25A    5A A5 20 20   _ _ 0 1.1 0 1 0   1 0 1 0.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   011,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 30A    5A B0 20 20   _ _ 0 1.1 0 1 0   1 0 1 1.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   015,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 35A    5A B5 20 20   _ _ 0 1.1 0 1 0   1 0 1 1.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   022,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 40A    5A C0 20 20   _ _ 0 1.1 0 1 0   1 1 0 0.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   032,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 45A    5A C5 20 20   _ _ 0 1.1 0 1 0   1 1 0 0.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   050,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 50A    5A D0 20 20   _ _ 0 1.1 0 1 0   1 1 0 1.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   070,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 55A    5A D5 20 20   _ _ 0 1.1 0 1 0   1 1 0 1.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   095,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 60A    5A E0 20 20   _ _ 0 1.1 0 1 0   1 1 1 0.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   120,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 65A    5A E5 20 20   _ _ 0 1.1 0 1 0   1 1 1 0.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   155,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 70A    5A F0 20 20   _ _ 0 1.1 0 1 0   1 1 1 1.0 0 0 0   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   195,000    ??/ROUND   PROGRAM CARD       n/a
+PROGRAM CARD 75A    5A F5 20 20   _ _ 0 1.1 0 1 0   1 1 1 1.0 1 0 1   0 0 1 0.0 0 0 0   0 0 1 0.0 0 0 0   255,000    ??/ROUND   PROGRAM CARD       n/a
+
