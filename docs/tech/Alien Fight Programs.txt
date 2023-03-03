@@ -1,0 +1,196 @@
+10/25/1987
+
+BYTE #1
+
+AA.C.D.E.F.G.H
+AA - Attack type
+    00 = E/P
+    01 = EL
+    10 = PH
+    11 = P/E
+C - open
+D - open
+E - Monster has to be in front 2 rows to shoot
+F - Use cheat aim (fair otherwise)
+G - Shots hit others in group never (sometimes otherwise)
+H - Special physical attack (besides normal attack)
+
+
+BYTE #2
+
+I.J.K.L.M.N.OO
+I - Choose swing cheating or fair (0 = fair, 1 = cheating)
+J - Smart front character seek
+K - Front row rush
+L - Smart front row seek
+M - Does monster swing at same full square every time
+N - Physical hit causes status change
+OO - Wait how many rounds to start front row rush
+
+
+BYTE #3
+
+Q.R.S.TT.UUU
+Q - Run when out of shots (fight otherwise)
+R - Aim at front row people
+S - Is monster a smart runner
+TT - Row or greater that can run from
+    00 = row 1
+    01 = row 2
+    10 = row 3
+    11 = row 4
+UUU = Running odds chart offset
+
+
+BYTE #4
+
+PP.V.W.X.Y.ZZ
+P - Blaster accuracy rating (0 = best, 3 = worst)
+V - open
+W - open
+X - open
+Y - open
+ZZ - Number of shots fired at a time
+    00 = 1 or 2
+    01 = 1
+    10 = 2
+    11 = multi
+
+
+
+SIMPLE PHYSICAL ATTACK PROGRAM
+• If alien in front row then,
+    • If there are hitable characters then,
+        • Select 'swing' for command
+        • Select square to swing at based on previous
+            swing and possible squares.
+        • Exit
+    • If there are no hitable characters then,
+        • If there are empty squares to the left or right then,
+            • Move randomly to the left or right
+            • Exit
+        • If there are not emply squares to the left or right then,
+            • Parry for one time unit
+            • Exit
+• If alien not in the front row then,
+    • If the square directly in front of alien is open then,
+        • Move forward one square
+        • Exit
+    • If the square directly in front of alien is not open then,
+        • If previous command was a move or if no
+           move is possible then,
+            • Parry
+            • Exit
+        • If previous command was not a move then,
+            • Move randomly left or right
+            • Exit
+
+
+PRELIMINARY SMART PHYSICAL FIGHTER PROGRAM
+• If engaged and not overly tired or wounded, will fight physical
+• If not in front row but no one needed in front row, will move left or right randomly
+• If group as a whole is wounded badly, all will run 50% of the time
+• If in front but not engaged, will move left or right to engage
+• If people in front moderately wounded or tired, others will move forward
+• People in front that are badly wounded, will move back
+• In first round, they suprised characters, 25% odds they will run if group is more powerful
+
+
+
+ROUGH FIGHT PROGRAMS TYPED FROM OLD DOCUMENTS
+
+PROGRAM #1
+   • Was previous command an aim
+        no, A
+        yes,
+   • Check how many shots can be made on available energy
+   • Can any shots be made?
+        no, B
+        yes,
+   • Select number of shots based on max possible, and possible range
+   • Goto X
+B • Is monster of dumb variety?
+        no, C
+        yes,
+   • Goto SIMPLE 1
+C • Is one square back, off grid?
+        no, D
+        yes,
+   • Store run command for monster
+   • Goto X
+D • Is one quare back open?
+        no, E
+        yes,
+   • Store move command
+   • Goto X
+E • Parry for a specific amount of time
+   • Goto X
+A • Should monster move? (use odds number)
+        no, F
+        yes,
+   • Get possible moves and randomly pick one
+   • Goto X
+F • Select square to aim at (parry if not enough energy to shoot)
+   • Goto X
+
+
+PROGRAM #2
+   • Does monster have special attack?
+        yes, then goto S
+   • Is monster in runable row?
+        no, then A
+   • Does monster run? (according to runtable, round #, if allowable, and in allowable row)
+        yes, goto run handler R
+A • Does monster make only physical attack?
+        no, then L
+   • Is monster in front row?
+        no, then B
+   • Is any character in swing range?
+        no, then C
+   • Select swing command (and square if not smart)
+   • Goto X
+C • Randomly (or if smart) move left or right if possible
+   • If not possible, parry for 18 time units
+   • Goto X
+B • Should monster do a front row rush (is it allowed and have enough rounds passed?)
+        no, then D
+   • Is square one forward empty?
+        no, then E
+   • Move forward one square
+   • Goto X
+E • Move randomly left,right or parry 18 time units
+   • Goto X
+D • Is any other monster in front row?
+        no, then F
+   • Move randomly left,right,forward, or parry
+   • Goto X
+F • Move forward if possible, otherwise parry for a short time
+   • Goto X
+L • Does monster make both physical and electrical attack?
+        yes, then goto to type selector S
+   • Can monster make anymore shots?
+        no, then G
+   • Select aim command (and square if not smart)
+
+
+
+FACTORS TO TAKE INTO ACCOUNT
+
+• Choose swing fair or cheating
+• Does monster swing to same square in a row
+
+• Aim fair or cheating
+• Aim at front rows or back rows
+• Aim at person or area
+• Shoot/ or swing in front row
+
+• Front row rush
+• Smart front row seek
+• Smart front character seek
+
+• Preference of parry or move
+
+• Running odds chart picker
+• Row or greater that can run from
+• Run when out of energy (fight otherwise)
+

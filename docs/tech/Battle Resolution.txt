@@ -1,0 +1,53 @@
+10/26/1987
+
+BATTLE RESOLUTION
+
+The notes will be outdated when I spend some time to figure this out completely.  These are here just so the originals can be thrown away.
+
+
+Reasons for leaving Narrate
+• All aliens area dead (flag this)
+• All characters/robots are a combination of:  (flag this)
+    • Dead character
+    • Broken robot
+    • Ran away character
+    • Ran away robot
+    • Abandon robot
+
+
+FIGHT NARRATOR
+
+• Return characters to original positions
+• Set up runaway flag
+    • 00 if all aliens gone and someone left (not dead/ran away)
+    • 40 if all characters either dead/broken/abandon
+    • 80 if all characters either dead/broken/abandon/ran away
+• Remove all fight-only illnesses (Special case FAST and STRONG)
+• Reload $6000 to $77FF
+• Reload $A000 to $AFFF
+• If group not all dead, load/call awarder
+• Reload $B000 to $BFFF
+• Load/Call dead.group
+
+
+DEAD GROUP
+
+• Set GRPNUMB to GRPCONT
+• Go through sequence
+• Go through part of tesback (make part of load group), and force into TREPR's office.
+
+
+AWARDER
+
+On Entry:
+• All fight only statuses (including RAN AWAY) have been removed
+• Characters have been put back in their proper positions
+• Lingering illnesses have already been set up
+• RAN_AWAY_FLAG either set for run away group or clear for all aliens dead
+
+• Draw screen
+• Reload $B000 to $BFFF
+• Award equipment if non-runaway
+• (Reload $6000 to $7FFF, $A000 to $AFFF)
+• Tell them if any character/robots dead/broken/abandon and force into camp
+• Leave normally

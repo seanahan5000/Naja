@@ -1,0 +1,32 @@
+
+10/25/1987
+
+RUNNING
+
+• Characters get credits and experience for aliens killed even though they ran from the aliens.
+
+• Dead characters come "run" with the group because the living characters are dragging them.  Figure in dead guys when calculating the average lower reflex for the group.
+
+• Run signal is ignored if there are some group members that are unable to run because of their status.
+
+• In the command phase, any of the non-robot characters can select the run option.  In the narration, the first character to execute the run command gives the "retreat" signal to the group.  All of the group members stop what they are doing and take one lower body movement to turn around.  No running takes place until all of the characters have turned around.  While the characters are turning around, the aliens are still attacking (with higher odds of hitting).  The aliens cannot inflict a status that will abort the run while the characters are turning around.
+
+• Before pseudo-narration begins, determine whether the aliens will follow, or if they will let the group get away.
+
+• Begin the animated, pseudo-narration phase where, based on some yet to be determined formula, the group runs and the alien follow until either the group gets away or the aliens catch up, or they deside not to follow anymore.
+
+• Grid lines move to give illusion of movement, while the gap between the aliens and characters either widens or shrinks.  Don't let the animation drag on.  Either they get away or they don't.  It's not a track meet.
+
+• If the aliens catch up, they get some free time to attack the group, while they either turn around, or start to run again.
+
+• Remember unusual case of one character left, running, and getting killed while turning around.
+
+
+
+FRONT ROW PROBLEMS
+
+• Characters and aliens still can't leave the front row unattended intentionally, but if the front rows open up because of the deaths of characters and aliens, don't deal with it until the end of the round.
+
+• After the round is over, determine if the aliens want to advance or run, and ask the player if he wants to advance or retreat.  Don't give the player any indication as to what the aliens will do until he decides what he wants to do.  If both want to retreat or advance, then do simple animation to get them off the screen or up to the front row, and return to command entry phase.  If one wants to retreat and the other wants to advance, go into the appropriate run resolution phase.
+
+•• Remember that aliens don't turn around to run, and they can run independently of each other.  Does this raise any problems???

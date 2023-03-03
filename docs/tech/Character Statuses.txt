@@ -1,0 +1,190 @@
+
+NAJA status information       1/11/87
+
+HEALTHY     $00 00 00 0000  E,m
+DEAD        $01 00 00 0001  B   F,N
+BROKEN      $03 00 00 0011  B   F,N
+IN-TRACC    $04 00 00 0100  M
+COMPRESSD   $05 00 00 0101  M
+IN LIMBO    $06 00 00 0110  M
+CLONABLE    $07 00 00 0111  M
+
+CORRODING   $10 00 01 0000  E,B
+POISONED    $11 00 01 0001  E,B S
+BLEEDING    $12 00 01 0010  E,B S
+RADIATION   $13 00 01 0011  E,B S
+ILL         $14 00 01 0100  E,m,B   S
+ILL         $15 00 01 0101  E,m,B   S
+ILL         $16 00 01 0110  E,m,B   S
+ILL         $17 00 01 0111  E,m,B   S
+BLIND       $18 00 01 1000  E,B F,S,U
+INSANE      $19 00 01 1001  E,B F,S,U
+
+SMOTHERIN   $20 00 10 0000  B   S
+FAST        $21 00 10 0001  B   S
+STRONG      $22 00 10 0010  B   S
+SLIPPING    $24 00 10 0100  B   S,u
+NUMB        $25 00 10 0101  B   S,u
+RAN AWAY    $2F 00 10 1111  B   N
+
+ON FIRE     $38 00 11 1000  B   F,Z,U
+DIZZY       $39 00 11 1001  B   F,Z,U
+STUNNED     $3A 00 11 1010  B   F,Z,U
+IMMOBILE    $3B 00 11 1011  B   F,Z,U
+CONTROLLD   $3C 00 11 1100  B   F,Z,U
+CHOKING     $3D 00 11 1101  B   F,Z,U
+
+CRITICAL    $40 01 000000   (E,m)   S
+RUN DOWN    $80 10 000000   (E) S,(U if robot)
+
+E-Can enter fight routine with this status
+M-Only occurs in mothership
+m-Also occurs in mothership
+B-Can become in fight narration
+
+F-Forget commands for that round
+U-Unable to fight at all
+u-Randomly unable to fight for part or all of a round
+S-Stats drop a percentage of organic part of stat
+Z-Stats drop to near zero of organic part of stat
+N-Can do nothing in command phase
+
+ON ENTRY TO FIGHT ROUTINE:
+
+    If CORRODING    - robot stats stay the same
+    If POISONED     - stats drop % of % organic
+    If BLEEDING     - stats drop % of % organic
+    If RADIATION    - stats drop % of % organic
+    If ILL          - stats drop % of % organic
+    If BLIND        - stats drop to near zero
+    If INSANE       - stats drop to near zero
+
+    If CRITICAL     - stats drop % of % organic
+    If RUNDOWN      - character stats drop all of % inorganic
+                    - robot stats drop to near zero
+
+Clear out table of temporary afflictions for all characters AND aliens
+Preserve pre-battle statuses
+
+
+IF CHARACTER BECOMES...
+
+    CORRODING   - robot stats stay the same
+                - all commands remembered
+
+    POISONED    - stats drop by % of % organic
+                - all commands remembered
+
+    BLEEDING    - stats drop by % of % organic
+                - all commands remembered
+
+    RADIATION   - stats drop by % of % organic
+                - all commands remembered
+
+    ILL         - stats drop by % of % organic
+                - all commands remembered
+
+    BLIND       - stats drop to near zero
+                - forget all commands for that round
+
+    INSANE      - stats drop to near zero
+                - forget all commands for that round
+
+
+    RUNDOWN     - stats drop all of % inorganic
+                - all commands remembered
+                - (robots forget all commands for that round)
+
+    CRITICAL    - stats drop % of % organic
+                - all commands remembered
+
+
+    BROKEN      - forget all commands for that round
+                - (robot equivalent of being DEAD)
+
+
+    SMOTHERIN   - all commands remembered
+                - stats drop % of % organic
+                - (stats return to normal when alien (airlock)
+                     causing the smothering is killed)
+
+    STRONG      - all commands remembered
+                - strength goes to 99
+
+    FAST        - all commands remembered
+                - upper and lower reflex go to 99
+
+    SLIPPING    - all commands remembered
+                - lower reflex drops % of % organic
+                - (randomly all previous commands are forgotten
+                     because the character has to catch his balance)
+
+    NUMB        - all commands remembered
+                - stats drop % of % organic
+                - (randomly all previous commands are forgotten
+                    because the character dropped his weapon and
+                    has to pick it up)
+
+    ON FIRE     - stats drop to near zero
+                - forget all commands for that round
+                - (the character tries to extinguish the fire but is
+                    cured at the end of the round)
+
+    DIZZY       - stats drop to near zero
+                - forget all commands for that round
+                - (this lasts a very short number of rounds)
+
+    STUNNED     - stats drop to near zero
+                - forget all commands for that round
+
+    IMMOBILE    - stats drop to near zero
+                - forget all commands for that round
+
+    CONTROLLD   - stats drop to near zero
+                - forget all commands for that round
+                - (this continues until the alien doing the
+                     controlling is killed)
+
+    CHOKING     - stats drop to near zero
+                - forget all commands for that round
+                - (this continues until the alien doing the choking
+                    (thrower) is killed)
+
+
+
+JUST BEFORE EXECUTING/NARRATING CHARACTERS COMMAND...
+
+RUNDOWN (if robot only):
+    MECHANISMO HAS NO ENERGY TO FIGHT
+
+BLIND:
+    MECHANISMO CANNOT SEE ANYTHING AND IS UNABLE TO FIGHT
+
+INSANE:
+    MECHANISMO IS MENTALLY INCAPABLE OF FIGHTING
+
+CONTROLLD:
+    <ALIEN NAME> TELLS MECHANISMO NOT TO FIGHT.  MECHANISMO OBEYS.
+    <WANDERING THOUGHT> SUGGESTS THAT MECHANISMO NOT FIGHT.  MECHANISMO OBEYS.
+
+IMMOBILE:
+    MECHANSIMO TRIES TO FIGHT BUT JUST CANNOT MOVE
+
+STUNNED:
+    MECHANSIMO IS STILL TOO STUNNED TO FIGHT
+
+DIZZY:
+    MECHANISMO TRIES TO FIGHT BUT GETS DIZZY, FALLS TO THE FLOOR AND SLOWLY GETS UP
+
+NUMB:
+    MECHANISMO TRIES TO FIGHT BUT IS STILL FEELING NUMB AND DROPS A LIGHT RIFLE ON THE FLOOR AND HAS TO BEND OVER AND PICK IT UP
+
+SLIPPING:
+    MECHANSIMO TRIES TO FIGHT BUT SLIPS, FALLS ON THE FLOOR AND SLOWLY GETS UP
+
+CHOKING:
+    MECHANISMO IS MORE CONCERNED ABOUT BREATHING RIGHT NOW AND DOES NOT FIGHT
+
+Commands can be selected for any status except DEAD and BROKEN.
+
+Characters and robots cannot contract one of the secondary statuses if they already have a primary one.  The secondary ones can be contracted if the characters/robots primary status is HEALTHY, CRITICAL(healthy form),  or RUNDOWN (healthy or critical form).

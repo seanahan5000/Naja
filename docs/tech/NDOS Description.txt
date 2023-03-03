@@ -1,0 +1,35 @@
+1/4/1987
+
+NEEDED MODULE:   A protected, low level DOS that can handle both 5.25" and
+    3.5" drive formats, possibly with some ram disk handling.
+
+
+OBJECTIVES (in order of priority)
+    • SPEED - By far the most important.  The other objectives should be sacrificed in order to make it as fast as possible.
+    • ECONOMY OF SIZE - The routine will be in memory at all times and therefore should take up as little space as possible.
+    • FLEXIBILITY - This is always to take lowest priority.  If something has to be done that the routine is not set up to do, a patch can always be applied.
+
+
+REQUIREMENTS:
+
+    NDOS (Naja Disk Operating System) will scan the slots looking for usable drives of the same type as the boot drive (I.E. If the program was booted on a UniDisk 3.5", any Disk ]['s would be ignored, and vice versa).  Usable drives will be kept track of by NDOS.  Any drives besides 3.5" and 5.25" will be ignored.
+    NDOS will be called at two levels (possibly with some other special casing at lower levels).  At the higher level, it will be called with just a file number from 0 to 255 in a register and then will proceed to look up the appropriate track/sector information in a table.  This will make the loading of commonly used files as simple as possible.  At the lower level, NDOS will be called with the Disk#, Starting track, Starting sector, and Number of sectors to read in some predefined locations.  Partial sectors will not be taken into consideration.  NDOS will convert this information into the appropriate block of the disk and read the data.  Disk# will be in the range of 0 to 5.  If a 3.5" disk is being used, NDOS should treat the 3.5" disk as six 5.25" disks and adjust the block to be read, accordingly.
+    One additional data structure that might be passed to NDOS (at both levels) is some flag bits telling whether it should wait for the drive to come up to speed first, if it should shut the drive off after it is done, etc.  These would probably only be used on 5.25" disks to improve disk access speed.
+    NDOS will read in blocks but will be call with sectors.  Writing will be done in blocks and called in some special case way.  Writing will rarely be used and therefore will be a separate routine from NDOS.  If an odd number of sectors are to be read, then first preserve the last 256 bytes, load in the number of blocks rounded up, and then restore the last 256 bytes.  Never load a block at $BF00 obviously.  Double buffering should be avoided at all costs.
+    Disk# should be encoded into the prologue or epilogue in some way so that NDOS can easily determine if the proper disk is in any of the legal drives.  If the proper disk is not in any of the legal drives, it will call a separate subroutine that will preserve part of the visible hires screen, tell the user which disk to insert, wait for a key press, restore the screen and return to NDOS.  Any other disk errors will be handled in the same way, with the exception of 'write protected' which will have a different message.
+    NDOS will use device specific drivers that are independent of NDOS.  These drivers should be set up so that, in the future, it would be relatively simple to add additional drivers for devices not yet popular or on the market.  Different drivers will be loaded in from time to time; some specifically to check protection.  This will facilitate the protecting of the disk in a way such that the protection method can be changed without the program knowing or caring just by changing a driver.  Different drivers will obviously have to be written for 3.5" and 5.25" formats.
+    Some additional work will probably be necessary to write protection for the 3.5" drives.  For the time being, the UniDisk 3.5" (Liron) drives will be supported, but not the "dumb" Apple 3.5" drives.
+    RAM disk capabilities will probably be provided in the form of a routine separate from NDOS that intercepts calls to NDOS to check if it has the needed blocks in memory and then calls NDOS to load the ones it doesn't have.  Ram cards such as those from Applied Engineering will not be supported; just the standard 48K of auxiliary memory.  The other 16K will be used elsewhere.
+
+
+MISCELLANEOUS MODULES NEEDED*:
+    • Routines to format 5.25" and 3.5" disks in a protected form
+    • A patch that can be applied to NDOS to read and write between different types of drives (3.5" to 5.25" and 5.25" to 3.5")
+    • A stripped down version of NDOS that resides in main memory to be used to write the files to disk in a protected form
+
+    * These miscellaneous modules should be taken into consideration when designing the main module so that they can be easily implemented.
+
+
+ORDER OF EVENTS:
+    • Get the main part of NDOS working with a driver for some existing 5.25" disk format such as Prodos or my format
+    • Determine a logical course of action from there

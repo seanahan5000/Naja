@@ -1,0 +1,20 @@
+10/26/1987
+
+UNRESOLVED ISSUES
+
+• Have some semi-standard dialog box forms
+• Plan out the entire game scenario
+• Plan modules for monster types
+• 128K memory requirements??? Use other 64K as RAM disk???
+• Limit the "specialness" of aliens
+• Adjust the name NAJA to something more interesting
+• Remove (or limit) affect of equipment on character stats and the minimum stat requirement to use them
+• Mouse control???
+• In fight routine...
+    Make probabilities less realistic and more random
+    Let them use up their energy if they want
+• Take out all delays
+• Ignore minor unrealisticnesses
+• No more energy use for armor???
+• Save some ideas for later
+• Lower amount of energy storage available for non-warrior/juicer classes

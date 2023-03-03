@@ -1,0 +1,120 @@
+11/29/1987
+
+NA-NA-NA-NA-NA-NA-NA-NA-NA-NA-NA-NA-NA-NA-NA-NA
+SW DS-DS BL DB-DB SS IA SI    FC-FC-FC-FC
+UR LR .. DM-DM ES PS    EX-EX-EX CR-CR-CR FO FG
+SC SP ID JA IM .. .. .. SU-SU-SU XX-XX-XX
+
+
+NA (16) = Name
+
+SW (01) = Number of swings (0 to 255)
+DS (02) = Damage per swing (0 to 9999)
+BL (01) = Number of blasts (0 to 255)
+DB (02) = Damage per blast (0 to 9999)
+SS (01) = Swing squares (see notes)
+
+IA (01) = Inflicting ability (0 to 99)
+SI (01) = Status inflicted (see notes)
+FC (04) = Fighting characteristics (see separate document)
+
+UR (01) = Upper reflex
+LR (01) = Lower reflex
+DM (02) = Damage (1 to 9999)
+ES (01) = Electrical shielding
+PS (01) = Physical shielding
+
+EX (03) = Experience
+CR (03) = Credit
+FO (01) = Finding odds of equipment
+FG (01) = Finding groups for equipment
+
+SC (01) = Surprisability (0 to 99)
+SP (01) = Surprising ability (0 to 99)
+ID (01) = Identifiability (0 to 99)
+JA (01) = Jammability (0 to 99)
+IM (01) = Immobilizability (0 to 99)
+
+SU (03) = Susceptibilities (see notes)
+XX (03) = Swing words (see notes)
+
+
+
+
+SUSCEPTABILITIES
+
+    Byte #1     Byte #2     Byte #3
+    LL.HH.EE.PP DD.CC.FF.SS ??.??.??.??
+
+LL = Light
+HH = Heat
+EE = Electrical
+PP = Physical
+DD = Disintegrator
+CC = Catching
+FF = Fooled by image generator
+SS = Size
+
+
+
+STATUS INFLICTED
+
+II.SSSSSS
+
+    II = Intensity of status inflicted (00=weakest, 11=strongest)
+SSSSSS = Status that the alien inflicts
+
+
+
+SWING WORDS
+
+       Byte #1     Byte #2     Byte #3
+       12345678    9ABCDEFG    HIJK....
+
+    1 - SWINGS AT       9 - SLASHES AT      H - SWOOPS AT
+    2 - STRIKES AT      A - BITES AT        I - SPRAYS AT
+    3 - POKES AT        B - SNIPS AT        J - LUNGES AT
+    4 - SCRATCHES AT    C - PUNCHES AT      K - JUMPS AT
+    5 - CLAWS AT        D - GRABS AT
+    6 - STABS AT        E - REACHES AT
+    7 - THRUSTS AT      F - KICKS AT
+    8 - HACKS AT        G - WHIPS AT
+
+
+
+SWING SQUARES
+
+Flags which squares an alien can swing at in relation to where it is located.
+
+  One wide - SLXR....
+  Two wide - SLXCR...
+Three wide - SLXCCR..
+ Four wide - SLXCCCR.
+ Five wide - SLXCCCCR
+
+S = Simultaneous swing flag
+    (Can hit with both hands at the same time if set)
+X = X coordinate of alien
+L = Square to the left of the alien
+R = Square to the right of the alien
+C = The rest of the squares a wide alien takes up
+. = unused bits
+
+
+
+TOP VIEW DIMENSIONS
+
+Squares Wide
+    1 = 2 bytes
+    2 = 4 or 5 bytes
+    3 = 6 bytes
+    4 = 9 bytes
+    5 = 11 bytes
+
+Squares High
+    1 = 1 or 2 bytes
+    2 = 3 bytes
+    3 = 5 bytes
+    4 = 6 or 7 bytes
+    5 = 8 bytes
+
