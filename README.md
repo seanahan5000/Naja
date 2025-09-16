@@ -1,5 +1,7 @@
 # Naja (Tactical Force Alliance) #
 
+NOTE: New development work on this project has moved to https://github.com/seanahan5000/naja2.
+
 **Naja** is a futuristic fantasy role-playing game for the Apple ][, designed by Sean Callahan (programming) and Richard Nielsen (artwork).  We started on it as 16 year olds in the spring of 1982 and worked through our Senior year of high school.  Development continued full-time from 1983 to 1985, with additional work being done part-time through 1989.
 
 The title Naja comes from the game's villain, which is also the genus name of cobra snakes.  It was later renamed to the easier to understand "Tactical Force Alliance".
